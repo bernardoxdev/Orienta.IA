@@ -1,1 +1,14 @@
 ./Documentos
+__pycache__
+*.pyc
+*.pyo
+*.pyd
+*.db
+*.sqlite3
+*.session
+*.session-journal
+.git
+.env
+venv
+.venv
+node_modules

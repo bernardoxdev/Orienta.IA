@@ -1,6 +1,12 @@
-def main():
-    print("Hello from ic-darlinton!")
+from fastapi import FastAPI
 
+app = FastAPI()
 
-if __name__ == "__main__":
-    main()
+@app.get("/")
+def home():
+    return {
+        "status": "Orienta.IA online 🚀"
+    }
+
+if __name__ == '__main__':
+    pass

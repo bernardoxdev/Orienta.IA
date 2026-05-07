@@ -1,0 +1,49 @@
+services:
+  db:
+    image: postgres:15
+    container_name: orienta_db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: orienta
+      POSTGRES_DB: orienta_db
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U orienta"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  api:
+    build: .
+    container_name: orienta_api
+    restart: unless-stopped
+    command: uvicorn main:app --host 0.0.0.0 --port 8000 --reload
+    ports:
+      - "8000:8000"
+    volumes:
+      - .:/app
+    env_file:
+      - .env
+    depends_on:
+      db:
+        condition: service_healthy
+
+  bot:
+    build: .
+    container_name: orienta_bot
+    restart: unless-stopped
+    command: python3 bot.py
+    volumes:
+      - .:/app
+    env_file:
+      - .env
+    depends_on:
+      db:
+        condition: service_healthy
+
+volumes:
+  postgres_data:
