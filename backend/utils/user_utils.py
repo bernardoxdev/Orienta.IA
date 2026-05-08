@@ -34,7 +34,7 @@ def criar_usario(nome: str, email: str) -> User:
     finally:
         db.close()
 
-def atualizar_usuario_telegram_id(user: User, telegram_id: str) -> User:
+async def atualizar_usuario_telegram_id(user: User, telegram_id: str) -> User:
     db = SessionLocal()
 
     try:
@@ -45,13 +45,7 @@ def atualizar_usuario_telegram_id(user: User, telegram_id: str) -> User:
     finally:
         db.close()
 
-async def criar_usuario(
-    telegram_id: str,
-    nome: str,
-    email: str,
-    senha: str
-) -> User:
-
+async def criar_usuario(telegram_id: str, nome: str, email: str, senha: str) -> User:
     db = SessionLocal()
 
     try:
@@ -63,13 +57,19 @@ async def criar_usuario(
         )
 
         db.add(user)
-
         db.commit()
-
         db.refresh(user)
 
         return user
+    finally:
+        db.close()
 
+async def get_role_user_telegram_id(telegram_id: str) -> str:
+    db = SessionLocal()
+
+    try:
+        user = db.query(User).filter(User.telegram_id == telegram_id).first()
+        return user.role if user else None
     finally:
         db.close()
 
