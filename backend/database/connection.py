@@ -13,3 +13,13 @@ SessionLocal = sessionmaker(
     autoflush=False,
     bind=engine
 )
+
+def get_db():
+    if SessionLocal is None:
+        raise RuntimeError("❌ Banco de dados não inicializado")
+
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()

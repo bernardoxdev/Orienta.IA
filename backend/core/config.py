@@ -15,5 +15,9 @@ TELEGRAM_BOT_ID = os.getenv('TELEGRAM_BOT_ID')
 
 DATABASE_URL = os.getenv("DATABASE_URL")
 
+SECRET_KEY = os.getenv("SECRET_KEY")
+ACCESS_TOKEN_EXPIRE_MINUTES = int(os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES"))
+REFRESH_TOKEN_EXPIRE_DAYS = int(os.getenv("REFRESH_TOKEN_EXPIRE_DAYS"))
+
 if __name__ == '__main__':
     pass
