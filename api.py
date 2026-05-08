@@ -17,8 +17,8 @@ async def lifespan(app: FastAPI):
     yield
 
 app = FastAPI(
-    title="QuantFacial",
-    summary="API de Sistema de Reconhecimento Facial para Controle de Acesso",
+    title="Orienta.IA API",
+    summary="",
     description="",
     version="v0.1.0-BETA",
     lifespan=lifespan
