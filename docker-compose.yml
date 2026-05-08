@@ -45,5 +45,15 @@ services:
       db:
         condition: service_healthy
 
+  migrations:
+    build: .
+    container_name: orienta_migrations
+    command: python -m backend.database.init_db
+    env_file:
+      - .env
+    depends_on:
+      db:
+        condition: service_healthy
+
 volumes:
   postgres_data:
