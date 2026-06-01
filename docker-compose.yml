@@ -21,7 +21,7 @@ services:
     build: .
     container_name: orienta_api
     restart: unless-stopped
-    command: uvicorn main:app --host 0.0.0.0 --port 8000 --reload
+    command: uvicorn api:app --host 0.0.0.0 --port 8000 --reload
     ports:
       - "8000:8000"
     volumes:
@@ -36,7 +36,7 @@ services:
     build: .
     container_name: orienta_site
     restart: unless-stopped
-    command: gunicorn -w 4 -b 0.0.0.0:5000 app:app
+    command: gunicorn -w 4 -b 0.0.0.0:5000 site:app
     ports:
       - "5000:5000"
     volumes:
