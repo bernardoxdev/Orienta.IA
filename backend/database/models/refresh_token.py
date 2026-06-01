@@ -1,11 +1,6 @@
-from sqlalchemy import (
-    Column,
-    Integer,
-    String,
-    ForeignKey
-)
+from sqlalchemy import Column, Integer, String, ForeignKey
 
-from backend.core.database import Base
+from backend.database.base import Base
 
 class RefreshToken(Base):
     __tablename__ = "refresh_tokens"

@@ -1,7 +1,7 @@
 from sqlalchemy import Column, Integer, String
+from sqlalchemy.orm import relationship
 
 from backend.database.base import Base
-
 
 class User(Base):
     __tablename__ = "users"
@@ -12,3 +12,6 @@ class User(Base):
     email = Column(String, unique=True, nullable=False, index=True)
     senha = Column(String, nullable=True)
     role = Column(String, nullable=False, default="aluno")
+
+    estudantes = relationship("Estudante", back_populates="user")
+    professores = relationship("Professor", back_populates="user")
