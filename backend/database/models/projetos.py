@@ -2,8 +2,8 @@ from sqlalchemy import Column, Integer, String, ForeignKey, JSON
 
 from backend.database.base import Base
 
-class User(Base):
-    __tablename__ = "users"
+class Projetos(Base):
+    __tablename__ = "projetos"
 
     id = Column(Integer, primary_key=True, index=True)
     professor_id = Column(Integer, ForeignKey("professor.id"), nullable=True)
