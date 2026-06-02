@@ -12,3 +12,6 @@ class Professor(Base):
     departamento = Column(String, nullable=False)
 
     projetos = relationship("Projetos", back_populates="professor")
+
+    user = relationship("User", back_populates="professor")
+    universidade = relationship("Universidade", back_populates="professor")
