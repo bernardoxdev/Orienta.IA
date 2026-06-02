@@ -14,3 +14,4 @@ class Universidade(Base):
 
     estudantes = relationship("Estudante", back_populates="universidade")
     professores = relationship("Professor", back_populates="universidade")
+    horarios = relationship("Horarios", back_populates="universidade")

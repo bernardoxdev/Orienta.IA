@@ -13,5 +13,5 @@ class Professor(Base):
 
     projetos = relationship("Projetos", back_populates="professor")
 
-    user = relationship("User", back_populates="professor")
-    universidade = relationship("Universidade", back_populates="professor")
+    user = relationship("User", back_populates="professores")
+    universidade = relationship("Universidade", back_populates="professores")

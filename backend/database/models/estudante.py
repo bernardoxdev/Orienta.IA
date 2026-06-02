@@ -14,5 +14,5 @@ class Estudante(Base):
     horarios = relationship("Horarios", back_populates="estudante")
     projetos = relationship("Projetos", back_populates="estudante")
 
-    user = relationship("User", back_populates="estudante")
-    universidade = relationship("Universidade", back_populates="estudante")
+    user = relationship("User", back_populates="estudantes")
+    universidade = relationship("Universidade", back_populates="estudantes")
