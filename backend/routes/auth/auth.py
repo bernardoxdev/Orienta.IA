@@ -5,25 +5,12 @@ from sqlalchemy.orm import Session
 from passlib.context import CryptContext
 
 from backend.database.connection import get_db
-from backend.core.jwt import (
-    create_access_token,
-    create_refresh_token,
-    SECRET_KEY,
-    ALGORITHM
-)
+from backend.core.jwt import create_access_token, create_refresh_token, SECRET_KEY, ALGORITHM
 from backend.core.security import get_current_user
 from backend.database.models.user import User
 from backend.database.models.refresh_token import RefreshToken
-from backend.database.models.schemas import (
-    LoginRequest,
-    RegisterRequest,
-    ChangePasswordRequest
-)
-from backend.database.models.return_schemas import (
-    LoginAndRegister,
-    Status,
-    Refresh
-)
+from backend.database.models.schemas import LoginRequest, RegisterRequest, ChangePasswordRequest
+from backend.database.models.return_schemas import LoginAndRegister, Status, Refresh
 
 router = APIRouter(prefix="/auth", tags=["Auth"])
 

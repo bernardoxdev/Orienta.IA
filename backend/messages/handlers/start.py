@@ -9,12 +9,18 @@ ROLE_MESSAGES = {
     "professor": (""
                   ""),
     "aluno": (""
-              ""),
-    "user": ("👋 Olá! Eu sou o bot Orienta.IA.\n\n"
-            "Comandos disponíveis:\n"
-            "/start - Iniciar\n"
-            "/help - Ajuda\n"
-            "/registrar - Registrar telegram na plataforma\n")
+                  ""),
+    "user": ("/vincular <professor/aluno> - Vincule sua conta a sua universidade para desbloquear funcionalidades específicas para seu perfil\n"
+              "/projetos - Veja os projetos que estao em andamentos\n"
+              "/universidades - Veja a lista de todas as universidades cadastradas\n"
+              "/professores - Veja a lista de todos os professores cadastrados\n"),
+    "pessoa": ("👋 Olá! Eu sou o bot Orienta.IA.\n"
+             "Criando por Bernardo de Castro.\n\n"
+             "Comandos disponíveis:\n"
+             "/start - Iniciar\n"
+             "/help - Ajuda\n"
+             "/registrar - Registrar telegram na plataforma\n"
+             "/logar - Realizar login na plataforma\n")
 }
 
 def register(app: Client):
@@ -22,7 +28,7 @@ def register(app: Client):
     async def start(client: Client, message: Message):
         telegram_id = str(message.from_user.id)
 
-        msg = ROLE_MESSAGES.get("user") + ROLE_MESSAGES.get(await get_role_user_telegram_id(telegram_id), "Se registre para desbloquear todas as funcionalidades do bot.")
+        msg = ROLE_MESSAGES.get("pessoa") + ROLE_MESSAGES.get(await get_role_user_telegram_id(telegram_id), "Se registre para desbloquear todas as funcionalidades do bot.")
 
         await message.reply_text(msg)
 

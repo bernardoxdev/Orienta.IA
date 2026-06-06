@@ -1,6 +1,6 @@
 from backend.database.base import Base
 from backend.database.connection import engine
 
-from backend.database.models.user import User
+import backend.database.models
 
 Base.metadata.create_all(bind=engine)

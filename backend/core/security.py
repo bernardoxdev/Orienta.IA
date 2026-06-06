@@ -4,8 +4,8 @@ from jose import jwt, JWTError
 from sqlalchemy.orm import Session
 
 from backend.core.jwt import SECRET_KEY, ALGORITHM
-from backend.core.database import get_db
-from backend.models.user import User
+from backend.database.connection import get_db
+from backend.database.models.user import User
 
 oauth2_scheme = OAuth2PasswordBearer(
     tokenUrl="/auth/login",
