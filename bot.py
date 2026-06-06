@@ -1,7 +1,8 @@
 from pyrogram import Client
 
 from backend.core.config import TELEGRAM_API_ID, TELEGRAM_API_HASH, TELEGRAM_BOT_ID
-from backend.messages.handlers import start, register
+from backend.messages.handlers import start, register, form_handler, logar
+from backend.messages.handlers.user import professores, projetos, universidades, vincular
 
 app = Client(
     name="bot",
@@ -13,6 +14,13 @@ app = Client(
 
 start.register(app)
 register.register(app)
+form_handler.register(app)
+logar.register(app)
+
+professores.register(app)
+projetos.register(app)
+universidades.register(app)
+vincular.register(app)
 
 if __name__ == '__main__':
     app.run()

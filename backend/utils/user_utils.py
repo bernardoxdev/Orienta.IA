@@ -73,5 +73,13 @@ async def get_role_user_telegram_id(telegram_id: str) -> str:
     finally:
         db.close()
 
+async def exists_user_telegram(telegram_id: str) -> bool:
+    db = SessionLocal()
+
+    try:
+        return db.query(User).filter(User.telegram_id == telegram_id).first() is not None
+    finally:
+        db.close()
+
 if __name__ == '__main__':
     pass
