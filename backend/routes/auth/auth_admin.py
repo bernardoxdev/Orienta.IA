@@ -27,7 +27,10 @@ pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
     description="Registra um novo usuário",
     dependencies=[Depends(require_role("admin"))]
 )
-def register(data: RegisterAdminRequest, db: Session = Depends(get_db)):
+def register(
+        data: RegisterAdminRequest,
+        db: Session = Depends(get_db)
+):
     if db.query(User).filter(User.username == data.username).first():
         raise HTTPException(409, "Usuário já existe")
 
@@ -36,9 +39,10 @@ def register(data: RegisterAdminRequest, db: Session = Depends(get_db)):
 
     try:
         user = User(
+            nome=data.nome,
             username=data.username,
             email=data.email,
-            hashed_password=pwd_context.hash(data.password),
+            senha=pwd_context.hash(data.password),
             role=data.role,
         )
 

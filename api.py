@@ -18,8 +18,8 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(
     title="Orienta.IA API",
-    summary="",
-    description="",
+    summary="Sistema de Orientaçao Academia Inteligente",
+    description="API para que seja possivel implementar o sistema da Orienta.IA em outras plataformas, como um aplicativo mobile",
     version="v0.1.0-BETA",
     lifespan=lifespan
 )
