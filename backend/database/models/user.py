@@ -1,17 +1,18 @@
-from sqlalchemy import Column, Integer, String
-from sqlalchemy.orm import relationship
+from sqlalchemy import Integer, String
+from sqlalchemy.orm import relationship, Mapped, mapped_column
 
 from backend.database.base import Base
 
 class User(Base):
     __tablename__ = "users"
 
-    id = Column(Integer, primary_key=True, index=True)
-    telegram_id = Column(String, unique=True, index=True, nullable=True)
-    nome = Column(String, nullable=False)
-    email = Column(String, unique=True, nullable=False, index=True)
-    senha = Column(String, nullable=True)
-    role = Column(String, nullable=False, default="user")
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True, index=True)
+    telegram_id: Mapped[str] = mapped_column(String, unique=True, index=True, nullable=True)
+    nome: Mapped[str] = mapped_column(String, nullable=False)
+    username: Mapped[str] = mapped_column(String, unique=True, nullable=False, index=True)
+    email: Mapped[str] = mapped_column(String, unique=True, nullable=False, index=True)
+    senha: Mapped[str] = mapped_column(String(255), nullable=True)
+    role: Mapped[str] = mapped_column(String, nullable=False, default="user")
 
     estudantes = relationship("Estudante", back_populates="user")
     professores = relationship("Professor", back_populates="user")

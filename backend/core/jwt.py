@@ -1,4 +1,4 @@
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from jose import jwt
 from backend.core.config import (
     SECRET_KEY,
@@ -14,14 +14,17 @@ def create_access_token(data: dict):
         "exp": datetime.utcnow() + timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES),
         "type": "access"
     })
+
     return jwt.encode(payload, SECRET_KEY, algorithm=ALGORITHM)
 
 def create_refresh_token(data: dict):
     payload = data.copy()
+    expire = datetime.now(timezone.utc) + timedelta(days=REFRESH_TOKEN_EXPIRE_DAYS)
     payload.update({
-        "exp": datetime.utcnow() + timedelta(days=REFRESH_TOKEN_EXPIRE_DAYS),
+        "exp": expire,
         "type": "refresh"
     })
+
     return jwt.encode(payload, SECRET_KEY, algorithm=ALGORITHM)
 
 if __name__ == '__main__':
