@@ -9,6 +9,10 @@ RUN apt-get update && apt-get install -y \
 COPY pyproject.toml uv.lock README.md /app/
 RUN pip install --upgrade pip && pip install .
 
-COPY . .
+COPY bot.py .
+COPY backend/core ./backend/core
+COPY backend/database ./backend/database
+COPY backend/messages ./backend/messages
+COPY backend/utils ./backend/utils
 
-EXPOSE 8000
+CMD ["python", "-m", "bot"]

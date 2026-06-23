@@ -18,7 +18,9 @@ services:
       retries: 5
 
   api:
-    build: .
+    build:
+      context: .
+      dockerfile: api.Dockerfile
     container_name: orienta_api
     restart: unless-stopped
     command: uvicorn api:app --host 0.0.0.0 --port 8000 --reload
@@ -33,10 +35,12 @@ services:
         condition: service_healthy
 
   site:
-    build: .
+    build:
+      context: .
+      dockerfile: site.Dockerfile
     container_name: orienta_site
     restart: unless-stopped
-    command: gunicorn -w 4 -b 0.0.0.0:5000 site:app
+    command: gunicorn -b 0.0.0.0:5000 web:app
     ports:
       - "5000:5000"
     volumes:
@@ -44,17 +48,19 @@ services:
     env_file:
       - .env
     environment:
-      FLASK_APP: site.py
+      FLASK_APP: web.py
       FLASK_ENV: development
     depends_on:
       db:
         condition: service_healthy
 
   bot:
-    build: .
+    build:
+      context: .
+      dockerfile: bot.Dockerfile
     container_name: orienta_bot
     restart: unless-stopped
-    command: python3 bot.py
+    command: python -m bot
     volumes:
       - .:/app
     env_file:
@@ -64,7 +70,9 @@ services:
         condition: service_healthy
 
   migrations:
-    build: .
+    build:
+      context: .
+      dockerfile: migrations.Dockerfile
     container_name: orienta_migrations
     command: python -m backend.database.init_db
     env_file:
