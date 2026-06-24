@@ -17,9 +17,11 @@ async def vincular_aluno_by_telegram(telegram_id: str, universidade_id: int, mat
                 matricula=matricula,
                 universidade_id=universidade_id
             )
+
             db.add(estudante)
             db.commit()
             db.refresh(estudante)
+
             return True
         finally:
             db.close()
@@ -38,9 +40,11 @@ async def vincular_professor_by_telegram(telegram_id: str, universidade_id: int,
                 universidade_id=universidade_id,
                 departamento=departamento
             )
+
             db.add(professor)
             db.commit()
             db.refresh(professor)
+
             return True
         finally:
             db.close()
@@ -56,16 +60,12 @@ async def verificar_vinculado(telegram_id: str) -> bool:
     db = SessionLocal()
 
     try:
-        estudante = db.query(Estudante).filter(
-            Estudante.user_id == user.id
-        ).first()
+        estudante = db.query(Estudante).filter(Estudante.user_id == user.id).first()
 
         if estudante:
             return True
 
-        professor = db.query(Professor).filter(
-            Professor.user_id == user.id
-        ).first()
+        professor = db.query(Professor).filter(Professor.user_id == user.id).first()
 
         if professor:
             return True
