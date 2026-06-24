@@ -23,9 +23,16 @@ def register(app: Client):
         # Registrando
         if state == "esperando_nome":
             register_infos[telegram_id]["nome"] = message.text
+            set_state(telegram_id, "esperando_username")
+
+            await message.reply("Agora envie um username:")
+            return
+
+        if state == "esperando_username":
+            register_infos[telegram_id]["username"] = message.text
             set_state(telegram_id, "esperando_email")
 
-            await message.reply("Agora envie seu email:")
+            await message.reply_text("Agora envie seu email: ")
             return
 
         if state == "esperando_email":
@@ -41,6 +48,7 @@ def register(app: Client):
 
             await criar_usuario(
                 telegram_id=telegram_id,
+                username=data["username"],
                 nome=data["nome"],
                 email=data["email"],
                 senha=pwd_context.hash(data["senha"])

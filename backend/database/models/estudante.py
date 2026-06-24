@@ -1,18 +1,26 @@
-from sqlalchemy import Column, Integer, String, ForeignKey
-from sqlalchemy.orm import  relationship
+from typing import TYPE_CHECKING, Optional
+
+from sqlalchemy import Integer, String, ForeignKey
+from sqlalchemy.orm import  relationship, Mapped, mapped_column
 
 from backend.database.base import Base
+
+if TYPE_CHECKING:
+    from backend.database.models.horarios import Horarios
+    from backend.database.models.projetos import Projetos
+    from backend.database.models.user import User
+    from backend.database.models.universidade import Universidade
 
 class Estudante(Base):
     __tablename__ = "estudante"
 
-    id = Column(Integer, primary_key=True, index=True)
-    user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
-    universidade_id = Column(Integer, ForeignKey("universidade.id"), nullable=False)
-    matricula = Column(String, nullable=False)
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, index=True)
+    user_id: Mapped[int] = mapped_column(Integer, ForeignKey("users.id"), nullable=False)
+    universidade_id: Mapped[int] = mapped_column(Integer, ForeignKey("universidade.id"), nullable=False)
+    matricula: Mapped[str] = mapped_column(String, nullable=False)
 
-    horarios = relationship("Horarios", back_populates="estudante")
-    projetos = relationship("Projetos", back_populates="estudante")
+    horarios: Mapped[list["Horarios"]] = relationship("Horarios", back_populates="estudante")
+    projetos: Mapped["Projetos"] = relationship("Projetos", back_populates="estudante")
 
-    user = relationship("User", back_populates="estudantes")
-    universidade = relationship("Universidade", back_populates="estudantes")
+    user: Mapped["User"] = relationship("User", back_populates="estudantes")
+    universidade: Mapped["Universidade"] = relationship("Universidade", back_populates="estudantes")

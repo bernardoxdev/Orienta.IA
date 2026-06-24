@@ -217,7 +217,7 @@ python bot.py
 ## Rodar Site
 
 ```bash
-python site.py
+python web.py
 ```
 
 ---

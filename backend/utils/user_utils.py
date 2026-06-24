@@ -45,12 +45,13 @@ async def atualizar_usuario_telegram_id(user: User, telegram_id: str) -> User:
     finally:
         db.close()
 
-async def criar_usuario(telegram_id: str, nome: str, email: str, senha: str) -> User:
+async def criar_usuario(telegram_id: str, username: str, nome: str, email: str, senha: str) -> User:
     db = SessionLocal()
 
     try:
         user = User(
             telegram_id=telegram_id,
+            username=username,
             nome=nome,
             email=email,
             senha=senha
