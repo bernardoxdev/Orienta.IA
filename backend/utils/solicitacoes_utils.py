@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import Optional, List
 
 from sqlalchemy.orm import Session
 
@@ -8,7 +8,31 @@ from backend.database.models.professor import Professor
 from backend.database.models.estudante import Estudante
 from backend.database.models.solicitacoes_vincular import SolicitacaoVincular
 
-def has_solicitacao_by_telegram(telegram_id) -> bool:
+async def get_solicitacoes() -> List[SolicitacaoVincular]:
+    db = SessionLocal()
+
+    try:
+        solicitacoes = db.query(SolicitacaoVincular).all()
+        return solicitacoes
+
+    finally:
+        db.close()
+
+async def get_solicitacao_by_telegram(telegram_id) -> Optional[SolicitacaoVincular]:
+    db: Session = SessionLocal()
+
+    try:
+        user: Optional[User] = db.query(User).filter(User.telegram_id==telegram_id).first()
+
+        if not user:
+            return None
+
+        return db.query(SolicitacaoVincular).filter(SolicitacaoVincular.user_id==user.id).first()
+
+    finally:
+        db.close()
+
+async def has_solicitacao_by_telegram(telegram_id) -> bool:
     db: Session = SessionLocal()
 
     try:
@@ -22,7 +46,7 @@ def has_solicitacao_by_telegram(telegram_id) -> bool:
     finally:
         db.close()
 
-def gerar_solicitacao(data: dict) -> SolicitacaoVincular:
+async def gerar_solicitacao(data: dict) -> SolicitacaoVincular:
     db: Session = SessionLocal()
 
     try:
@@ -37,7 +61,7 @@ def gerar_solicitacao(data: dict) -> SolicitacaoVincular:
     finally:
         db.close()
 
-def definir_status_solicitacao(solicitacao: SolicitacaoVincular) -> bool:
+async def aceitar_solicitacao(solicitacao: SolicitacaoVincular) -> bool:
     db: Session = SessionLocal()
 
     try:

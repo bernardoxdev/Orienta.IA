@@ -3,6 +3,7 @@ from pyrogram.types import Message
 
 from backend.utils.user_utils import exists_user_telegram
 from backend.utils.register_utils import register_infos, verificar_vinculado
+from backend.utils.solicitacoes_utils import has_solicitacao_by_telegram
 from backend.utils.telegram_state_utils import set_state
 
 def register(app: Client):
@@ -18,8 +19,12 @@ def register(app: Client):
             )
             return
 
-        if not await verificar_vinculado(telegram_id):
+        if await verificar_vinculado(telegram_id):
             await message.reply_text("Sua conta ja foi vinculada.")
+            return
+
+        if await has_solicitacao_by_telegram(telegram_id):
+            await message.reply_text("Você já possui uma solicitação de vínculo pendente.")
             return
 
         if len(message.command) < 2:
@@ -33,6 +38,7 @@ def register(app: Client):
         register_infos[telegram_id] = {}
 
         tipo = message.command[1].lower()
+        register_infos[telegram_id]["tipo"] = tipo
 
         if tipo == "professor":
             set_state(telegram_id, "esperando_vinculo_professor")
