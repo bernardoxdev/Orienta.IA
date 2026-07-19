@@ -30,8 +30,10 @@ def create_page(solicitacoes: List[SolicitacaoVincular], page: int):
 
     for solicitacao in current:
         text = (
-            "📄 **Solicitação de Vínculo**\n\n"
+            "📄 **Solicitação de Vínculo**\n"
+            f"ID: {solicitacao.id}\n"
             f"Tipo: {solicitacao.tipo}\n"
+            f"Telegram ID: {solicitacao.user_id}\n"
             f"Universidade ID: {solicitacao.universidade_id}\n"
         )
 
