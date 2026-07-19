@@ -38,21 +38,17 @@ services:
     build:
       context: .
       dockerfile: site.Dockerfile
-    container_name: orienta_site
+    container_name: orienta_frontend
     restart: unless-stopped
-    command: gunicorn -b 0.0.0.0:5000 web:app
     ports:
-      - "5000:5000"
+      - "80:80"
     volumes:
-      - .:/app
-    env_file:
-      - .env
+      - ./frontend:/app
+      - /app/node_modules
     environment:
-      FLASK_APP: web.py
-      FLASK_ENV: development
+      VITE_API_URL: ${VITE_API_URL}
     depends_on:
-      db:
-        condition: service_healthy
+      - api
 
   bot:
     build:

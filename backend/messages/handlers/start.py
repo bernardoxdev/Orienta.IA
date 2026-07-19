@@ -4,23 +4,24 @@ from pyrogram.types import Message
 from backend.utils.user_utils import get_role_user_telegram_id
 
 ROLE_MESSAGES = {
-    "admin": (""
+    "admin": ("/solicitacoes - Veja as solicitações de vinculação de usuários\n"
               ""),
     "professor": (""
                   ""),
     "aluno": (""
-                  ""),
+              ""),
     "user": ("/vincular <professor/aluno> - Vincule sua conta a sua universidade para desbloquear funcionalidades específicas para seu perfil\n"
-              "/projetos - Veja os projetos que estao em andamentos\n"
-              "/universidades - Veja a lista de todas as universidades cadastradas\n"
-              "/professores - Veja a lista de todos os professores cadastrados\n"),
+             "/projetos - Veja os projetos que estao em andamentos\n"
+             "/universidades - Veja a lista de todas as universidades cadastradas\n"
+             "/professores - Veja a lista de todos os professores cadastrados\n"
+             "/solicitacao_info - Veja as informaçoes da sua solicitaçao\n"),
     "pessoa": ("👋 Olá! Eu sou o bot Orienta.IA.\n"
-             "Criando por Bernardo de Castro.\n\n"
-             "Comandos disponíveis:\n"
-             "/start - Iniciar\n"
-             "/help - Ajuda\n"
-             "/registrar - Registrar telegram na plataforma\n"
-             "/logar - Realizar login na plataforma\n")
+               "Criando por Bernardo de Castro.\n\n"
+               "Comandos disponíveis:\n"
+               "/start - Iniciar\n"
+               "/help - Ajuda\n"
+               "/registrar - Registrar telegram na plataforma\n"
+               "/logar - Realizar login na plataforma\n")
 }
 
 def register(app: Client):

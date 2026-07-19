@@ -1,20 +1,19 @@
-FROM python:3.11
+FROM node:22-alpine AS build
 
 WORKDIR /app
 
-RUN apt-get update && apt-get install -y \
-    build-essential \
-    && rm -rf /var/lib/apt/lists/*
+COPY frontend/package*.json ./
 
-COPY pyproject.toml uv.lock README.md /app/
-RUN pip install --upgrade pip && pip install .
+RUN npm install
 
-EXPOSE 5000
+COPY frontend .
 
-COPY web.py .
-COPY backend/core ./backend/core
-COPY backend/database ./backend/database
-COPY backend/services ./backend/services
-COPY backend/utils ./backend/utils
+RUN npm run build
 
-CMD ["gunicorn", "-b", "0.0.0.0:5000", "web:app"]
+FROM nginx:alpine
+
+COPY --from=build /app/dist /usr/share/nginx/html
+
+EXPOSE 80
+
+CMD ["nginx", "-g", "daemon off;"]

@@ -30,5 +30,16 @@ async def get_universidades() -> List[Universidade]:
     finally:
         db.close()
 
+async def get_universidade_nome_by_id(universidade_id: int) -> Optional[str]:
+    db = SessionLocal()
+
+    try:
+        universidade = db.query(Universidade).filter(Universidade.id == universidade_id).first()
+        if universidade:
+            return universidade.nome
+        return None
+    finally:
+        db.close()
+
 if __name__ == '__main__':
     pass
