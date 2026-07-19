@@ -29,10 +29,12 @@ def register(app: Client):
             await message.reply_text("Você não possui uma solicitação de vínculo pendente.")
             return
 
+        nome_universidade = await get_universidade_nome_by_id(solicitacao.universidade_id)
+
         texto = (
             "📄 **Solicitação de Vínculo**\n\n"
             f"Tipo: {solicitacao.tipo}\n"
-            f"Universidade ID: {get_universidade_nome_by_id(solicitacao.universidade_id)}\n"
+            f"Universidade ID: {nome_universidade}\n"
         )
 
         if solicitacao.matricula:
