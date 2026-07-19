@@ -30,8 +30,10 @@ def create_page(solicitacoes: List[SolicitacaoVincular], page: int):
 
     for solicitacao in current:
         text = (
-            "📄 **Solicitação de Vínculo**\n\n"
+            "📄 **Solicitação de Vínculo**\n"
+            f"ID: {solicitacao.id}\n"
             f"Tipo: {solicitacao.tipo}\n"
+            f"Telegram ID: {solicitacao.user_id}\n"
             f"Universidade ID: {solicitacao.universidade_id}\n"
         )
 
@@ -59,57 +61,57 @@ def create_page(solicitacoes: List[SolicitacaoVincular], page: int):
 
     return text, keyboard
 
-def manage_solicitacao(solicitacoes: List[SolicitacaoVincular], id_solicitacao: int, action: str) -> str:
+def manage_solicitacao(id_solicitacao: int, action: str) -> str:
+    db: Session = SessionLocal()
+
     try:
-        db: Session = SessionLocal()
+        if action not in ("aceitar", "recusar"):
+            return "Ação inválida."
 
-        if action not in ["aceitar", "recusar"]:
-            return "Ação inválida. Use /solicitacoes aceitar <id> ou /solicitacoes recusar <id>."
+        solicitacao = db.get(SolicitacaoVincular, id_solicitacao)
 
-        for solicitacao in solicitacoes:
-            if solicitacao.id == id_solicitacao:
-                data = {
-                    "user_id": solicitacao.user_id,
-                    "tipo": solicitacao.tipo,
-                    "universidade_id": solicitacao.universidade_id,
-                    "departamento": solicitacao.departamento,
-                    "matricula": solicitacao.matricula
-                }
+        if solicitacao is None:
+            return "Solicitação não encontrada."
 
-                db.delete(solicitacao)
-                db.commit()
+        if action == "recusar":
+            db.delete(solicitacao)
+            db.commit()
+            return "Solicitação recusada com sucesso."
 
-                if action == "aceitar":
-                    if data["tipo"] == "estudante":
-                        estudante = Estudante(
-                            user_id=data["user_id"],
-                            universidade_id=data["universidade_id"],
-                            matricula=data["matricula"]
-                        )
-                        db.add(estudante)
-                        db.commit()
+        tipo = solicitacao.tipo.lower()
 
-                        return "Solicitação aceita com sucesso e estudante registrado."
+        if tipo in ("aluno", "estudante"):
 
-                    elif data["tipo"] == "professor":
-                        professor = Professor(
-                            user_id=data["user_id"],
-                            universidade_id=data["universidade_id"],
-                            departamento=data["departamento"]
-                        )
-                        db.add(professor)
-                        db.commit()
+            estudante = Estudante(
+                user_id=solicitacao.user_id,
+                universidade_id=solicitacao.universidade_id,
+                matricula=solicitacao.matricula
+            )
 
-                        return "Solicitação aceita com sucesso e professor registrado."
+            db.add(estudante)
 
-                    else:
-                        return "Tipo de solicitação desconhecido."
+        elif tipo == "professor":
 
-                else:
-                    return "Solicitação recusada com sucesso."
+            professor = Professor(
+                user_id=solicitacao.user_id,
+                universidade_id=solicitacao.universidade_id,
+                departamento=solicitacao.departamento
+            )
+
+            db.add(professor)
 
         else:
-            return "Nao foi possível encontrar a solicitação com o ID fornecido."
+            return f"Tipo '{solicitacao.tipo}' desconhecido."
+
+        db.delete(solicitacao)
+
+        db.commit()
+
+        return "Solicitação aceita com sucesso."
+
+    except Exception as e:
+        db.rollback()
+        return f"Erro: {e}"
 
     finally:
         db.close()
@@ -134,15 +136,16 @@ def register(app: Client):
             return
 
         tam = len(message.command)
-        solicitacoes = await get_solicitacoes()
-
-        if not solicitacoes:
-            await message.reply_text(
-                "Não há solicitações de vínculo no momento."
-            )
-            return
 
         if tam == 1:
+            solicitacoes = await get_solicitacoes()
+
+            if not solicitacoes:
+                await message.reply_text(
+                    "Não há solicitações de vínculo no momento."
+                )
+                return
+
             text, keyboard = create_page(solicitacoes, page=0)
 
             await message.reply_text(text, reply_markup=keyboard)
@@ -151,7 +154,7 @@ def register(app: Client):
             comando = message.command[1].lower()
             id_solicitacoes = message.command[2].lower()
 
-            await message.reply_text(manage_solicitacao(solicitacoes, int(id_solicitacoes), comando))
+            await message.reply_text(manage_solicitacao(int(id_solicitacoes), comando))
 
         else:
             await message.reply_text(
