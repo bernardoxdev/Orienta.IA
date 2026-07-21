@@ -22,5 +22,4 @@ class Universidade(Base):
 
     estudantes: Mapped[list["Estudante"]] = relationship("Estudante", back_populates="universidade")
     professores: Mapped[list["Professor"]] = relationship("Professor", back_populates="universidade")
-    horarios: Mapped[list["Horarios"]] = relationship("Horarios", back_populates="universidade")
     solicitacao: Mapped["SolicitacaoVincular"] = relationship("SolicitacaoVincular", back_populates="universidade")

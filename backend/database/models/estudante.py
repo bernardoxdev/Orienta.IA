@@ -18,6 +18,10 @@ class Estudante(Base):
     user_id: Mapped[int] = mapped_column(Integer, ForeignKey("users.id"), nullable=False)
     universidade_id: Mapped[int] = mapped_column(Integer, ForeignKey("universidade.id"), nullable=False)
     matricula: Mapped[str] = mapped_column(String, nullable=False)
+    curso: Mapped[str] = mapped_column(String, nullable=True)
+    periodo: Mapped[int] = mapped_column(Integer, nullable=True)
+    lattes: Mapped[str] = mapped_column(String, nullable=True)
+    previsao_conclusao: Mapped[str] = mapped_column(String, nullable=True)
 
     horarios: Mapped[list["Horarios"]] = relationship("Horarios", back_populates="estudante")
     projetos: Mapped["Projetos"] = relationship("Projetos", back_populates="estudante")

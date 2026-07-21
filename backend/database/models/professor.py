@@ -17,6 +17,9 @@ class Professor(Base):
     user_id: Mapped[int] = mapped_column(Integer, ForeignKey("users.id"), nullable=False)
     universidade_id: Mapped[int] = mapped_column(Integer, ForeignKey("universidade.id"), nullable=False)
     departamento: Mapped[str] = mapped_column(String, nullable=False)
+    lattes: Mapped[str] = mapped_column(String, nullable=True)
+    area_pesquisa: Mapped[str] = mapped_column(String, nullable=True)
+    sala: Mapped[str] = mapped_column(String, nullable=True)
 
     projetos: Mapped[list["Projetos"]] = relationship("Projetos", back_populates="professor")
 
