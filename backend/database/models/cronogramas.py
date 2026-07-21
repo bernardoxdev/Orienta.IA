@@ -20,8 +20,7 @@ class StatusCronograma(str, Enum):
 class Cronograma(Base):
     __tablename__ = "cronograma"
 
-    id: Mapped[int] = mapped_column(
-        Integer, primary_key=True, index=True)
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, index=True)
     projeto_id: Mapped[int] = mapped_column(Integer, ForeignKey("projetos.id", ondelete="CASCADE"), nullable=False)
     titulo: Mapped[str] = mapped_column(String, nullable=False)
     descricao: Mapped[str] = mapped_column(Text, nullable=True)
