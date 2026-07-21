@@ -9,6 +9,7 @@ if TYPE_CHECKING:
     from backend.database.models.projetos import Projetos
     from backend.database.models.user import User
     from backend.database.models.universidade import Universidade
+    from backend.database.models.solicitacoes_vincular import SolicitacaoVincular
 
 class Professor(Base):
     __tablename__ = "professor"
@@ -25,3 +26,4 @@ class Professor(Base):
 
     user: Mapped["User"] = relationship("User", back_populates="professores")
     universidade: Mapped["Universidade"] = relationship("Universidade", back_populates="professores")
+    solicitacao: Mapped["SolicitacaoVincular"] = relationship("SolicitacaoVincular", back_populates="professor")

@@ -12,6 +12,7 @@ if TYPE_CHECKING:
     from backend.database.models.estudante import Estudante
     from backend.database.models.professor import Professor
     from backend.database.models.cronogramas import Cronograma
+    from backend.database.models.solicitacoes_vincular import SolicitacaoVincular
 
 class ContextoOrientacao(str, Enum):
     IC = "IC"
@@ -43,3 +44,4 @@ class Projetos(Base):
     estudante: Mapped[Optional["Estudante"]] = relationship("Estudante", back_populates="projetos")
     professor: Mapped[Optional["Professor"]] = relationship("Professor", back_populates="projetos")
     cronogramas: Mapped[list["Cronograma"]] = relationship("Cronograma", back_populates="projeto", cascade="all, delete-orphan")
+    solicitacao: Mapped["SolicitacaoVincular"] = relationship("SolicitacaoVincular", back_populates="projetos")
