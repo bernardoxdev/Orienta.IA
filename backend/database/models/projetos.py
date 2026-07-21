@@ -20,6 +20,12 @@ class ContextoOrientacao(str, Enum):
     DOUTORADO = "DOUTORADO"
     OUTRO = "OUTRO"
 
+class StatusProjeto(str, Enum):
+    NAO_INICIADO = "Não iniciado"
+    EM_ANDAMENTO = "Em andamento"
+    CONCLUIDO = "Concluído"
+    CANCELADO = "Cancelado"
+
 class Projetos(Base):
     __tablename__ = "projetos"
 
@@ -28,7 +34,7 @@ class Projetos(Base):
     estudante_id: Mapped[int] = mapped_column(Integer, ForeignKey("estudante.id"), nullable=True)
     titulo: Mapped[str] = mapped_column(String, nullable=False)
     descricao: Mapped[str] = mapped_column(String, nullable=False)
-    status: Mapped[str] = mapped_column(String, nullable=False, default="Em andamento")
+    status: Mapped[str] = mapped_column(SQLEnum(StatusProjeto), nullable=False, default=StatusProjeto.NAO_INICIADO)
     data_inicio: Mapped[date] = mapped_column(Date, nullable=True)
     data_fim: Mapped[date] = mapped_column(Date, nullable=True)
     contexto: Mapped[ContextoOrientacao] = mapped_column(SQLEnum(ContextoOrientacao), nullable=True)
