@@ -10,8 +10,8 @@ if TYPE_CHECKING:
     from backend.database.models.professor import Professor
     from backend.database.models.projetos import Projetos
 
-class SolicitacaoProjeto(Base):
-    __tablename__ = "solicitacoes_projetos"
+class SolicitacaoCancelamento(Base):
+    __tablename__ = "projeto_cancelamento"
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True, index=True)
     estudante_id: Mapped[int] = mapped_column(Integer, ForeignKey("estudante.id"), nullable=False)
@@ -20,6 +20,16 @@ class SolicitacaoProjeto(Base):
     descricao: Mapped[str] = mapped_column(String, nullable=False)
     origem: Mapped[int] = mapped_column(Integer, nullable=False) # 1 para estudante, 2 para professor
 
-    estudante: Mapped["Estudante"] = relationship("Estudante", back_populates="solicitacao")
-    professor: Mapped["Professor"] = relationship("Professor", back_populates="solicitacao")
-    projeto: Mapped["Projetos"] = relationship("Projetos", back_populates="solicitacao")
+    estudante: Mapped["Estudante"] = relationship("Estudante", back_populates="solicitacao_c")
+    professor: Mapped["Professor"] = relationship("Professor", back_populates="solicitacao_c")
+    projeto: Mapped["Projetos"] = relationship("Projetos", back_populates="solicitacao_c")
+
+class SolicitacaoProjeto(Base):
+    __tablename__ = "solicitacao_projeto"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, index=True)
+    estudante_id: Mapped[int] = mapped_column(Integer, ForeignKey("estudante.id"), nullable=False)
+    projeto_id: Mapped[int] = mapped_column(Integer, ForeignKey("projetos.id"), nullable=False)
+
+    estudante: Mapped["Estudante"] = relationship("Estudante", back_populates="solicitacao_p")
+    projeto: Mapped["Projetos"] = relationship("Projetos", back_populates="solicitacao_p")

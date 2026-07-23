@@ -7,4 +7,4 @@ from .user import User
 from .refresh_token import RefreshToken
 from .solicitacoes_vincular import SolicitacaoVincular
 from .cronogramas import Cronograma
-from .solicitacoes_projetos import SolicitacaoProjeto
+from .solicitacoes_projetos import SolicitacaoCancelamento

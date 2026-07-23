@@ -11,6 +11,7 @@ if TYPE_CHECKING:
     from backend.database.models.user import User
     from backend.database.models.universidade import Universidade
     from backend.database.models.solicitacoes_vincular import SolicitacaoVincular
+    from backend.database.models.solicitacoes_projetos import SolicitacaoProjeto, SolicitacaoCancelamento
 
 class Estudante(Base):
     __tablename__ = "estudante"
@@ -30,3 +31,5 @@ class Estudante(Base):
     user: Mapped["User"] = relationship("User", back_populates="estudantes")
     universidade: Mapped["Universidade"] = relationship("Universidade", back_populates="estudantes")
     solicitacao: Mapped["SolicitacaoVincular"] = relationship("SolicitacaoVincular", back_populates="estudante")
+    solicitacao_c: Mapped["SolicitacaoCancelamento"] = relationship("SolicitacaoCancelamento", back_populates="estudante")
+    solicitacao_p: Mapped["SolicitacaoProjeto"] = relationship("SolicitacaoProjeto", back_populates="estudante")
