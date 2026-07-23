@@ -6,10 +6,10 @@ from backend.utils.user_utils import get_role_user_telegram_id
 ROLE_MESSAGES = {
     "admin": ("/solicitacoes - Veja as solicitações de vinculação de usuários\n"
               ""),
-    "professor": (""
-                  ""),
-    "aluno": (""
-              ""),
+    "professor": ("/propostas <listar/aceitar> <id> - "
+                  "/projetos listar -"),
+    "aluno": ("/projetos criar -"
+              "/propor <id> <professor> -"),
     "user": ("/vincular <professor/aluno> - Vincule sua conta a sua universidade para desbloquear funcionalidades específicas para seu perfil\n"
              "/projetos - Veja os projetos que estao em andamentos\n"
              "/universidades - Veja a lista de todas as universidades cadastradas\n"
