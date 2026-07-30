@@ -38,15 +38,15 @@ services:
     build:
       context: .
       dockerfile: site.Dockerfile
-    container_name: orienta_frontend
+    container_name: orienta_site
     restart: unless-stopped
+    command: gunicorn -b 0.0.0.0:5000 web:app
     ports:
-      - "80:80"
+      - "80:5000"
     volumes:
-      - ./frontend:/app
-      - /app/node_modules
-    environment:
-      VITE_API_URL: ${VITE_API_URL}
+      - .:/app
+    env_file:
+      - .env
     depends_on:
       - api
 
