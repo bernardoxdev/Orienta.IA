@@ -1,0 +1,1127 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Administração — Orienta.IA</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/admin.css') }}">
+
+</head>
+
+<body>
+
+
+    <!-- =====================================================
+     SIDEBAR
+===================================================== -->
+
+    <aside class="admin-sidebar" id="adminSidebar">
+
+        <div class="admin-brand">
+
+            <a href="{{ url_for('admin_dashboard') }}">
+
+                Orienta<span>.IA</span>
+
+            </a>
+
+            <small>
+                Administração
+            </small>
+
+        </div>
+
+
+        <!-- ADMIN -->
+
+        <div class="admin-profile">
+
+            <div class="admin-avatar">
+                AD
+            </div>
+
+            <div>
+
+                <strong>
+                    Administrador
+                </strong>
+
+                <span>
+                    Sistema
+                </span>
+
+            </div>
+
+        </div>
+
+
+        <!-- MENU -->
+
+        <nav class="admin-menu">
+
+            <div class="admin-menu-title">
+                VISÃO GERAL
+            </div>
+
+
+            <a href="{{ url_for('admin_dashboard') }}" class="admin-menu-item active">
+
+                <i class="bi bi-grid-1x2-fill"></i>
+
+                Dashboard
+
+            </a>
+
+
+            <div class="admin-menu-title">
+                USUÁRIOS
+            </div>
+
+
+            <a href="{{ url_for('admin_usuarios') }}" class="admin-menu-item">
+
+                <i class="bi bi-people"></i>
+
+                Usuários
+
+            </a>
+
+
+            <a href="{{ url_for('admin_universidades') }}" class="admin-menu-item">
+
+                <i class="bi bi-mortarboard"></i>
+
+                Universidades
+
+            </a>
+
+            <div class="admin-menu-title">
+                CONTEÚDO
+            </div>
+
+
+            <a href="{{ url_for('admin_projetos') }}" class="admin-menu-item">
+
+                <i class="bi bi-folder"></i>
+
+                Projetos
+
+            </a>
+
+
+            <a href="{{ url_for('admin_candidaturas') }}" class="admin-menu-item">
+
+                <i class="bi bi-send"></i>
+
+                Candidaturas
+
+                {% if candidaturas_pendentes > 0 %}
+
+                <span class="admin-counter">
+                    {{ candidaturas_pendentes }}
+                </span>
+
+                {% endif %}
+
+            </a>
+
+
+            <a href="{{ url_for('admin_propostas') }}" class="admin-menu-item">
+
+                <i class="bi bi-lightbulb"></i>
+
+                Propostas
+
+                {% if propostas_pendentes > 0 %}
+
+                <span class="admin-counter">
+                    {{ propostas_pendentes }}
+                </span>
+
+                {% endif %}
+
+            </a>
+
+
+            <div class="admin-menu-title">
+                COMUNICAÇÃO
+            </div>
+
+
+            <a href="{{ url_for('admin_mensagens') }}" class="admin-menu-item">
+
+                <i class="bi bi-envelope"></i>
+
+                Mensagens
+
+                {% if mensagens_pendentes > 0 %}
+
+                <span class="admin-counter">
+                    {{ mensagens_pendentes }}
+                </span>
+
+                {% endif %}
+
+            </a>
+
+
+            <a href="{{ url_for('admin_notificacoes') }}" class="admin-menu-item">
+
+                <i class="bi bi-bell"></i>
+
+                Notificações
+
+                {% if notificacoes_nao_lidas > 0 %}
+
+                <span class="admin-counter">
+                    {{ notificacoes_nao_lidas }}
+                </span>
+
+                {% endif %}
+
+            </a>
+
+
+            <div class="admin-menu-title">
+                SISTEMA
+            </div>
+
+
+            <a href="{{ url_for('admin_dados') }}" class="admin-menu-item">
+
+                <i class="bi bi-database"></i>
+
+                Dados
+
+            </a>
+
+
+            <a href="{{ url_for('admin_configuracoes') }}" class="admin-menu-item">
+
+                <i class="bi bi-gear"></i>
+
+                Configurações
+
+            </a>
+
+        </nav>
+
+
+        <div class="admin-sidebar-bottom">
+
+            <a href="{{ url_for('dashboard') }}" class="admin-menu-item">
+
+                <i class="bi bi-arrow-left"></i>
+
+                Voltar ao sistema
+
+            </a>
+
+
+            <a href="{{ url_for('logout') }}" class="admin-menu-item danger-link">
+
+                <i class="bi bi-box-arrow-left"></i>
+
+                Sair
+
+            </a>
+
+        </div>
+
+    </aside>
+
+
+    <!-- =====================================================
+     MAIN
+===================================================== -->
+
+    <main class="admin-main">
+
+
+        <!-- TOPBAR -->
+
+        <header class="admin-topbar">
+
+            <button class="admin-mobile-button" id="adminMobileButton">
+
+                <i class="bi bi-list"></i>
+
+            </button>
+
+
+            <div class="admin-search">
+
+                <i class="bi bi-search"></i>
+
+                <input type="search" id="globalSearch" placeholder="Pesquisar usuários, projetos...">
+
+            </div>
+
+
+            <div class="admin-topbar-actions">
+
+                <div class="notification-wrapper">
+
+                    <button class="admin-icon-button notification-button" id="notificationButton" type="button"
+                        aria-label="Notificações" aria-expanded="false">
+
+                        <i class="bi bi-bell"></i>
+
+                        {% if notificacoes_nao_lidas > 0 %}
+
+                        <span class="notification-dot"></span>
+
+                        {% endif %}
+
+                    </button>
+
+
+                    <div class="notification-dropdown" id="notificationDropdown">
+
+                        <div class="notification-header">
+
+                            <div>
+
+                                <strong>
+                                    Notificações
+                                </strong>
+
+                                <span>
+                                    {% if notificacoes_nao_lidas > 0 %}
+                                    {{ notificacoes_nao_lidas }} não lidas
+                                    {% else %}
+                                    Nenhuma nova
+                                    {% endif %}
+                                </span>
+
+                            </div>
+
+
+                            <button type="button" id="markNotificationsRead">
+                                Marcar todas
+                            </button>
+
+                        </div>
+
+
+                        <div class="notification-list" id="notificationList">
+
+                            {% for notificacao in notificacoes %}
+
+                            <div class="notification-item {% if not notificacao.lida %}unread{% endif %}"
+                                data-notification-id="{{ notificacao.id }}">
+
+                                <div class="notification-icon {{ notificacao.tipo }}">
+
+                                    {% if notificacao.tipo == "candidatura" %}
+
+                                    <i class="bi bi-send"></i>
+
+                                    {% elif notificacao.tipo == "proposta" %}
+
+                                    <i class="bi bi-lightbulb"></i>
+
+                                    {% elif notificacao.tipo == "projeto" %}
+
+                                    <i class="bi bi-folder"></i>
+
+                                    {% elif notificacao.tipo == "usuario" %}
+
+                                    <i class="bi bi-person"></i>
+
+                                    {% else %}
+
+                                    <i class="bi bi-info-circle"></i>
+
+                                    {% endif %}
+
+                                </div>
+
+
+                                <div class="notification-content">
+
+                                    <strong>
+                                        {{ notificacao.titulo }}
+                                    </strong>
+
+                                    <p>
+                                        {{ notificacao.mensagem }}
+                                    </p>
+
+                                    <time>
+                                        {{ notificacao.data }}
+                                    </time>
+
+                                </div>
+
+
+                                {% if not notificacao.lida %}
+
+                                <span class="notification-unread"></span>
+
+                                {% endif %}
+
+                            </div>
+
+                            {% else %}
+
+                            <div class="notification-empty">
+
+                                <i class="bi bi-bell-slash"></i>
+
+                                <strong>
+                                    Tudo em dia
+                                </strong>
+
+                                <span>
+                                    Você não possui novas notificações.
+                                </span>
+
+                            </div>
+
+                            {% endfor %}
+
+                        </div>
+
+
+                        <div class="notification-footer">
+
+                            <a href="{{ url_for('admin_notificacoes') }}">
+
+                                Ver todas as notificações
+
+                                <i class="bi bi-arrow-right"></i>
+
+                            </a>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <div class="admin-topbar-user">
+
+                    <div class="admin-avatar small">
+                        AD
+                    </div>
+
+                    <span>
+                        Administrador
+                    </span>
+
+                </div>
+
+            </div>
+
+        </header>
+
+
+        <!-- CONTENT -->
+
+        <div class="admin-content">
+
+
+            <!-- HEADER -->
+
+            <div class="admin-page-header">
+
+                <div>
+
+                    <span class="admin-eyebrow">
+                        ADMINISTRAÇÃO
+                    </span>
+
+                    <h1>
+                        Dashboard
+                    </h1>
+
+                    <p>
+                        Gerencie usuários, projetos, candidaturas
+                        e todo o conteúdo do Orienta.IA.
+                    </p>
+
+                </div>
+
+
+                <div class="admin-header-actions">
+
+                    <a href="{{ url_for('admin_novo_usuario') }}" class="admin-primary-button">
+
+                        <i class="bi bi-person-plus"></i>
+
+                        Novo usuário
+
+                    </a>
+
+                </div>
+
+            </div>
+
+
+            <!-- =================================================
+             ESTATÍSTICAS
+        ================================================= -->
+
+            <section class="admin-stats">
+
+
+                <div class="admin-stat-card">
+
+                    <div class="admin-stat-icon purple">
+
+                        <i class="bi bi-people-fill"></i>
+
+                    </div>
+
+                    <div>
+
+                        <span>
+                            Usuários
+                        </span>
+
+                        <strong>
+                            {{ total_usuarios }}
+                        </strong>
+
+                        <small>
+                            cadastrados
+                        </small>
+
+                    </div>
+
+                </div>
+
+
+                <div class="admin-stat-card">
+
+                    <div class="admin-stat-icon blue">
+
+                        <i class="bi bi-mortarboard-fill"></i>
+
+                    </div>
+
+                    <div>
+
+                        <span>
+                            Estudantes
+                        </span>
+
+                        <strong>
+                            {{ total_estudantes }}
+                        </strong>
+
+                        <small>
+                            usuários
+                        </small>
+
+                    </div>
+
+                </div>
+
+
+                <div class="admin-stat-card">
+
+                    <div class="admin-stat-icon green">
+
+                        <i class="bi bi-person-workspace"></i>
+
+                    </div>
+
+                    <div>
+
+                        <span>
+                            Professores
+                        </span>
+
+                        <strong>
+                            {{ total_professores }}
+                        </strong>
+
+                        <small>
+                            usuários
+                        </small>
+
+                    </div>
+
+                </div>
+
+
+                <div class="admin-stat-card">
+
+                    <div class="admin-stat-icon orange">
+
+                        <i class="bi bi-folder-fill"></i>
+
+                    </div>
+
+                    <div>
+
+                        <span>
+                            Projetos
+                        </span>
+
+                        <strong>
+                            {{ total_projetos }}
+                        </strong>
+
+                        <small>
+                            cadastrados
+                        </small>
+
+                    </div>
+
+                </div>
+
+
+                <div class="admin-stat-card">
+
+                    <div class="admin-stat-icon red">
+
+                        <i class="bi bi-send-fill"></i>
+
+                    </div>
+
+                    <div>
+
+                        <span>
+                            Candidaturas
+                        </span>
+
+                        <strong>
+                            {{ total_candidaturas }}
+                        </strong>
+
+                        <small>
+                            registradas
+                        </small>
+
+                    </div>
+
+                </div>
+
+
+            </section>
+
+
+            <!-- =================================================
+             GRID
+        ================================================= -->
+
+            <div class="admin-dashboard-grid">
+
+
+                <!-- ATIVIDADE -->
+
+                <section class="admin-panel">
+
+                    <div class="admin-panel-header">
+
+                        <div>
+
+                            <h2>
+                                Atividade recente
+                            </h2>
+
+                            <p>
+                                Últimas alterações realizadas no sistema.
+                            </p>
+
+                        </div>
+
+                        <a href="#">
+                            Ver tudo
+                        </a>
+
+                    </div>
+
+
+                    <div class="activity-list">
+
+
+                        {% for atividade in atividades %}
+
+                        <div class="activity-item">
+
+                            <div class="activity-icon">
+
+                                <i class="{{ atividade.icone }}"></i>
+
+                            </div>
+
+                            <div class="activity-content">
+
+                                <strong>
+                                    {{ atividade.titulo }}
+                                </strong>
+
+                                <span>
+                                    {{ atividade.descricao }}
+                                </span>
+
+                            </div>
+
+                            <time>
+                                {{ atividade.data }}
+                            </time>
+
+                        </div>
+
+                        {% else %}
+
+                        <div class="activity-empty">
+
+                            <div class="activity-empty-icon">
+
+                                <i class="bi bi-activity"></i>
+
+                            </div>
+
+                            <strong>
+                                Nenhuma atividade encontrada
+                            </strong>
+
+                            <span>
+                                Ainda não existem atividades recentes no sistema.
+                            </span>
+
+                        </div>
+
+                        {% endfor %}
+
+                    </div>
+
+                </section>
+
+
+                <!-- AÇÕES -->
+
+                <section class="admin-panel">
+
+                    <div class="admin-panel-header">
+
+                        <div>
+
+                            <h2>
+                                Ações rápidas
+                            </h2>
+
+                            <p>
+                                Operações administrativas frequentes.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="quick-actions">
+
+
+                        <a href="{{ url_for('admin_novo_usuario') }}" class="quick-action">
+
+                            <div class="quick-action-icon purple">
+
+                                <i class="bi bi-person-plus"></i>
+
+                            </div>
+
+                            <div>
+
+                                <strong>
+                                    Adicionar usuário
+                                </strong>
+
+                                <span>
+                                    Criar uma nova conta
+                                </span>
+
+                            </div>
+
+                            <i class="bi bi-chevron-right"></i>
+
+                        </a>
+
+
+                        <a href="{{ url_for('admin_mensagens') }}" class="quick-action">
+
+                            <div class="quick-action-icon blue">
+
+                                <i class="bi bi-envelope"></i>
+
+                            </div>
+
+                            <div>
+
+                                <strong>
+                                    Enviar mensagem
+                                </strong>
+
+                                <span>
+                                    E-mail ou mensagem privada
+                                </span>
+
+                            </div>
+
+                            <i class="bi bi-chevron-right"></i>
+
+                        </a>
+
+
+                        <a href="{{ url_for('admin_propostas') }}" class="quick-action">
+
+                            <div class="quick-action-icon orange">
+
+                                <i class="bi bi-lightbulb"></i>
+
+                            </div>
+
+                            <div>
+
+                                <strong>
+                                    Revisar propostas
+                                </strong>
+
+                                <span>
+                                    Propostas aguardando análise
+                                </span>
+
+                            </div>
+
+                            <i class="bi bi-chevron-right"></i>
+
+                        </a>
+
+
+                        <a href="{{ url_for('admin_candidaturas') }}" class="quick-action">
+
+                            <div class="quick-action-icon green">
+
+                                <i class="bi bi-check2-square"></i>
+
+                            </div>
+
+                            <div>
+
+                                <strong>
+                                    Gerenciar candidaturas
+                                </strong>
+
+                                <span>
+                                    Visualizar candidaturas
+                                </span>
+
+                            </div>
+
+                            <i class="bi bi-chevron-right"></i>
+
+                        </a>
+
+
+                    </div>
+
+                </section>
+
+
+            </div>
+
+
+            <!-- =================================================
+             TABELA DE USUÁRIOS
+        ================================================= -->
+
+            <section class="admin-panel admin-table-panel">
+
+                <div class="admin-panel-header">
+
+                    <div>
+
+                        <h2>
+                            Usuários recentes
+                        </h2>
+
+                        <p>
+                            Usuários adicionados recentemente.
+                        </p>
+
+                    </div>
+
+                    <a href="{{ url_for('admin_usuarios') }}">
+                        Gerenciar usuários
+                    </a>
+
+                </div>
+
+
+                <div class="table-responsive">
+
+                    <table class="admin-table">
+
+                        <thead>
+
+                            <tr>
+
+                                <th>
+                                    Usuário
+                                </th>
+
+                                <th>
+                                    E-mail
+                                </th>
+
+                                <th>
+                                    Tipo
+                                </th>
+
+                                <th>
+                                    Status
+                                </th>
+
+                                <th>
+                                    Cadastro
+                                </th>
+
+                                <th>
+                                    Ações
+                                </th>
+
+                            </tr>
+
+                        </thead>
+
+
+                        <tbody>
+
+                            {% for usuario in usuarios_recentes %}
+
+                            <tr>
+
+                                <td>
+
+                                    <div class="table-user">
+
+                                        <div class="table-avatar">
+                                            {{ usuario.iniciais }}
+                                        </div>
+
+                                        <div>
+
+                                            <strong>
+                                                {{ usuario.nome }}
+                                            </strong>
+
+                                            <span>
+                                                #{{ usuario.id }}
+                                            </span>
+
+                                        </div>
+
+                                    </div>
+
+                                </td>
+
+
+                                <td>
+                                    {{ usuario.email }}
+                                </td>
+
+
+                                <td>
+
+                                    <span class="type-badge {{ usuario.tipo }}">
+
+                                        {{ usuario.tipo }}
+
+                                    </span>
+
+                                </td>
+
+
+                                <td>
+
+                                    {% if usuario.ativo %}
+
+                                    <span class="status-badge active">
+                                        Ativo
+                                    </span>
+
+                                    {% else %}
+
+                                    <span class="status-badge inactive">
+                                        Inativo
+                                    </span>
+
+                                    {% endif %}
+
+                                </td>
+
+
+                                <td>
+                                    {{ usuario.data_cadastro }}
+                                </td>
+
+
+                                <td>
+
+                                    <div class="table-actions">
+
+                                        <a href="{{ url_for('admin_editar_usuario', usuario_id=usuario.id) }}"
+                                            class="table-action" title="Editar">
+
+                                            <i class="bi bi-pencil"></i>
+
+                                        </a>
+
+
+                                        <a href="{{ url_for('admin_visualizar_usuario', usuario_id=usuario.id) }}"
+                                            class="table-action" title="Visualizar">
+
+                                            <i class="bi bi-eye"></i>
+
+                                        </a>
+
+
+                                        <button type="button" class="table-action danger"
+                                            data-delete-url="{{ url_for('admin_excluir_usuario', usuario_id=usuario.id) }}"
+                                            data-delete-name="{{ usuario.nome }}" title="Excluir">
+
+                                            <i class="bi bi-trash"></i>
+
+                                        </button>
+
+                                    </div>
+
+                                </td>
+
+                            </tr>
+
+                            {% else %}
+
+                            <tr>
+
+                                <td colspan="6">
+
+                                    <div class="users-empty">
+
+                                        <div class="users-empty-icon">
+
+                                            <i class="bi bi-people"></i>
+
+                                        </div>
+
+                                        <strong>
+                                            Nenhum usuário encontrado
+                                        </strong>
+
+                                        <span>
+                                            Ainda não existem usuários recentes para exibir.
+                                        </span>
+
+                                    </div>
+
+                                </td>
+
+                            </tr>
+
+                            {% endfor %}
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </section>
+
+
+        </div>
+
+    </main>
+
+    <!-- =====================================================
+     MODAL DE EXCLUSÃO
+===================================================== -->
+
+    <div class="modal fade" id="deleteModal" tabindex="-1">
+
+        <div class="modal-dialog modal-dialog-centered">
+
+            <div class="modal-content admin-modal">
+
+                <div class="modal-header">
+
+                    <h5 class="modal-title">
+                        Confirmar exclusão
+                    </h5>
+
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+
+                </div>
+
+                <div class="modal-body">
+
+                    <div class="delete-warning">
+
+                        <i class="bi bi-exclamation-triangle"></i>
+
+                    </div>
+
+                    <h4>
+                        Tem certeza?
+                    </h4>
+
+                    <p>
+                        Você está prestes a excluir
+                        <strong id="deleteName"></strong>.
+                        Essa operação pode remover dados relacionados
+                        e não deve ser realizada sem confirmação.
+                    </p>
+
+                </div>
+
+                <div class="modal-footer">
+
+                    <button type="button" class="admin-secondary-button" data-bs-dismiss="modal">
+                        Cancelar
+                    </button>
+
+                    <form id="deleteForm" method="POST">
+
+                        <button type="submit" class="admin-danger-button">
+
+                            <i class="bi bi-trash"></i>
+
+                            Excluir
+
+                        </button>
+
+                    </form>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script src="{{ url_for('static', filename='js/admin.js') }}"></script>
+
+</body>
+
+</html>
