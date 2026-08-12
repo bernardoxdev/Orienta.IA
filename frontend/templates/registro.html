@@ -1,0 +1,741 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta name="description" content="Crie sua conta no Orienta.IA.">
+
+    <title>Criar conta — Orienta.IA</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/auth.css') }}">
+
+</head>
+
+<body class="auth-page">
+    <div class="auth-container">
+        <div class="row g-0 auth-wrapper">
+            <div class="col-lg-5 auth-brand-side register-brand">
+
+                <div class="brand-content">
+
+                    <a href="/" class="auth-logo">
+                        Orienta<span>.IA</span>
+                    </a>
+
+
+                    <div class="brand-text">
+
+                        <div class="brand-badge">
+
+                            <i class="bi bi-stars"></i>
+
+                            Faça parte do Orienta.IA
+
+                        </div>
+
+
+                        <h1>
+                            Construa seu
+                            <span>caminho acadêmico.</span>
+                        </h1>
+
+
+                        <p>
+                            Crie seu perfil e descubra oportunidades
+                            alinhadas aos seus interesses.
+                        </p>
+
+                    </div>
+
+
+                    <div class="register-steps">
+
+
+                        <div class="register-step">
+
+                            <div class="step-number">
+                                01
+                            </div>
+
+                            <div>
+
+                                <strong>
+                                    Crie seu perfil
+                                </strong>
+
+                                <small>
+                                    Conte um pouco sobre você.
+                                </small>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="register-step">
+
+                            <div class="step-number">
+                                02
+                            </div>
+
+                            <div>
+
+                                <strong>
+                                    Explore oportunidades
+                                </strong>
+
+                                <small>
+                                    Encontre projetos e professores.
+                                </small>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="register-step">
+
+                            <div class="step-number">
+                                03
+                            </div>
+
+                            <div>
+
+                                <strong>
+                                    Encontre seu caminho
+                                </strong>
+
+                                <small>
+                                    Conecte-se com novas oportunidades.
+                                </small>
+
+                            </div>
+
+                        </div>
+
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="col-lg-7 auth-form-side">
+
+                <div class="auth-form-container register-form-container">
+                    <a href="{{ url_for('index') }}" class="auth-logo mobile-logo">Orienta<span>.IA</span></a>
+
+                    <div class="auth-header">
+                        <h2>Crie sua conta</h2>
+
+                        <p>Preencha seus dados para começar.</p>
+                    </div>
+
+
+                    {% with messages = get_flashed_messages(with_categories=true) %}
+                    {% if messages %}
+                    {% for category, message in messages %}
+                    <div class="alert alert-{{ category }}" role="alert">
+                        {{ message }}
+                    </div>
+                    {% endfor %}
+                    {% endif %}
+                    {% endwith %}
+
+                    <form method="POST" action="{{ url_for('registrar') }}" id="registerForm">
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <div class="form-group-custom">
+                                    <label for="name">
+                                        Nome
+                                    </label>
+
+                                    <div class="input-wrapper">
+                                        <i class="bi bi-person"></i>
+
+                                        <input type="text" id="name" name="name" placeholder="Seu nome"
+                                            autocomplete="given-name" required>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="form-group-custom">
+                                    <label for="lastname">
+                                        Sobrenome
+                                    </label>
+
+                                    <div class="input-wrapper">
+                                        <i class="bi bi-person"></i>
+
+                                        <input type="text" id="lastname" name="lastname" placeholder="Seu sobrenome"
+                                            autocomplete="family-name" required>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-12">
+                                <div class="form-group-custom">
+                                    <label for="email">
+                                        E-mail
+                                    </label>
+
+                                    <div class="input-wrapper">
+                                        <i class="bi bi-envelope"></i>
+
+                                        <input type="email" id="email" name="email" placeholder="seu@email.com"
+                                            autocomplete="email" required>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- =========================================
+     TIPO DE USUÁRIO
+========================================= -->
+
+                            <div class="col-12">
+
+                                <div class="form-group-custom">
+
+                                    <label>
+                                        Como você utilizará o Orienta.IA?
+                                    </label>
+
+                                    <div class="role-selection">
+
+                                        <!-- ESTUDANTE -->
+
+                                        <label class="role-card">
+
+                                            <input type="radio" name="tipo" value="estudante" required>
+
+                                            <div class="role-card-content">
+
+                                                <div class="role-icon">
+                                                    <i class="bi bi-mortarboard-fill"></i>
+                                                </div>
+
+                                                <div>
+
+                                                    <strong>
+                                                        Estudante
+                                                    </strong>
+
+                                                    <small>
+                                                        Encontrar projetos e oportunidades
+                                                        acadêmicas.
+                                                    </small>
+
+                                                </div>
+
+                                            </div>
+
+                                        </label>
+
+
+                                        <!-- PROFESSOR -->
+
+                                        <label class="role-card">
+
+                                            <input type="radio" name="tipo" value="professor" required>
+
+                                            <div class="role-card-content">
+
+                                                <div class="role-icon">
+                                                    <i class="bi bi-person-workspace"></i>
+                                                </div>
+
+                                                <div>
+
+                                                    <strong>
+                                                        Professor
+                                                    </strong>
+
+                                                    <small>
+                                                        Publicar projetos e encontrar alunos.
+                                                    </small>
+
+                                                </div>
+
+                                            </div>
+
+                                        </label>
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                            <div class="col-12">
+                                <div class="form-group-custom">
+                                    <label for="university">
+                                        Universidade
+                                    </label>
+
+                                    <div class="input-wrapper">
+                                        <i class="bi bi-building"></i>
+                                        <select id="university" name="university" required>
+                                            <option value="" selected disabled>
+                                                Selecione sua universidade
+                                            </option>
+
+                                            <!-- <option value="UFSJ">
+                                                Universidade Federal de São
+                                                João del-Rei
+                                            </option>
+
+                                            <option value="UFMG">
+                                                Universidade Federal de Minas
+                                                Gerais
+                                            </option>
+
+                                            <option value="USP">
+                                                Universidade de São Paulo
+                                            </option>
+
+                                            <option value="UNICAMP">
+                                                Universidade Estadual de Campinas
+                                            </option>
+
+                                            <option value="OUTRA">
+                                                Outra universidade
+                                            </option> -->
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- =========================================
+     DADOS DO ESTUDANTE
+========================================= -->
+
+<div
+    class="col-12 profile-fields"
+    id="studentFields"
+    style="display: none;"
+>
+
+    <div class="profile-section-header">
+
+        <div class="profile-section-icon">
+
+            <i class="bi bi-mortarboard-fill"></i>
+
+        </div>
+
+        <div>
+
+            <h3>
+                Informações acadêmicas
+            </h3>
+
+            <p>
+                Conte um pouco sobre sua trajetória como estudante.
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <div class="row g-3">
+
+
+        <!-- MATRÍCULA -->
+
+        <div class="col-md-6">
+
+            <div class="form-group-custom">
+
+                <label for="matricula">
+                    Matrícula
+                </label>
+
+                <div class="input-wrapper">
+
+                    <i class="bi bi-card-text"></i>
+
+                    <input
+                        type="text"
+                        id="matricula"
+                        name="matricula"
+                        placeholder="Sua matrícula"
+                    >
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- CURSO -->
+
+        <div class="col-md-6">
+
+            <div class="form-group-custom">
+
+                <label for="curso">
+                    Curso
+                </label>
+
+                <div class="input-wrapper">
+
+                    <i class="bi bi-book"></i>
+
+                    <input
+                        type="text"
+                        id="curso"
+                        name="curso"
+                        placeholder="Ex.: Ciência da Computação"
+                    >
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- PERÍODO -->
+
+        <div class="col-md-6">
+
+            <div class="form-group-custom">
+
+                <label for="periodo">
+                    Período atual
+                </label>
+
+                <div class="input-wrapper">
+
+                    <i class="bi bi-calendar3"></i>
+
+                    <input
+                        type="number"
+                        id="periodo"
+                        name="periodo"
+                        placeholder="Ex.: 5"
+                        min="1"
+                    >
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- PREVISÃO DE CONCLUSÃO -->
+
+        <div class="col-md-6">
+
+            <div class="form-group-custom">
+
+                <label for="previsao_conclusao">
+                    Previsão de conclusão
+                </label>
+
+                <div class="input-wrapper">
+
+                    <i class="bi bi-calendar-check"></i>
+
+                    <input
+                        type="text"
+                        id="previsao_conclusao"
+                        name="previsao_conclusao"
+                        placeholder="Ex.: 2028"
+                    >
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- LATTES -->
+
+        <div class="col-12">
+
+            <div class="form-group-custom">
+
+                <label for="lattes_estudante">
+                    Currículo Lattes
+                    <span class="optional-label">
+                        opcional
+                    </span>
+                </label>
+
+                <div class="input-wrapper">
+
+                    <i class="bi bi-link-45deg"></i>
+
+                    <input
+                        type="url"
+                        id="lattes_estudante"
+                        name="lattes"
+                        placeholder="https://lattes.cnpq.br/..."
+                    >
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+    </div>
+
+</div>
+
+<!-- =========================================
+     DADOS DO PROFESSOR
+========================================= -->
+
+<div
+    class="col-12 profile-fields"
+    id="professorFields"
+    style="display: none;"
+>
+
+    <div class="profile-section-header">
+
+        <div class="profile-section-icon">
+
+            <i class="bi bi-person-workspace"></i>
+
+        </div>
+
+        <div>
+
+            <h3>
+                Informações profissionais
+            </h3>
+
+            <p>
+                Informe os dados utilizados no seu perfil acadêmico.
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <div class="row g-3">
+
+
+        <!-- DEPARTAMENTO -->
+
+        <div class="col-md-6">
+
+            <div class="form-group-custom">
+
+                <label for="departamento">
+                    Departamento
+                </label>
+
+                <div class="input-wrapper">
+
+                    <i class="bi bi-building"></i>
+
+                    <input
+                        type="text"
+                        id="departamento"
+                        name="departamento"
+                        placeholder="Ex.: Departamento de Computação"
+                    >
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- ÁREA DE PESQUISA -->
+
+        <div class="col-md-6">
+
+            <div class="form-group-custom">
+
+                <label for="area_pesquisa">
+                    Área de pesquisa
+                    <span class="optional-label">
+                        opcional
+                    </span>
+                </label>
+
+                <div class="input-wrapper">
+
+                    <i class="bi bi-lightbulb"></i>
+
+                    <input
+                        type="text"
+                        id="area_pesquisa"
+                        name="area_pesquisa"
+                        placeholder="Ex.: Inteligência Artificial"
+                    >
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- SALA -->
+
+        <div class="col-md-6">
+
+            <div class="form-group-custom">
+
+                <label for="sala">
+                    Sala
+                    <span class="optional-label">
+                        opcional
+                    </span>
+                </label>
+
+                <div class="input-wrapper">
+
+                    <i class="bi bi-door-open"></i>
+
+                    <input
+                        type="text"
+                        id="sala"
+                        name="sala"
+                        placeholder="Ex.: 204"
+                    >
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- LATTES -->
+
+        <div class="col-md-6">
+
+            <div class="form-group-custom">
+
+                <label for="lattes_professor">
+                    Currículo Lattes
+                    <span class="optional-label">
+                        opcional
+                    </span>
+                </label>
+
+                <div class="input-wrapper">
+
+                    <i class="bi bi-link-45deg"></i>
+
+                    <input
+                        type="url"
+                        id="lattes_professor"
+                        name="lattes"
+                        placeholder="https://lattes.cnpq.br/..."
+                    >
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+    </div>
+
+</div>
+
+                            <div class="col-md-6">
+                                <div class="form-group-custom">
+                                    <label for="password">
+                                        Senha
+                                    </label>
+
+                                    <div class="input-wrapper">
+                                        <i class="bi bi-lock"></i>
+
+                                        <input type="password" id="password" name="password"
+                                            placeholder="Crie uma senha" autocomplete="new-password" required>
+
+                                        <button type="button" class="password-toggle" data-target="password">
+                                            <i class="bi bi-eye"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="form-group-custom">
+                                    <label for="password_confirm">
+                                        Confirmar senha
+                                    </label>
+
+                                    <div class="input-wrapper">
+                                        <i class="bi bi-lock-fill"></i>
+
+                                        <input type="password" id="password_confirm" name="password_confirm"
+                                            placeholder="Repita sua senha" autocomplete="new-password" required>
+
+                                        <button type="button" class="password-toggle" data-target="password_confirm">
+                                            <i class="bi bi-eye"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="terms-wrapper">
+                            <label>
+                                <input type="checkbox" id="terms" name="terms" required>
+
+                                <span>Concordo com os <a href="#">Termos de Uso</a> e a <a href="#">Política de
+                                        Privacidade</a>.</span>
+                            </label>
+                        </div>
+
+                        <button type="submit" class="auth-submit">Criar minha conta <i
+                                class="bi bi-arrow-right"></i></button>
+                    </form>
+
+                    <div class="auth-divider">
+                        <span>ou</span>
+                    </div>
+
+                    <div class="auth-register">
+                        Já possui uma conta?
+
+                        <a href="{{ url_for('login') }}">
+                            Entrar
+                        </a>
+                    </div>
+
+
+                    <div class="auth-footer">
+                        <a href="{{ url_for('index') }}">
+                            <i class="bi bi-arrow-left"></i>
+                            Voltar para o início
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/auth.js') }}"></script>
+
+</body>
+
+</html>

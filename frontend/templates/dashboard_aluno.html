@@ -1,0 +1,670 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Dashboard — Orienta.IA</title>
+
+    <!-- Bootstrap -->
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+        rel="stylesheet"
+    >
+
+    <!-- Bootstrap Icons -->
+    <link
+        rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
+    >
+
+    <!-- Fonte -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet"
+    >
+
+    <!-- CSS -->
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='css/dashboard.css') }}"
+    >
+
+</head>
+
+
+<body>
+
+
+<!-- =========================================
+     SIDEBAR
+========================================= -->
+
+<aside class="sidebar" id="sidebar">
+
+    <div class="sidebar-header">
+
+        <a
+            href="{{ url_for('dashboard') }}"
+            class="dashboard-logo"
+        >
+            Orienta<span>.IA</span>
+        </a>
+
+    </div>
+
+
+    <!-- PERFIL -->
+
+    <div class="sidebar-user">
+
+        <div class="user-avatar">
+            BC
+        </div>
+
+        <div>
+
+            <strong>
+                Bernardo Castro
+            </strong>
+
+            <small>
+                Aluno
+            </small>
+
+        </div>
+
+    </div>
+
+
+    <!-- MENU -->
+
+    <nav class="sidebar-menu">
+
+        <small class="menu-title">
+            PRINCIPAL
+        </small>
+
+
+        <a
+            href="{{ url_for('dashboard') }}"
+            class="menu-item active"
+        >
+            <i class="bi bi-grid-1x2-fill"></i>
+            <span>Visão geral</span>
+        </a>
+
+
+        <a
+            href="#"
+            class="menu-item"
+        >
+            <i class="bi bi-search"></i>
+            <span>Explorar projetos</span>
+        </a>
+
+
+        <a
+            href="#"
+            class="menu-item"
+        >
+            <i class="bi bi-people"></i>
+            <span>Professores</span>
+        </a>
+
+
+        <a
+            href="#"
+            class="menu-item"
+        >
+            <i class="bi bi-building"></i>
+            <span>Universidades</span>
+        </a>
+
+
+        <small class="menu-title mt-4">
+            MINHA JORNADA
+        </small>
+
+
+        <a
+            href="#"
+            class="menu-item"
+        >
+            <i class="bi bi-bookmark"></i>
+            <span>Projetos salvos</span>
+        </a>
+
+
+        <a
+            href="#"
+            class="menu-item"
+        >
+            <i class="bi bi-send"></i>
+            <span>Minhas candidaturas</span>
+        </a>
+
+
+        <a
+            href="#"
+            class="menu-item"
+        >
+            <i class="bi bi-chat-dots"></i>
+            <span>Mensagens</span>
+        </a>
+
+
+        <small class="menu-title mt-4">
+            OUTROS
+        </small>
+
+
+        <a
+            href="#"
+            class="menu-item"
+        >
+            <i class="bi bi-robot"></i>
+            <span>Orienta.IA</span>
+        </a>
+
+
+        <a
+            href="#"
+            class="menu-item"
+        >
+            <i class="bi bi-person"></i>
+            <span>Meu perfil</span>
+        </a>
+
+    </nav>
+
+
+    <!-- SAIR -->
+
+    <div class="sidebar-bottom">
+
+        <a
+            href="{{ url_for('logout') }}"
+            class="menu-item"
+        >
+            <i class="bi bi-box-arrow-left"></i>
+            <span>Sair</span>
+        </a>
+
+    </div>
+
+</aside>
+
+
+<!-- =========================================
+     MAIN
+========================================= -->
+
+<main class="dashboard-main">
+
+
+    <!-- TOPBAR -->
+
+    <header class="topbar">
+
+        <button
+            class="mobile-menu-button"
+            id="mobileMenuButton"
+        >
+            <i class="bi bi-list"></i>
+        </button>
+
+
+        <div class="topbar-search">
+
+            <i class="bi bi-search"></i>
+
+            <input
+                type="text"
+                placeholder="Pesquisar projetos, professores..."
+            >
+
+        </div>
+
+
+        <div class="topbar-actions">
+
+            <button class="icon-button">
+
+                <i class="bi bi-bell"></i>
+
+                <span class="notification-dot"></span>
+
+            </button>
+
+
+            <div class="topbar-avatar">
+                BC
+            </div>
+
+        </div>
+
+    </header>
+
+
+    <!-- CONTENT -->
+
+    <div class="dashboard-content">
+
+
+        <!-- =================================
+             WELCOME
+        ================================== -->
+
+        <section class="welcome-section">
+
+            <div>
+
+                <span class="welcome-label">
+                    TERÇA-FEIRA, 11 DE AGOSTO
+                </span>
+
+                <h1>
+                    Olá, Bernardo! 👋
+                </h1>
+
+                <p>
+                    Encontre novas oportunidades para sua
+                    jornada acadêmica.
+                </p>
+
+            </div>
+
+
+            <a
+                href="#"
+                class="primary-button"
+            >
+
+                <i class="bi bi-search"></i>
+
+                Explorar projetos
+
+            </a>
+
+        </section>
+
+
+        <!-- =================================
+             ESTATÍSTICAS
+        ================================== -->
+
+        <section class="stats-grid">
+
+
+            <div class="dashboard-stat-card">
+
+                <div class="stat-icon purple">
+                    <i class="bi bi-bookmark-fill"></i>
+                </div>
+
+                <div>
+
+                    <span>
+                        Projetos salvos
+                    </span>
+
+                    <strong>
+                        8
+                    </strong>
+
+                </div>
+
+            </div>
+
+
+            <div class="dashboard-stat-card">
+
+                <div class="stat-icon blue">
+                    <i class="bi bi-send-fill"></i>
+                </div>
+
+                <div>
+
+                    <span>
+                        Candidaturas
+                    </span>
+
+                    <strong>
+                        3
+                    </strong>
+
+                </div>
+
+            </div>
+
+
+            <div class="dashboard-stat-card">
+
+                <div class="stat-icon green">
+                    <i class="bi bi-people-fill"></i>
+                </div>
+
+                <div>
+
+                    <span>
+                        Professores
+                    </span>
+
+                    <strong>
+                        12
+                    </strong>
+
+                </div>
+
+            </div>
+
+
+            <div class="dashboard-stat-card">
+
+                <div class="stat-icon orange">
+                    <i class="bi bi-lightbulb-fill"></i>
+                </div>
+
+                <div>
+
+                    <span>
+                        Recomendações
+                    </span>
+
+                    <strong>
+                        6
+                    </strong>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <div class="dashboard-grid">
+
+
+            <!-- =================================
+                 PROJETOS RECOMENDADOS
+            ================================== -->
+
+            <section class="dashboard-panel">
+
+                <div class="panel-header">
+
+                    <div>
+
+                        <h2>
+                            Projetos recomendados
+                        </h2>
+
+                        <p>
+                            Oportunidades que podem combinar
+                            com seu perfil.
+                        </p>
+
+                    </div>
+
+                    <a href="#">
+                        Ver todos
+                    </a>
+
+                </div>
+
+
+                <!-- PROJETO -->
+
+                <div class="project-item">
+
+                    <div class="project-item-icon">
+                        <i class="bi bi-cpu"></i>
+                    </div>
+
+                    <div class="project-item-content">
+
+                        <h3>
+                            Inteligência Artificial aplicada à educação
+                        </h3>
+
+                        <p>
+                            Prof. João Silva · UFSJ
+                        </p>
+
+                        <div class="project-tags">
+
+                            <span>
+                                IA
+                            </span>
+
+                            <span>
+                                Educação
+                            </span>
+
+                            <span>
+                                Pesquisa
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                    <button class="save-button">
+
+                        <i class="bi bi-bookmark"></i>
+
+                    </button>
+
+                </div>
+
+
+                <!-- PROJETO -->
+
+                <div class="project-item">
+
+                    <div class="project-item-icon">
+                        <i class="bi bi-database"></i>
+                    </div>
+
+                    <div class="project-item-content">
+
+                        <h3>
+                            Ciência de Dados aplicada à pesquisa
+                        </h3>
+
+                        <p>
+                            Prof. Maria Santos · UFMG
+                        </p>
+
+                        <div class="project-tags">
+
+                            <span>
+                                Dados
+                            </span>
+
+                            <span>
+                                Python
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                    <button class="save-button">
+
+                        <i class="bi bi-bookmark"></i>
+
+                    </button>
+
+                </div>
+
+
+                <!-- PROJETO -->
+
+                <div class="project-item">
+
+                    <div class="project-item-icon">
+                        <i class="bi bi-phone"></i>
+                    </div>
+
+                    <div class="project-item-content">
+
+                        <h3>
+                            Desenvolvimento de aplicações móveis
+                        </h3>
+
+                        <p>
+                            Prof. Carlos Oliveira · UFSJ
+                        </p>
+
+                        <div class="project-tags">
+
+                            <span>
+                                Mobile
+                            </span>
+
+                            <span>
+                                Software
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                    <button class="save-button">
+
+                        <i class="bi bi-bookmark"></i>
+
+                    </button>
+
+                </div>
+
+            </section>
+
+
+            <!-- =================================
+                 DIREITA
+            ================================== -->
+
+            <div class="dashboard-right">
+
+
+                <!-- PERFIL -->
+
+                <section class="dashboard-panel profile-progress">
+
+                    <div class="panel-header">
+
+                        <div>
+
+                            <h2>
+                                Seu perfil
+                            </h2>
+
+                            <p>
+                                Complete seu perfil para
+                                receber melhores recomendações.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="progress-container">
+
+                        <div class="progress-info">
+
+                            <span>
+                                Perfil completo
+                            </span>
+
+                            <strong>
+                                75%
+                            </strong>
+
+                        </div>
+
+                        <div class="progress">
+
+                            <div
+                                class="progress-bar"
+                                style="width: 75%"
+                            ></div>
+
+                        </div>
+
+                    </div>
+
+
+                    <a
+                        href="#"
+                        class="secondary-button"
+                    >
+                        Completar perfil
+                    </a>
+
+                </section>
+
+
+                <!-- ORIENTA IA -->
+
+                <section class="ai-card">
+
+                    <div class="ai-card-icon">
+
+                        <i class="bi bi-stars"></i>
+
+                    </div>
+
+
+                    <h2>
+                        Precisa de orientação?
+                    </h2>
+
+
+                    <p>
+                        Converse com o Orienta.IA e descubra
+                        oportunidades que combinam com seus
+                        interesses.
+                    </p>
+
+
+                    <a
+                        href="#"
+                        class="ai-button"
+                    >
+
+                        Conversar com IA
+
+                        <i class="bi bi-arrow-right"></i>
+
+                    </a>
+
+                </section>
+
+
+            </div>
+
+        </div>
+
+
+    </div>
+
+</main>
+
+
+<script
+    src="{{ url_for('static', filename='js/dashboard.js') }}"
+></script>
+
+</body>
+
+</html>
