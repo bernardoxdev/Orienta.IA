@@ -1,0 +1,2146 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>
+        Notificações | Orienta.IA
+    </title>
+
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+
+    <style>
+        /* =====================================================
+   ADMIN - NOTIFICAÇÕES
+===================================================== */
+
+        .admin-notifications-page {
+
+            width: min(1200px,
+                    calc(100% - 40px));
+
+            margin: 0 auto;
+
+            padding: 40px 0 70px;
+
+            color: #f1f3f5;
+        }
+
+
+        /* =====================================================
+   HEADER
+===================================================== */
+
+        .notifications-header {
+
+            display: flex;
+
+            align-items: flex-end;
+
+            justify-content: space-between;
+
+            gap: 20px;
+
+            margin-bottom: 25px;
+        }
+
+
+        .notifications-header h1 {
+
+            margin: 8px 0 5px;
+
+            font-size: 30px;
+
+            font-weight: 700;
+        }
+
+
+        .notifications-header p {
+
+            margin: 0;
+
+            color: #858c99;
+
+            font-size: 14px;
+        }
+
+
+        .notifications-back {
+
+            display: inline-flex;
+
+            align-items: center;
+
+            gap: 6px;
+
+            color: #858c99;
+
+            text-decoration: none;
+
+            font-size: 14px;
+        }
+
+
+        .notifications-back:hover {
+
+            color: #ffffff;
+        }
+
+
+        .notifications-header .btn-primary {
+
+            min-height: 40px;
+
+            padding: 8px 15px;
+
+            background: #6c63ff;
+
+            border-color: #6c63ff;
+
+            border-radius: 8px;
+        }
+
+
+        .notifications-header .btn-primary:hover {
+
+            background: #8179ff;
+
+            border-color: #8179ff;
+        }
+
+
+        /* =====================================================
+   ESTATÍSTICAS
+===================================================== */
+
+        .notification-stats {
+
+            display: grid;
+
+            grid-template-columns:
+                repeat(4, minmax(0, 1fr));
+
+            gap: 15px;
+
+            margin-bottom: 20px;
+        }
+
+
+        .notification-stat {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 13px;
+
+            padding: 18px;
+
+            background: #11141b;
+
+            border: 1px solid #282d38;
+
+            border-radius: 12px;
+        }
+
+
+        .notification-stat-icon {
+
+            width: 42px;
+
+            height: 42px;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            border-radius: 9px;
+
+            font-size: 18px;
+        }
+
+
+        .notification-stat-icon.purple {
+
+            background: rgba(108, 99, 255, .12);
+
+            color: #8d86ff;
+        }
+
+
+        .notification-stat-icon.orange {
+
+            background: rgba(255, 159, 67, .12);
+
+            color: #ffad5c;
+        }
+
+
+        .notification-stat-icon.green {
+
+            background: rgba(25, 135, 84, .12);
+
+            color: #46c98b;
+        }
+
+
+        .notification-stat-icon.blue {
+
+            background: rgba(13, 110, 253, .12);
+
+            color: #5b9dff;
+        }
+
+
+        .notification-stat span {
+
+            display: block;
+
+            color: #737b89;
+
+            font-size: 12px;
+        }
+
+
+        .notification-stat strong {
+
+            display: block;
+
+            margin-top: 2px;
+
+            color: #f1f3f5;
+
+            font-size: 22px;
+        }
+
+
+        /* =====================================================
+   PAINEL
+===================================================== */
+
+        .notification-panel {
+
+            background: #11141b;
+
+            border: 1px solid #282d38;
+
+            border-radius: 14px;
+
+            overflow: hidden;
+        }
+
+
+        /* =====================================================
+   FILTROS
+===================================================== */
+
+        .notification-filters {
+
+            display: flex;
+
+            gap: 10px;
+
+            padding: 16px;
+
+            border-bottom: 1px solid #282d38;
+        }
+
+
+        .notification-search {
+
+            position: relative;
+
+            flex: 1;
+        }
+
+
+        .notification-search i {
+
+            position: absolute;
+
+            left: 12px;
+
+            top: 50%;
+
+            transform: translateY(-50%);
+
+            color: #626a78;
+        }
+
+
+        .notification-search input,
+        .notification-select {
+
+            width: 100%;
+
+            height: 40px;
+
+            background: #1c2029 !important;
+
+            border: 1px solid #303642 !important;
+
+            border-radius: 7px;
+
+            color: #ffffff !important;
+
+            outline: none;
+
+            box-shadow: none !important;
+        }
+
+
+        .notification-search input {
+
+            padding: 0 12px 0 36px;
+        }
+
+
+        .notification-search input::placeholder {
+
+            color: #666e7b;
+        }
+
+
+        .notification-search input:focus,
+        .notification-select:focus {
+
+            border-color: #6c63ff !important;
+
+            box-shadow:
+                0 0 0 3px rgba(108, 99, 255, .12) !important;
+        }
+
+
+        .notification-select {
+
+            width: 170px;
+
+            padding: 0 12px;
+
+            cursor: pointer;
+        }
+
+
+        .notification-select option {
+
+            background: #1c2029;
+
+            color: #ffffff;
+        }
+
+
+        /* =====================================================
+   CABEÇALHO DA LISTA
+===================================================== */
+
+        .notification-list-header {
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: space-between;
+
+            gap: 20px;
+
+            padding: 20px 22px;
+
+            border-bottom: 1px solid #282d38;
+        }
+
+
+        .notification-list-header h2 {
+
+            margin: 0;
+
+            font-size: 17px;
+
+            font-weight: 600;
+        }
+
+
+        .notification-list-header p {
+
+            margin: 4px 0 0;
+
+            color: #737b89;
+
+            font-size: 12px;
+        }
+
+
+        .notification-mark-all {
+
+            padding: 7px 10px;
+
+            background: transparent;
+
+            border: 1px solid #303642;
+
+            border-radius: 7px;
+
+            color: #858c99;
+
+            font-size: 12px;
+        }
+
+
+        .notification-mark-all:hover {
+
+            border-color: #6c63ff;
+
+            color: #8d86ff;
+        }
+
+
+        /* =====================================================
+   ITEM
+===================================================== */
+
+        .notification-item {
+
+            display: grid;
+
+            grid-template-columns:
+                42px minmax(0, 1fr) auto auto;
+
+            align-items: center;
+
+            gap: 15px;
+
+            padding: 17px 22px;
+
+            border-bottom: 1px solid #242933;
+
+            transition: .15s ease;
+        }
+
+
+        .notification-item:last-child {
+
+            border-bottom: none;
+        }
+
+
+        .notification-item:hover {
+
+            background: #151921;
+        }
+
+
+        .notification-item.unread {
+
+            background:
+                linear-gradient(90deg,
+                    rgba(108, 99, 255, .055),
+                    transparent);
+        }
+
+
+        .notification-item-icon {
+
+            width: 42px;
+
+            height: 42px;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            border-radius: 9px;
+
+            font-size: 17px;
+        }
+
+
+        .type-usuario {
+
+            background: rgba(13, 110, 253, .11);
+
+            color: #5b9dff;
+        }
+
+
+        .type-projeto {
+
+            background: rgba(108, 99, 255, .11);
+
+            color: #8d86ff;
+        }
+
+
+        .type-solicitacao {
+
+            background: rgba(255, 159, 67, .11);
+
+            color: #ffad5c;
+        }
+
+
+        .type-sistema {
+
+            background: rgba(25, 135, 84, .11);
+
+            color: #46c98b;
+        }
+
+
+        /* =====================================================
+   CONTEÚDO
+===================================================== */
+
+        .notification-item-content {
+
+            min-width: 0;
+        }
+
+
+        .notification-item-top {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 8px;
+        }
+
+
+        .notification-item-top h3 {
+
+            margin: 0;
+
+            color: #e7e9ec;
+
+            font-size: 14px;
+
+            font-weight: 600;
+        }
+
+
+        .notification-item-content>p {
+
+            margin: 4px 0 8px;
+
+            color: #737b89;
+
+            font-size: 12px;
+
+            white-space: nowrap;
+
+            overflow: hidden;
+
+            text-overflow: ellipsis;
+        }
+
+
+        .unread-dot {
+
+            width: 7px;
+
+            height: 7px;
+
+            flex-shrink: 0;
+
+            border-radius: 50%;
+
+            background: #6c63ff;
+        }
+
+
+        .notification-meta {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 15px;
+
+            color: #5f6774;
+
+            font-size: 11px;
+        }
+
+
+        .notification-meta span {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 4px;
+        }
+
+
+        /* =====================================================
+   STATUS
+===================================================== */
+
+        .notification-item-status {
+
+            white-space: nowrap;
+        }
+
+
+        .notification-status {
+
+            display: inline-flex;
+
+            align-items: center;
+
+            gap: 5px;
+
+            padding: 5px 8px;
+
+            border-radius: 6px;
+
+            font-size: 10px;
+
+            font-weight: 500;
+        }
+
+
+        .notification-status.sent {
+
+            background: rgba(25, 135, 84, .10);
+
+            color: #46c98b;
+        }
+
+
+        .notification-status.pending {
+
+            background: rgba(255, 193, 7, .10);
+
+            color: #e0b849;
+        }
+
+
+        /* =====================================================
+   AÇÕES
+===================================================== */
+
+        .notification-item-actions {
+
+            display: flex;
+
+            gap: 5px;
+        }
+
+
+        .notification-action {
+
+            width: 30px;
+
+            height: 30px;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            background: #1c2029;
+
+            border: 1px solid #303642;
+
+            border-radius: 6px;
+
+            color: #737b89;
+
+            cursor: pointer;
+        }
+
+
+        .notification-action:hover {
+
+            border-color: #6c63ff;
+
+            color: #8d86ff;
+        }
+
+
+        .notification-action.danger:hover {
+
+            border-color: #dc3545;
+
+            color: #ed6b76;
+        }
+
+
+        /* =====================================================
+   VAZIO
+===================================================== */
+
+        .notification-empty,
+        .notification-filter-empty {
+
+            min-height: 280px;
+
+            display: flex;
+
+            flex-direction: column;
+
+            align-items: center;
+
+            justify-content: center;
+
+            padding: 40px;
+
+            text-align: center;
+
+        }
+
+
+        .notification-filter-empty {
+
+            display: none;
+        }
+
+
+        .notification-empty-icon {
+
+            width: 58px;
+
+            height: 58px;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            margin-bottom: 13px;
+
+            border-radius: 50%;
+
+            background: #1c2029;
+
+            color: #596170;
+
+            font-size: 24px;
+        }
+
+
+        .notification-empty>i,
+        .notification-filter-empty>i {
+
+            margin-bottom: 12px;
+
+            color: #596170;
+
+            font-size: 28px;
+        }
+
+
+        .notification-empty strong,
+        .notification-filter-empty strong {
+
+            color: #a7adb6;
+
+            font-size: 14px;
+        }
+
+
+        .notification-empty span,
+        .notification-filter-empty span {
+
+            margin-top: 4px;
+
+            color: #626a78;
+
+            font-size: 12px;
+        }
+
+
+        /* =====================================================
+   MODAL
+===================================================== */
+
+        .notification-modal {
+
+            background: #151820;
+
+            border: 1px solid #282d38;
+
+            border-radius: 12px;
+
+            color: #ffffff;
+        }
+
+
+        .notification-modal .modal-header {
+
+            border-bottom-color: #282d38;
+        }
+
+
+        .notification-modal .modal-header h5 {
+
+            margin: 0;
+
+            font-size: 18px;
+        }
+
+
+        .notification-modal .modal-header span {
+
+            display: block;
+
+            margin-top: 3px;
+
+            color: #737b89;
+
+            font-size: 12px;
+        }
+
+
+        .notification-modal .modal-footer {
+
+            border-top-color: #282d38;
+        }
+
+
+        .notification-form-row {
+
+            display: grid;
+
+            grid-template-columns:
+                repeat(2, minmax(0, 1fr));
+
+            gap: 15px;
+        }
+
+
+        .notification-form-group {
+
+            margin-bottom: 17px;
+        }
+
+
+        .notification-form-group label,
+        .notification-channels>label {
+
+            display: block;
+
+            margin-bottom: 7px;
+
+            color: #d9dce2;
+
+            font-size: 13px;
+
+            font-weight: 500;
+        }
+
+
+        .notification-form-control {
+
+            background-color: #1c2029 !important;
+
+            border: 1px solid #303642 !important;
+
+            color: #ffffff !important;
+
+            box-shadow: none !important;
+
+            border-radius: 7px;
+        }
+
+
+        .notification-form-control:focus {
+
+            background-color: #1c2029 !important;
+
+            border-color: #6c63ff !important;
+
+            color: #ffffff !important;
+
+            box-shadow:
+                0 0 0 3px rgba(108, 99, 255, .12) !important;
+        }
+
+
+        .notification-form-control::placeholder {
+
+            color: #626a78;
+        }
+
+
+        .notification-form-control option {
+
+            background: #1c2029;
+
+            color: #ffffff;
+        }
+
+
+        .notification-form-group small {
+
+            display: block;
+
+            margin-top: 5px;
+
+            color: #626a78;
+
+            font-size: 11px;
+        }
+
+
+        /* =====================================================
+   CANAIS
+===================================================== */
+
+        .notification-channels {
+
+            padding-top: 3px;
+        }
+
+
+        .notification-channel-options {
+
+            display: flex;
+
+            flex-wrap: wrap;
+
+            gap: 10px;
+        }
+
+
+        .channel-option {
+
+            cursor: pointer;
+        }
+
+
+        .channel-option input {
+
+            display: none;
+        }
+
+
+        .channel-option span {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 7px;
+
+            padding: 9px 12px;
+
+            background: #1c2029;
+
+            border: 1px solid #303642;
+
+            border-radius: 7px;
+
+            color: #858c99;
+
+            font-size: 12px;
+        }
+
+
+        .channel-option input:checked+span {
+
+            background: rgba(108, 99, 255, .10);
+
+            border-color: #6c63ff;
+
+            color: #9a94ff;
+        }
+
+
+        /* =====================================================
+   RESPONSIVO
+===================================================== */
+
+        @media (max-width: 950px) {
+
+            .notification-stats {
+
+                grid-template-columns:
+                    repeat(2, minmax(0, 1fr));
+
+            }
+
+
+            .notification-item {
+
+                grid-template-columns:
+                    42px minmax(0, 1fr) auto;
+
+            }
+
+
+            .notification-item-status {
+
+                display: none;
+
+            }
+
+        }
+
+
+        @media (max-width: 700px) {
+
+            .admin-notifications-page {
+
+                width: calc(100% - 24px);
+
+                padding-top: 25px;
+
+            }
+
+
+            .notifications-header {
+
+                align-items: stretch;
+
+                flex-direction: column;
+
+            }
+
+
+            .notifications-header .btn {
+
+                width: 100%;
+
+            }
+
+
+            .notification-stats {
+
+                grid-template-columns: 1fr;
+
+            }
+
+
+            .notification-filters {
+
+                flex-direction: column;
+
+            }
+
+
+            .notification-select {
+
+                width: 100%;
+
+            }
+
+
+            .notification-list-header {
+
+                align-items: stretch;
+
+                flex-direction: column;
+
+            }
+
+
+            .notification-item {
+
+                grid-template-columns:
+                    42px minmax(0, 1fr);
+
+                align-items: start;
+
+            }
+
+
+            .notification-item-actions {
+
+                grid-column: 2;
+
+            }
+
+
+            .notification-meta {
+
+                flex-wrap: wrap;
+
+                gap: 7px 12px;
+
+            }
+
+
+            .notification-form-row {
+
+                grid-template-columns: 1fr;
+
+                gap: 0;
+
+            }
+
+        }
+    </style>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/admin.css') }}">
+
+</head>
+
+
+<body>
+
+
+    <main class="admin-notifications-page">
+
+
+        <!-- ==========================================
+         HEADER
+    =========================================== -->
+
+        <header class="notifications-header">
+
+            <div>
+
+                <a href="{{ url_for('admin_dashboard') }}" class="notifications-back">
+
+                    <i class="bi bi-arrow-left"></i>
+
+                    Voltar para dashboard
+
+                </a>
+
+
+                <h1>
+                    Notificações
+                </h1>
+
+
+                <p>
+                    Gerencie as notificações e comunicações
+                    enviadas pelo Orienta.IA.
+                </p>
+
+            </div>
+
+
+            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalNovaNotificacao">
+
+                <i class="bi bi-plus-lg"></i>
+
+                Nova notificação
+
+            </button>
+
+        </header>
+
+
+
+        <!-- ==========================================
+         ESTATÍSTICAS
+    =========================================== -->
+
+        <section class="notification-stats">
+
+
+            <div class="notification-stat">
+
+                <div class="notification-stat-icon purple">
+
+                    <i class="bi bi-bell"></i>
+
+                </div>
+
+
+                <div>
+
+                    <span>
+                        Total
+                    </span>
+
+                    <strong>
+                        {{ estatisticas.total }}
+                    </strong>
+
+                </div>
+
+            </div>
+
+
+
+            <div class="notification-stat">
+
+                <div class="notification-stat-icon orange">
+
+                    <i class="bi bi-envelope"></i>
+
+                </div>
+
+
+                <div>
+
+                    <span>
+                        Não lidas
+                    </span>
+
+                    <strong>
+                        {{ estatisticas.nao_lidas }}
+                    </strong>
+
+                </div>
+
+            </div>
+
+
+
+            <div class="notification-stat">
+
+                <div class="notification-stat-icon green">
+
+                    <i class="bi bi-check-circle"></i>
+
+                </div>
+
+
+                <div>
+
+                    <span>
+                        Enviadas
+                    </span>
+
+                    <strong>
+                        {{ estatisticas.enviadas }}
+                    </strong>
+
+                </div>
+
+            </div>
+
+
+
+            <div class="notification-stat">
+
+                <div class="notification-stat-icon blue">
+
+                    <i class="bi bi-clock"></i>
+
+                </div>
+
+
+                <div>
+
+                    <span>
+                        Pendentes
+                    </span>
+
+                    <strong>
+                        {{ estatisticas.pendentes }}
+                    </strong>
+
+                </div>
+
+            </div>
+
+
+        </section>
+
+
+
+        <!-- ==========================================
+         PAINEL
+    =========================================== -->
+
+        <section class="notification-panel">
+
+
+            <!-- FILTROS -->
+
+            <div class="notification-filters">
+
+
+                <div class="notification-search">
+
+                    <i class="bi bi-search"></i>
+
+                    <input type="text" id="notificationSearch" placeholder="Buscar notificações...">
+
+                </div>
+
+
+                <select id="notificationType" class="notification-select">
+
+                    <option value="">
+                        Todos os tipos
+                    </option>
+
+                    <option value="usuario">
+                        Usuário
+                    </option>
+
+                    <option value="projeto">
+                        Projeto
+                    </option>
+
+                    <option value="solicitacao">
+                        Solicitação
+                    </option>
+
+                    <option value="sistema">
+                        Sistema
+                    </option>
+
+                </select>
+
+
+                <select id="notificationStatus" class="notification-select">
+
+                    <option value="">
+                        Todos os status
+                    </option>
+
+                    <option value="enviada">
+                        Enviadas
+                    </option>
+
+                    <option value="pendente">
+                        Pendentes
+                    </option>
+
+                    <option value="nao-lida">
+                        Não lidas
+                    </option>
+
+                </select>
+
+
+            </div>
+
+
+
+            <!-- CABEÇALHO -->
+
+            <div class="notification-list-header">
+
+                <div>
+
+                    <h2>
+                        Histórico de notificações
+                    </h2>
+
+                    <p>
+                        Notificações recentes da plataforma.
+                    </p>
+
+                </div>
+
+
+                <button type="button" class="notification-mark-all" onclick="marcarTodasLidas()">
+
+                    <i class="bi bi-check2-all"></i>
+
+                    Marcar todas como lidas
+
+                </button>
+
+            </div>
+
+
+
+            <!-- LISTA -->
+
+            <div class="notification-list" id="notificationList">
+
+
+                {% for notificacao in notificacoes %}
+
+
+                <article class="notification-item
+                {% if not notificacao.lida %}
+                    unread
+                {% endif %}" data-title="{{ notificacao.titulo|lower }}" data-type="{{ notificacao.tipo }}"
+                    data-status="{{ notificacao.status }}" data-read="{{ 'true' if notificacao.lida else 'false' }}">
+
+
+                    <!-- ÍCONE -->
+
+                    <div class="notification-item-icon type-{{ notificacao.tipo }}">
+
+                        <i class="bi {{ notificacao.icone }}"></i>
+
+                    </div>
+
+
+
+                    <!-- CONTEÚDO -->
+
+                    <div class="notification-item-content">
+
+
+                        <div class="notification-item-top">
+
+                            <h3>
+                                {{ notificacao.titulo }}
+                            </h3>
+
+
+                            {% if not notificacao.lida %}
+
+                            <span class="unread-dot"></span>
+
+                            {% endif %}
+
+                        </div>
+
+
+                        <p>
+                            {{ notificacao.mensagem }}
+                        </p>
+
+
+                        <div class="notification-meta">
+
+
+                            <span>
+
+                                <i class="bi bi-person"></i>
+
+                                {{ notificacao.destinatario }}
+
+                            </span>
+
+
+                            <span>
+
+                                <i class="bi bi-people"></i>
+
+                                {{ notificacao.destinatarios }}
+                                {% if notificacao.destinatarios == 1 %}
+                                destinatário
+                                {% else %}
+                                destinatários
+                                {% endif %}
+
+                            </span>
+
+
+                            <span>
+
+                                <i class="bi bi-clock"></i>
+
+                                {{ notificacao.data }}
+
+                            </span>
+
+
+                        </div>
+
+                    </div>
+
+
+
+                    <!-- STATUS -->
+
+                    <div class="notification-item-status">
+
+
+                        {% if notificacao.status == "enviada" %}
+
+                        <span class="notification-status sent">
+
+                            <i class="bi bi-check-circle"></i>
+
+                            Enviada
+
+                        </span>
+
+                        {% else %}
+
+                        <span class="notification-status pending">
+
+                            <i class="bi bi-clock"></i>
+
+                            Pendente
+
+                        </span>
+
+                        {% endif %}
+
+
+                    </div>
+
+
+
+                    <!-- AÇÕES -->
+
+                    <div class="notification-item-actions">
+
+
+                        <button type="button" class="notification-action" title="Visualizar">
+
+                            <i class="bi bi-eye"></i>
+
+                        </button>
+
+
+                        <button type="button" class="notification-action" title="Marcar como lida" onclick="marcarComoLida(
+                            this
+                        )">
+
+                            <i class="bi bi-check2"></i>
+
+                        </button>
+
+
+                        <button type="button" class="notification-action danger" title="Excluir" onclick="excluirNotificacao(
+                            this
+                        )">
+
+                            <i class="bi bi-trash"></i>
+
+                        </button>
+
+                    </div>
+
+
+                </article>
+
+
+                {% else %}
+
+
+                <div class="notification-empty">
+
+                    <div class="notification-empty-icon">
+
+                        <i class="bi bi-bell-slash"></i>
+
+                    </div>
+
+
+                    <strong>
+                        Nenhuma notificação encontrada
+                    </strong>
+
+
+                    <span>
+                        Não existem notificações para exibir.
+                    </span>
+
+                </div>
+
+
+                {% endfor %}
+
+
+            </div>
+
+
+            <!-- ESTADO VAZIO DO FILTRO -->
+
+            <div class="notification-filter-empty" id="notificationFilterEmpty">
+
+                <i class="bi bi-search"></i>
+
+                <strong>
+                    Nenhuma notificação encontrada
+                </strong>
+
+                <span>
+                    Tente alterar os filtros ou o termo da busca.
+                </span>
+
+            </div>
+
+
+        </section>
+
+
+    </main>
+
+
+
+    <!-- ==========================================
+     MODAL NOVA NOTIFICAÇÃO
+=========================================== -->
+
+    <div class="modal fade" id="modalNovaNotificacao" tabindex="-1">
+
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+
+            <div class="modal-content notification-modal">
+
+
+                <div class="modal-header">
+
+                    <div>
+
+                        <h5 class="modal-title">
+                            Nova notificação
+                        </h5>
+
+                        <span>
+                            Envie uma comunicação para os usuários.
+                        </span>
+
+                    </div>
+
+
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+
+                </div>
+
+
+                <form>
+
+
+                    <div class="modal-body">
+
+
+                        <!-- DESTINATÁRIOS -->
+
+                        <div class="notification-form-group">
+
+                            <label>
+                                Destinatários
+                            </label>
+
+
+                            <select class="form-select notification-form-control" id="destinatario">
+
+                                <option value="todos">
+                                    Todos os usuários
+                                </option>
+
+                                <option value="estudantes">
+                                    Todos os estudantes
+                                </option>
+
+                                <option value="professores">
+                                    Todos os professores
+                                </option>
+
+                                <option value="administradores">
+                                    Administradores
+                                </option>
+
+                                <option value="usuario">
+                                    Usuário específico
+                                </option>
+
+                            </select>
+
+                        </div>
+
+
+
+                        <!-- TIPO -->
+
+                        <div class="notification-form-row">
+
+
+                            <div class="notification-form-group">
+
+                                <label>
+                                    Tipo
+                                </label>
+
+
+                                <select class="form-select notification-form-control">
+
+                                    <option value="sistema">
+                                        Sistema
+                                    </option>
+
+                                    <option value="usuario">
+                                        Usuário
+                                    </option>
+
+                                    <option value="projeto">
+                                        Projeto
+                                    </option>
+
+                                    <option value="solicitacao">
+                                        Solicitação
+                                    </option>
+
+                                </select>
+
+                            </div>
+
+
+                            <div class="notification-form-group">
+
+                                <label>
+                                    Prioridade
+                                </label>
+
+
+                                <select class="form-select notification-form-control">
+
+                                    <option>
+                                        Normal
+                                    </option>
+
+                                    <option>
+                                        Alta
+                                    </option>
+
+                                    <option>
+                                        Urgente
+                                    </option>
+
+                                </select>
+
+                            </div>
+
+
+                        </div>
+
+
+
+                        <!-- TÍTULO -->
+
+                        <div class="notification-form-group">
+
+                            <label>
+                                Título
+                            </label>
+
+
+                            <input type="text" class="form-control notification-form-control"
+                                placeholder="Digite o título da notificação..." maxlength="120">
+
+                        </div>
+
+
+
+                        <!-- MENSAGEM -->
+
+                        <div class="notification-form-group">
+
+                            <label>
+                                Mensagem
+                            </label>
+
+
+                            <textarea class="form-control notification-form-control" rows="5"
+                                placeholder="Digite a mensagem..." maxlength="500"></textarea>
+
+
+                            <small>
+                                A mensagem será exibida dentro da plataforma.
+                            </small>
+
+                        </div>
+
+
+
+                        <!-- CANAIS -->
+
+                        <div class="notification-channels">
+
+                            <label>
+                                Canais de envio
+                            </label>
+
+
+                            <div class="notification-channel-options">
+
+
+                                <label class="channel-option">
+
+                                    <input type="checkbox" checked>
+
+                                    <span>
+
+                                        <i class="bi bi-bell"></i>
+
+                                        Plataforma
+
+                                    </span>
+
+                                </label>
+
+
+                                <label class="channel-option">
+
+                                    <input type="checkbox">
+
+                                    <span>
+
+                                        <i class="bi bi-envelope"></i>
+
+                                        E-mail
+
+                                    </span>
+
+                                </label>
+
+
+                                <label class="channel-option">
+
+                                    <input type="checkbox">
+
+                                    <span>
+
+                                        <i class="bi bi-telegram"></i>
+
+                                        Telegram
+
+                                    </span>
+
+                                </label>
+
+
+                            </div>
+
+                        </div>
+
+
+                    </div>
+
+
+
+                    <div class="modal-footer">
+
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+
+                            Cancelar
+
+                        </button>
+
+
+                        <button type="button" class="btn btn-primary" onclick="enviarNotificacao()">
+
+                            <i class="bi bi-send"></i>
+
+                            Enviar notificação
+
+                        </button>
+
+                    </div>
+
+
+                </form>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- ==========================================
+     JAVASCRIPT
+=========================================== -->
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+
+    <script>
+
+
+        /*
+         * Elementos
+         */
+
+        const searchInput =
+            document.getElementById(
+                "notificationSearch"
+            );
+
+
+        const typeFilter =
+            document.getElementById(
+                "notificationType"
+            );
+
+
+        const statusFilter =
+            document.getElementById(
+                "notificationStatus"
+            );
+
+
+        const filterEmpty =
+            document.getElementById(
+                "notificationFilterEmpty"
+            );
+
+
+
+        /*
+         * Filtros
+         */
+
+        function filtrarNotificacoes() {
+
+            const search =
+                searchInput.value
+                    .toLowerCase()
+                    .trim();
+
+
+            const type =
+                typeFilter.value;
+
+
+            const status =
+                statusFilter.value;
+
+
+            let visible = 0;
+
+
+            document
+                .querySelectorAll(
+                    ".notification-item"
+                )
+                .forEach(item => {
+
+
+                    const title =
+                        item.dataset.title;
+
+
+                    const itemType =
+                        item.dataset.type;
+
+
+                    const itemStatus =
+                        item.dataset.status;
+
+
+                    const isRead =
+                        item.dataset.read === "true";
+
+
+                    let matches =
+                        title.includes(search);
+
+
+                    if (
+                        type &&
+                        itemType !== type
+                    ) {
+
+                        matches = false;
+
+                    }
+
+
+                    if (status === "nao-lida") {
+
+                        if (isRead) {
+
+                            matches = false;
+
+                        }
+
+                    }
+                    else if (
+                        status &&
+                        itemStatus !== status
+                    ) {
+
+                        matches = false;
+
+                    }
+
+
+                    item.style.display =
+                        matches ? "" : "grid";
+
+
+                    if (matches) {
+
+                        visible++;
+
+                    }
+
+                });
+
+
+            filterEmpty.style.display =
+                visible === 0
+                    ? "flex"
+                    : "none";
+
+        }
+
+
+        searchInput.addEventListener(
+            "input",
+            filtrarNotificacoes
+        );
+
+
+        typeFilter.addEventListener(
+            "change",
+            filtrarNotificacoes
+        );
+
+
+        statusFilter.addEventListener(
+            "change",
+            filtrarNotificacoes
+        );
+
+
+
+        /*
+         * Marcar como lida
+         */
+
+        function marcarComoLida(button) {
+
+            const item =
+                button.closest(
+                    ".notification-item"
+                );
+
+
+            if (!item) {
+
+                return;
+
+            }
+
+
+            item.classList.remove(
+                "unread"
+            );
+
+
+            item.dataset.read =
+                "true";
+
+
+            const dot =
+                item.querySelector(
+                    ".unread-dot"
+                );
+
+
+            if (dot) {
+
+                dot.remove();
+
+            }
+
+        }
+
+
+
+        /*
+         * Marcar todas
+         */
+
+        function marcarTodasLidas() {
+
+            document
+                .querySelectorAll(
+                    ".notification-item"
+                )
+                .forEach(item => {
+
+                    item.classList.remove(
+                        "unread"
+                    );
+
+                    item.dataset.read =
+                        "true";
+
+
+                    const dot =
+                        item.querySelector(
+                            ".unread-dot"
+                        );
+
+
+                    if (dot) {
+
+                        dot.remove();
+
+                    }
+
+                });
+
+        }
+
+
+
+        /*
+         * Visualizar
+         */
+
+        function visualizarNotificacao(id) {
+
+            alert(
+                "Visualização da notificação #" +
+                id +
+                " será implementada."
+            );
+
+        }
+
+
+
+        /*
+         * Excluir
+         */
+
+        function excluirNotificacao(button) {
+
+            const item =
+                button.closest(
+                    ".notification-item"
+                );
+
+
+            if (!item) {
+
+                return;
+
+            }
+
+
+            const confirmar =
+                confirm(
+                    "Deseja realmente excluir esta notificação?"
+                );
+
+
+            if (confirmar) {
+
+                item.remove();
+
+                filtrarNotificacoes();
+
+            }
+
+        }
+
+
+
+        /*
+         * Enviar
+         */
+
+        function enviarNotificacao() {
+
+            alert(
+                "O envio da notificação será conectado ao backend."
+            );
+
+        }
+
+    </script>
+
+
+</body>
+
+</html>

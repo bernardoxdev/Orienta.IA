@@ -21,7 +21,7 @@ class SolicitacaoCancelamento(Base):
     origem: Mapped[int] = mapped_column(Integer, nullable=False) # 1 para estudante, 2 para professor
 
     estudante: Mapped["Estudante"] = relationship("Estudante", back_populates="solicitacao_c")
-    professor: Mapped["Professor"] = relationship("Professor", back_populates="solicitacao_c")
+    professor: Mapped["Professor"] = relationship("Professor", back_populates="solicitacao")
     projeto: Mapped["Projetos"] = relationship("Projetos", back_populates="solicitacao_c")
 
 class SolicitacaoProjeto(Base):

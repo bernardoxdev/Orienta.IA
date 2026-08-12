@@ -1,0 +1,1462 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>
+        Universidades | Orienta.IA
+    </title>
+
+
+    <!-- Bootstrap -->
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+
+    <!-- Bootstrap Icons -->
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+
+
+    <!-- Admin CSS -->
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/admin.css') }}">
+
+
+    <!-- CSS da página -->
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/admin/universidades.css') }}">
+
+</head>
+
+
+<body>
+
+
+    <!-- ============================================================
+     SIDEBAR
+============================================================ -->
+
+    <aside class="admin-sidebar" id="adminSidebar">
+
+
+        <!-- BRAND -->
+
+        <div class="admin-brand">
+
+            <a href="{{ url_for('admin_dashboard') }}">
+
+                Orienta<span>.IA</span>
+
+            </a>
+
+            <small>
+                Administração
+            </small>
+
+        </div>
+
+
+
+        <!-- ADMIN PROFILE -->
+
+        <div class="admin-profile">
+
+            <div class="admin-avatar">
+                AD
+            </div>
+
+            <div>
+
+                <strong>
+                    Administrador
+                </strong>
+
+                <span>
+                    Sistema
+                </span>
+
+            </div>
+
+        </div>
+
+
+
+        <!-- MENU -->
+
+        <nav class="admin-menu">
+
+
+            <div class="admin-menu-title">
+                VISÃO GERAL
+            </div>
+
+
+            <a href="{{ url_for('admin_dashboard') }}" class="admin-menu-item">
+
+                <i class="bi bi-grid-1x2-fill"></i>
+
+                Dashboard
+
+            </a>
+
+
+
+            <div class="admin-menu-title">
+                USUÁRIOS
+            </div>
+
+
+            <a href="{{ url_for('admin_usuarios') }}" class="admin-menu-item">
+
+                <i class="bi bi-people"></i>
+
+                Usuários
+
+            </a>
+
+
+            <a href="{{ url_for('admin_universidades') }}" class="admin-menu-item active">
+
+                <i class="bi bi-mortarboard"></i>
+
+                Universidades
+
+            </a>
+
+
+
+            <div class="admin-menu-title">
+                CONTEÚDO
+            </div>
+
+
+            <a href="{{ url_for('admin_projetos') }}" class="admin-menu-item">
+
+                <i class="bi bi-folder"></i>
+
+                Projetos
+
+            </a>
+
+
+            <a href="{{ url_for('admin_candidaturas') }}" class="admin-menu-item">
+
+                <i class="bi bi-send"></i>
+
+                Candidaturas
+
+                {% if candidaturas_pendentes > 0 %}
+
+                <span class="admin-counter">
+                    {{ candidaturas_pendentes }}
+                </span>
+
+                {% endif %}
+
+            </a>
+
+
+            <a href="{{ url_for('admin_propostas') }}" class="admin-menu-item">
+
+                <i class="bi bi-lightbulb"></i>
+
+                Propostas
+
+                {% if propostas_pendentes > 0 %}
+
+                <span class="admin-counter">
+                    {{ propostas_pendentes }}
+                </span>
+
+                {% endif %}
+
+            </a>
+
+
+
+            <div class="admin-menu-title">
+                COMUNICAÇÃO
+            </div>
+
+
+            <a href="{{ url_for('admin_mensagens') }}" class="admin-menu-item">
+
+                <i class="bi bi-envelope"></i>
+
+                Mensagens
+
+                {% if mensagens_pendentes > 0 %}
+
+                <span class="admin-counter">
+                    {{ mensagens_pendentes }}
+                </span>
+
+                {% endif %}
+
+            </a>
+
+
+            <a href="{{ url_for('admin_notificacoes') }}" class="admin-menu-item">
+
+                <i class="bi bi-bell"></i>
+
+                Notificações
+
+                {% if notificacoes_nao_lidas > 0 %}
+
+                <span class="admin-counter">
+                    {{ notificacoes_nao_lidas }}
+                </span>
+
+                {% endif %}
+
+            </a>
+
+
+
+            <div class="admin-menu-title">
+                SISTEMA
+            </div>
+
+
+            <a href="{{ url_for('admin_dados') }}" class="admin-menu-item">
+
+                <i class="bi bi-database"></i>
+
+                Dados
+
+            </a>
+
+
+            <a href="{{ url_for('admin_configuracoes') }}" class="admin-menu-item">
+
+                <i class="bi bi-gear"></i>
+
+                Configurações
+
+            </a>
+
+        </nav>
+
+
+
+        <!-- SIDEBAR BOTTOM -->
+
+        <div class="admin-sidebar-bottom">
+
+            <a href="{{ url_for('dashboard') }}" class="admin-menu-item">
+
+                <i class="bi bi-arrow-left"></i>
+
+                Voltar ao sistema
+
+            </a>
+
+
+            <a href="{{ url_for('logout') }}" class="admin-menu-item danger-link">
+
+                <i class="bi bi-box-arrow-left"></i>
+
+                Sair
+
+            </a>
+
+        </div>
+
+
+    </aside>
+
+
+
+    <!-- ============================================================
+     MAIN
+============================================================ -->
+
+    <main class="admin-main">
+
+
+        <!-- ========================================================
+         TOPBAR
+    ========================================================= -->
+
+        <header class="admin-topbar">
+
+
+            <button class="admin-mobile-button" id="adminMobileButton" type="button">
+
+                <i class="bi bi-list"></i>
+
+            </button>
+
+
+
+            <!-- SEARCH -->
+
+            <div class="admin-search">
+
+                <i class="bi bi-search"></i>
+
+                <input type="search" placeholder="Pesquisar no sistema...">
+
+            </div>
+
+
+
+            <!-- ACTIONS -->
+
+            <div class="admin-topbar-actions">
+
+
+                <!-- NOTIFICATIONS -->
+
+                <div class="notification-wrapper">
+
+
+                    <button class="admin-icon-button notification-button" id="notificationButton" type="button"
+                        aria-label="Notificações" aria-expanded="false">
+
+                        <i class="bi bi-bell"></i>
+
+
+                        {% if notificacoes_nao_lidas > 0 %}
+
+                        <span class="notification-dot"></span>
+
+                        {% endif %}
+
+                    </button>
+
+
+
+                    <!-- NOTIFICATION DROPDOWN -->
+
+                    <div class="notification-dropdown" id="notificationDropdown">
+
+
+                        <div class="notification-header">
+
+                            <div>
+
+                                <strong>
+                                    Notificações
+                                </strong>
+
+                                <span>
+
+                                    {% if notificacoes_nao_lidas > 0 %}
+
+                                    {{ notificacoes_nao_lidas }}
+                                    não lidas
+
+                                    {% else %}
+
+                                    Nenhuma nova
+
+                                    {% endif %}
+
+                                </span>
+
+                            </div>
+
+
+                            <button type="button" id="markNotificationsRead">
+                                Marcar todas
+                            </button>
+
+                        </div>
+
+
+
+                        <div class="notification-list" id="notificationList">
+
+
+                            {% for notificacao in notificacoes %}
+
+
+                            <div class="notification-item
+                            {% if not notificacao.lida %}
+                            unread
+                            {% endif %}" data-notification-id="{{ notificacao.id }}">
+
+
+                                <div class="notification-icon
+                                {{ notificacao.tipo }}">
+
+                                    {% if notificacao.tipo == "candidatura" %}
+
+                                    <i class="bi bi-send"></i>
+
+                                    {% elif notificacao.tipo == "proposta" %}
+
+                                    <i class="bi bi-lightbulb"></i>
+
+                                    {% elif notificacao.tipo == "projeto" %}
+
+                                    <i class="bi bi-folder"></i>
+
+                                    {% elif notificacao.tipo == "usuario" %}
+
+                                    <i class="bi bi-person"></i>
+
+                                    {% else %}
+
+                                    <i class="bi bi-info-circle"></i>
+
+                                    {% endif %}
+
+                                </div>
+
+
+                                <div class="notification-content">
+
+                                    <strong>
+                                        {{ notificacao.titulo }}
+                                    </strong>
+
+                                    <p>
+                                        {{ notificacao.mensagem }}
+                                    </p>
+
+                                    <time>
+                                        {{ notificacao.data }}
+                                    </time>
+
+                                </div>
+
+
+                                {% if not notificacao.lida %}
+
+                                <span class="notification-unread"></span>
+
+                                {% endif %}
+
+                            </div>
+
+
+                            {% else %}
+
+
+                            <div class="notification-empty">
+
+                                <i class="bi bi-bell-slash"></i>
+
+                                <strong>
+                                    Tudo em dia
+                                </strong>
+
+                                <span>
+                                    Você não possui novas notificações.
+                                </span>
+
+                            </div>
+
+
+                            {% endfor %}
+
+
+                        </div>
+
+
+
+                        <div class="notification-footer">
+
+                            <a href="{{ url_for('admin_notificacoes') }}">
+
+                                Ver todas as notificações
+
+                                <i class="bi bi-arrow-right"></i>
+
+                            </a>
+
+                        </div>
+
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- ADMIN -->
+
+                <div class="admin-topbar-user">
+
+                    <div class="admin-avatar small">
+                        AD
+                    </div>
+
+                    <span>
+                        Administrador
+                    </span>
+
+                </div>
+
+
+            </div>
+
+        </header>
+
+
+
+        <!-- ========================================================
+         CONTENT
+    ========================================================= -->
+
+        <div class="admin-content">
+
+
+            <div class="universities-page">
+
+
+                <!-- ==================================================
+                 PAGE HEADER
+            ================================================== -->
+
+                <div class="admin-page-header">
+
+
+                    <div>
+
+                        <span class="admin-eyebrow">
+                            ADMINISTRAÇÃO
+                        </span>
+
+                        <h1>
+                            Universidades
+                        </h1>
+
+                        <p>
+                            Gerencie todas as universidades cadastradas
+                            no Orienta.IA.
+                        </p>
+
+                    </div>
+
+
+                    <button type="button" class="admin-primary-button" data-bs-toggle="modal"
+                        data-bs-target="#modalNovaUniversidade">
+
+                        <i class="bi bi-building-add"></i>
+
+                        Nova universidade
+
+                    </button>
+
+
+                </div>
+
+
+
+                <!-- ==================================================
+                 TOOLBAR
+            ================================================== -->
+
+                <div class="universities-toolbar">
+
+
+                    <div class="universities-filters">
+
+
+                        <!-- SEARCH -->
+
+                        <div class="university-search">
+
+                            <i class="bi bi-search"></i>
+
+                            <input type="text" id="universitySearch" placeholder="Buscar por nome, sigla ou cidade...">
+
+                        </div>
+
+
+
+                        <!-- STATE -->
+
+                        <select id="stateFilter" class="university-filter">
+
+                            <option value="all">
+                                Todos os estados
+                            </option>
+
+
+                            {% for estado in estados %}
+
+                            <option value="{{ estado }}">
+                                {{ estado }}
+                            </option>
+
+                            {% endfor %}
+
+                        </select>
+
+
+                    </div>
+
+
+                    <span class="universities-count" id="universitiesCount">
+
+                        {{ universidades|length }}
+                        universidades
+
+                    </span>
+
+
+                </div>
+
+
+
+                <!-- ==================================================
+                 TABLE
+            ================================================== -->
+
+                <div class="admin-panel universities-panel">
+
+
+                    <div class="universities-table-wrapper">
+
+
+                        <table class="universities-table">
+
+
+                            <thead>
+
+                                <tr>
+
+                                    <th>
+                                        Universidade
+                                    </th>
+
+                                    <th>
+                                        Sigla
+                                    </th>
+
+                                    <th>
+                                        Localização
+                                    </th>
+
+                                    <th>
+                                        Usuários
+                                    </th>
+
+                                    <th>
+                                        Ações
+                                    </th>
+
+                                </tr>
+
+                            </thead>
+
+
+
+                            <tbody id="universitiesTableBody">
+
+
+                                {% for universidade in universidades %}
+
+
+                                <tr data-name="{{ universidade.nome|lower }}"
+                                    data-sigla="{{ universidade.sigla|lower }}"
+                                    data-city="{{ universidade.cidade|lower }}" data-state="{{ universidade.estado }}">
+
+
+                                    <!-- UNIVERSITY -->
+
+                                    <td>
+
+                                        <div class="university-cell">
+
+                                            <div class="university-avatar">
+
+                                                <i class="bi bi-building"></i>
+
+                                            </div>
+
+
+                                            <div class="university-info">
+
+                                                <strong>
+                                                    {{ universidade.nome }}
+                                                </strong>
+
+                                                <span>
+                                                    #{{ universidade.id }}
+                                                </span>
+
+                                            </div>
+
+                                        </div>
+
+                                    </td>
+
+
+
+                                    <!-- ACRONYM -->
+
+                                    <td>
+
+                                        <span class="university-acronym">
+                                            {{ universidade.sigla }}
+                                        </span>
+
+                                    </td>
+
+
+
+                                    <!-- LOCATION -->
+
+                                    <td>
+
+                                        <div class="university-location">
+
+                                            <strong>
+                                                {{ universidade.cidade }}
+                                            </strong>
+
+                                            <span>
+                                                {{ universidade.estado }}
+                                            </span>
+
+                                        </div>
+
+                                    </td>
+
+
+
+                                    <!-- USERS -->
+
+                                    <td>
+
+                                        <span class="university-users">
+
+                                            <i class="bi bi-people"></i>
+
+                                            {{ universidade.total_usuarios|default(0) }}
+
+                                        </span>
+
+                                    </td>
+
+
+
+                                    <!-- ACTIONS -->
+
+                                    <td>
+
+                                        <div class="university-actions">
+
+
+                                            <!-- VIEW -->
+
+                                            <button type="button" class="university-action" title="Visualizar"
+                                                data-bs-toggle="modal" data-bs-target="#modalVisualizarUniversidade"
+                                                data-id="{{ universidade.id }}" data-nome="{{ universidade.nome }}"
+                                                data-sigla="{{ universidade.sigla }}"
+                                                data-cidade="{{ universidade.cidade }}"
+                                                data-estado="{{ universidade.estado }}">
+
+                                                <i class="bi bi-eye"></i>
+
+                                            </button>
+
+
+
+                                            <!-- EDIT -->
+
+                                            <button type="button" class="university-action" title="Editar"
+                                                data-bs-toggle="modal" data-bs-target="#modalEditarUniversidade"
+                                                data-id="{{ universidade.id }}" data-nome="{{ universidade.nome }}"
+                                                data-sigla="{{ universidade.sigla }}"
+                                                data-cidade="{{ universidade.cidade }}"
+                                                data-estado="{{ universidade.estado }}">
+
+                                                <i class="bi bi-pencil"></i>
+
+                                            </button>
+
+
+
+                                            <!-- DELETE -->
+
+                                            <button type="button" class="university-action danger" title="Excluir"
+                                                data-delete-university="{{ universidade.nome }}"
+                                                data-delete-id="{{ universidade.id }}">
+
+                                                <i class="bi bi-trash"></i>
+
+                                            </button>
+
+
+                                        </div>
+
+                                    </td>
+
+
+                                </tr>
+
+
+                                {% else %}
+
+
+                                <tr>
+
+                                    <td colspan="5">
+
+                                        <div class="universities-empty">
+
+                                            <i class="bi bi-building"></i>
+
+                                            <strong>
+                                                Nenhuma universidade encontrada
+                                            </strong>
+
+                                            <p>
+                                                Ainda não existem universidades
+                                                cadastradas.
+                                            </p>
+
+                                        </div>
+
+                                    </td>
+
+                                </tr>
+
+
+                                {% endfor %}
+
+
+                            </tbody>
+
+
+                        </table>
+
+
+                    </div>
+
+
+
+                    <!-- PAGINATION -->
+
+                    <div class="universities-pagination">
+
+
+                        <span class="pagination-info" id="paginationInfo">
+
+                            Mostrando
+                            {{ universidades|length }}
+                            universidades
+
+                        </span>
+
+
+                        <div class="pagination-buttons">
+
+
+                            <button type="button" class="pagination-button" disabled>
+
+                                <i class="bi bi-chevron-left"></i>
+
+                            </button>
+
+
+                            <button type="button" class="pagination-button active">
+                                1
+                            </button>
+
+
+                            <button type="button" class="pagination-button">
+                                2
+                            </button>
+
+
+                            <button type="button" class="pagination-button">
+                                3
+                            </button>
+
+
+                            <button type="button" class="pagination-button">
+
+                                <i class="bi bi-chevron-right"></i>
+
+                            </button>
+
+
+                        </div>
+
+                    </div>
+
+
+                </div>
+
+
+            </div>
+
+
+        </div>
+
+
+    </main>
+
+
+
+    <!-- ============================================================
+     MODAL — NOVA UNIVERSIDADE
+============================================================ -->
+
+    <div class="modal fade" id="modalNovaUniversidade" tabindex="-1" aria-hidden="true">
+
+        <div class="modal-dialog modal-dialog-centered">
+
+            <div class="modal-content admin-modal">
+
+
+                <form method="POST" action="{{ url_for('admin_nova_universidade') }}">
+
+
+                    <div class="modal-header">
+
+                        <div>
+
+                            <span class="admin-eyebrow">
+                                UNIVERSIDADES
+                            </span>
+
+                            <h5 class="modal-title">
+                                Nova universidade
+                            </h5>
+
+                        </div>
+
+
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+
+                    </div>
+
+
+
+                    <div class="modal-body">
+
+
+                        <div class="mb-3">
+
+                            <label for="nova_nome" class="form-label">
+                                Nome da universidade
+                            </label>
+
+                            <input type="text" id="nova_nome" name="nome" class="form-control"
+                                placeholder="Ex.: Universidade Federal de São João del-Rei" required>
+
+                        </div>
+
+
+
+                        <div class="row">
+
+
+                            <div class="col-md-4 mb-3">
+
+                                <label for="nova_sigla" class="form-label">
+                                    Sigla
+                                </label>
+
+                                <input type="text" id="nova_sigla" name="sigla" class="form-control" placeholder="UFSJ"
+                                    maxlength="20" required>
+
+                            </div>
+
+
+
+                            <div class="col-md-8 mb-3">
+
+                                <label for="nova_cidade" class="form-label">
+                                    Cidade
+                                </label>
+
+                                <input type="text" id="nova_cidade" name="cidade" class="form-control"
+                                    placeholder="São João del-Rei" required>
+
+                            </div>
+
+
+                        </div>
+
+
+
+                        <div class="mb-3">
+
+                            <label for="nova_estado" class="form-label">
+                                Estado
+                            </label>
+
+
+                            <select id="nova_estado" name="estado" class="form-select" required>
+
+                                <option value="">
+                                    Selecione o estado
+                                </option>
+
+                                <option value="AC">Acre (AC)</option>
+                                <option value="AL">Alagoas (AL)</option>
+                                <option value="AP">Amapá (AP)</option>
+                                <option value="AM">Amazonas (AM)</option>
+                                <option value="BA">Bahia (BA)</option>
+                                <option value="CE">Ceará (CE)</option>
+                                <option value="DF">Distrito Federal (DF)</option>
+                                <option value="ES">Espírito Santo (ES)</option>
+                                <option value="GO">Goiás (GO)</option>
+                                <option value="MA">Maranhão (MA)</option>
+                                <option value="MT">Mato Grosso</option>
+                                <option value="MS">Mato Grosso do Sul</option>
+                                <option value="MG">Minas Gerais (MG)</option>
+                                <option value="PA">Pará (PA)</option>
+                                <option value="PB">Paraíba (PB)</option>
+                                <option value="PR">Paraná (PR)</option>
+                                <option value="PE">Pernambuco (PE)</option>
+                                <option value="PI">Piauí (PI)</option>
+                                <option value="RJ">Rio de Janeiro (RJ)</option>
+                                <option value="RN">Rio Grande do Norte (RN)</option>
+                                <option value="RS">Rio Grande do Sul (RS)</option>
+                                <option value="RO">Rondônia (RO)</option>
+                                <option value="RR">Roraima (RR)</option>
+                                <option value="SC">Santa Catarina (SC)</option>
+                                <option value="SP">São Paulo (SP)</option>
+                                <option value="SE">Sergipe (SE)</option>
+                                <option value="TO">Tocantins (TO)</option>
+
+                            </select>
+
+                        </div>
+
+
+                    </div>
+
+
+
+                    <div class="modal-footer">
+
+
+                        <button type="button" class="admin-secondary-button" data-bs-dismiss="modal">
+                            Cancelar
+                        </button>
+
+
+                        <button type="submit" class="admin-primary-button">
+
+                            <i class="bi bi-check-lg"></i>
+
+                            Adicionar universidade
+
+                        </button>
+
+
+                    </div>
+
+
+                </form>
+
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- ============================================================
+     MODAL — VISUALIZAR
+============================================================ -->
+
+    <div class="modal fade" id="modalVisualizarUniversidade" tabindex="-1" aria-hidden="true">
+
+        <div class="modal-dialog modal-dialog-centered">
+
+            <div class="modal-content admin-modal">
+
+
+                <div class="modal-header">
+
+                    <div>
+
+                        <span class="admin-eyebrow">
+                            UNIVERSIDADE
+                        </span>
+
+                        <h5 class="modal-title">
+                            Detalhes da universidade
+                        </h5>
+
+                    </div>
+
+
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+
+                </div>
+
+
+
+                <div class="modal-body">
+
+
+                    <div class="university-view-header">
+
+                        <div class="university-avatar large">
+
+                            <i class="bi bi-building"></i>
+
+                        </div>
+
+
+                        <h4 id="visualizar_nome">
+                            -
+                        </h4>
+
+
+                        <span class="university-acronym" id="visualizar_sigla">
+                            -
+                        </span>
+
+                    </div>
+
+
+
+                    <div class="university-details">
+
+
+                        <div class="university-detail">
+
+                            <span>
+                                ID
+                            </span>
+
+                            <strong id="visualizar_id">
+                                -
+                            </strong>
+
+                        </div>
+
+
+
+                        <div class="university-detail">
+
+                            <span>
+                                Cidade
+                            </span>
+
+                            <strong id="visualizar_cidade">
+                                -
+                            </strong>
+
+                        </div>
+
+
+
+                        <div class="university-detail">
+
+                            <span>
+                                Estado
+                            </span>
+
+                            <strong id="visualizar_estado">
+                                -
+                            </strong>
+
+                        </div>
+
+
+                    </div>
+
+
+                </div>
+
+
+
+                <div class="modal-footer">
+
+                    <button type="button" class="admin-secondary-button" data-bs-dismiss="modal">
+                        Fechar
+                    </button>
+
+                </div>
+
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- ============================================================
+     MODAL — EDITAR
+============================================================ -->
+
+    <div class="modal fade" id="modalEditarUniversidade" tabindex="-1" aria-hidden="true">
+
+        <div class="modal-dialog modal-dialog-centered">
+
+            <div class="modal-content admin-modal">
+
+
+                <form method="POST" id="formEditarUniversidade">
+
+
+                    <div class="modal-header">
+
+                        <div>
+
+                            <span class="admin-eyebrow">
+                                UNIVERSIDADES
+                            </span>
+
+                            <h5 class="modal-title">
+                                Editar universidade
+                            </h5>
+
+                        </div>
+
+
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+
+                    </div>
+
+
+
+                    <div class="modal-body">
+
+
+                        <div class="mb-3">
+
+                            <label for="editar_nome" class="form-label">
+                                Nome da universidade
+                            </label>
+
+                            <input type="text" id="editar_nome" name="nome" class="form-control" required>
+
+                        </div>
+
+
+
+                        <div class="row">
+
+
+                            <div class="col-md-4 mb-3">
+
+                                <label for="editar_sigla" class="form-label">
+                                    Sigla
+                                </label>
+
+                                <input type="text" id="editar_sigla" name="sigla" class="form-control" maxlength="20"
+                                    required>
+
+                            </div>
+
+
+
+                            <div class="col-md-8 mb-3">
+
+                                <label for="editar_cidade" class="form-label">
+                                    Cidade
+                                </label>
+
+                                <input type="text" id="editar_cidade" name="cidade" class="form-control" required>
+
+                            </div>
+
+
+                        </div>
+
+
+
+                        <div class="mb-3">
+
+                            <label for="editar_estado" class="form-label">
+                                Estado
+                            </label>
+
+
+                            <select id="editar_estado" name="estado" class="form-select" required>
+
+                                <option value="AC">AC</option>
+                                <option value="AL">AL</option>
+                                <option value="AP">AP</option>
+                                <option value="AM">AM</option>
+                                <option value="BA">BA</option>
+                                <option value="CE">CE</option>
+                                <option value="DF">DF</option>
+                                <option value="ES">ES</option>
+                                <option value="GO">GO</option>
+                                <option value="MA">MA</option>
+                                <option value="MT">MT</option>
+                                <option value="MS">MS</option>
+                                <option value="MG">MG</option>
+                                <option value="PA">PA</option>
+                                <option value="PB">PB</option>
+                                <option value="PR">PR</option>
+                                <option value="PE">PE</option>
+                                <option value="PI">PI</option>
+                                <option value="RJ">RJ</option>
+                                <option value="RN">RN</option>
+                                <option value="RS">RS</option>
+                                <option value="RO">RO</option>
+                                <option value="RR">RR</option>
+                                <option value="SC">SC</option>
+                                <option value="SP">SP</option>
+                                <option value="SE">SE</option>
+                                <option value="TO">TO</option>
+
+                            </select>
+
+                        </div>
+
+
+                    </div>
+
+
+
+                    <div class="modal-footer">
+
+
+                        <button type="button" class="admin-secondary-button" data-bs-dismiss="modal">
+                            Cancelar
+                        </button>
+
+
+                        <button type="submit" class="admin-primary-button">
+
+                            <i class="bi bi-check-lg"></i>
+
+                            Salvar alterações
+
+                        </button>
+
+
+                    </div>
+
+
+                </form>
+
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- ============================================================
+     MODAL — EXCLUIR
+============================================================ -->
+
+    <div class="modal fade" id="deleteUniversityModal" tabindex="-1" aria-hidden="true">
+
+        <div class="modal-dialog modal-dialog-centered">
+
+            <div class="modal-content admin-modal">
+
+
+                <div class="modal-header">
+
+                    <div>
+
+                        <span class="admin-eyebrow">
+                            UNIVERSIDADES
+                        </span>
+
+                        <h5 class="modal-title">
+                            Remover universidade
+                        </h5>
+
+                    </div>
+
+
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+
+                </div>
+
+
+
+                <div class="modal-body">
+
+
+                    <div class="delete-warning">
+
+                        <i class="bi bi-exclamation-triangle"></i>
+
+                    </div>
+
+
+                    <h4>
+                        Confirmar remoção
+                    </h4>
+
+
+                    <p>
+
+                        Você está prestes a remover
+
+                        <strong id="deleteUniversityName"></strong>.
+
+                        Essa operação pode afetar dados relacionados
+                        aos usuários vinculados à universidade.
+
+                    </p>
+
+
+                </div>
+
+
+
+                <div class="modal-footer">
+
+
+                    <button type="button" class="admin-secondary-button" data-bs-dismiss="modal">
+                        Cancelar
+                    </button>
+
+
+                    <form id="deleteUniversityForm" method="POST">
+
+                        <button type="submit" class="admin-danger-button">
+
+                            <i class="bi bi-trash"></i>
+
+                            Remover universidade
+
+                        </button>
+
+                    </form>
+
+
+                </div>
+
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- ============================================================
+     BOOTSTRAP
+============================================================ -->
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+
+
+    <!-- JAVASCRIPT -->
+
+    <script src="{{ url_for('static', filename='js/admin/universidades.js') }}"></script>
+
+
+</body>
+
+</html>

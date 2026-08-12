@@ -1,0 +1,1847 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>
+        Configurações | Orienta.IA
+    </title>
+
+
+    <!-- Bootstrap -->
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+
+    <!-- Bootstrap Icons -->
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+
+    <style>
+        /* =====================================================
+   CONFIGURAÇÕES ADMIN
+===================================================== */
+
+        .settings-page {
+
+            width: min(1200px,
+                    calc(100% - 40px));
+
+            margin: 0 auto;
+
+            padding: 40px 0 70px;
+
+            color: #f1f3f5;
+        }
+
+
+        /* =====================================================
+   HEADER
+===================================================== */
+
+        .settings-header {
+
+            display: flex;
+
+            align-items: flex-end;
+
+            justify-content: space-between;
+
+            gap: 20px;
+
+            margin-bottom: 30px;
+        }
+
+
+        .settings-header h1 {
+
+            margin: 8px 0 5px;
+
+            font-size: 30px;
+
+            font-weight: 700;
+
+        }
+
+
+        .settings-header p {
+
+            margin: 0;
+
+            color: #858c99;
+
+        }
+
+
+        .settings-back {
+
+            display: inline-flex;
+
+            align-items: center;
+
+            gap: 6px;
+
+            color: #858c99;
+
+            text-decoration: none;
+
+            font-size: 14px;
+
+        }
+
+
+        .settings-back:hover {
+
+            color: #ffffff;
+
+        }
+
+
+        /* =====================================================
+   LAYOUT
+===================================================== */
+
+        .settings-layout {
+
+            display: grid;
+
+            grid-template-columns: 210px minmax(0, 1fr);
+
+            gap: 25px;
+
+            align-items: start;
+
+        }
+
+
+        /* =====================================================
+   SIDEBAR
+===================================================== */
+
+        .settings-sidebar {
+
+            position: sticky;
+
+            top: 25px;
+
+            display: flex;
+
+            flex-direction: column;
+
+            gap: 4px;
+
+            padding: 8px;
+
+            background: #11141b;
+
+            border: 1px solid #282d38;
+
+            border-radius: 12px;
+
+        }
+
+
+        .settings-nav-item {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 10px;
+
+            padding: 10px 12px;
+
+            border-radius: 8px;
+
+            color: #858c99;
+
+            text-decoration: none;
+
+            font-size: 14px;
+
+            transition: .15s ease;
+
+        }
+
+
+        .settings-nav-item:hover {
+
+            color: #ffffff;
+
+            background: #191d26;
+
+        }
+
+
+        .settings-nav-item.active {
+
+            color: #ffffff;
+
+            background: rgba(108, 99, 255, .14);
+
+        }
+
+
+        .settings-nav-item.active i {
+
+            color: #8d86ff;
+
+        }
+
+
+        .settings-nav-item.danger {
+
+            margin-top: 8px;
+
+            color: #e87580;
+
+        }
+
+
+        .settings-nav-item.danger:hover {
+
+            background: rgba(220, 53, 69, .10);
+
+        }
+
+
+        /* =====================================================
+   CONTEÚDO
+===================================================== */
+
+        .settings-content {
+
+            display: flex;
+
+            flex-direction: column;
+
+            gap: 20px;
+
+        }
+
+
+        /* =====================================================
+   SEÇÃO
+===================================================== */
+
+        .settings-section {
+
+            background: #11141b;
+
+            border: 1px solid #282d38;
+
+            border-radius: 14px;
+
+            overflow: hidden;
+
+        }
+
+
+        .settings-section-header {
+
+            display: flex;
+
+            align-items: flex-start;
+
+            gap: 14px;
+
+            padding: 22px;
+
+            border-bottom: 1px solid #282d38;
+
+        }
+
+
+        .settings-section-icon {
+
+            width: 40px;
+
+            height: 40px;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            flex-shrink: 0;
+
+            border-radius: 9px;
+
+            background: rgba(108, 99, 255, .12);
+
+            color: #8d86ff;
+
+            font-size: 18px;
+
+        }
+
+
+        .settings-section-header h2 {
+
+            margin: 0;
+
+            font-size: 17px;
+
+            font-weight: 600;
+
+        }
+
+
+        .settings-section-header p {
+
+            margin: 4px 0 0;
+
+            color: #858c99;
+
+            font-size: 13px;
+
+        }
+
+
+        /* =====================================================
+   CAMPOS
+===================================================== */
+
+        .settings-fields {
+
+            display: grid;
+
+            grid-template-columns:
+                repeat(2, minmax(0, 1fr));
+
+            gap: 20px;
+
+            padding: 22px;
+
+        }
+
+
+        .settings-field {
+
+            min-width: 0;
+
+        }
+
+
+        .settings-field.full {
+
+            grid-column: 1 / -1;
+
+        }
+
+
+        .settings-field label {
+
+            display: block;
+
+            margin-bottom: 7px;
+
+            color: #d9dce2;
+
+            font-size: 14px;
+
+            font-weight: 500;
+
+        }
+
+
+        .settings-field small {
+
+            display: block;
+
+            margin-top: 6px;
+
+            color: #6f7683;
+
+            font-size: 12px;
+
+        }
+
+
+        .settings-field .form-control {
+
+            min-height: 42px;
+
+            background: #1c2029 !important;
+
+            border: 1px solid #303642 !important;
+
+            color: #ffffff !important;
+
+            border-radius: 7px;
+
+            box-shadow: none !important;
+
+        }
+
+
+        .settings-field textarea.form-control {
+
+            min-height: 100px;
+
+            resize: vertical;
+
+        }
+
+
+        .settings-field .form-control:focus {
+
+            background: #1c2029 !important;
+
+            border-color: #6c63ff !important;
+
+            color: #ffffff !important;
+
+            box-shadow:
+                0 0 0 3px rgba(108, 99, 255, .15) !important;
+
+        }
+
+
+        .settings-field .input-group-text {
+
+            background: #242833;
+
+            border-color: #303642;
+
+            color: #858c99;
+
+        }
+
+
+        /* =====================================================
+   OPÇÕES / SWITCHES
+===================================================== */
+
+        .settings-options {
+
+            padding: 0 22px;
+
+        }
+
+
+        .settings-option {
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: space-between;
+
+            gap: 20px;
+
+            min-height: 75px;
+
+            border-bottom: 1px solid #242933;
+
+        }
+
+
+        .settings-option:last-child {
+
+            border-bottom: none;
+
+        }
+
+
+        .settings-option strong {
+
+            display: block;
+
+            color: #e8eaed;
+
+            font-size: 14px;
+
+            font-weight: 500;
+
+        }
+
+
+        .settings-option span {
+
+            display: block;
+
+            margin-top: 4px;
+
+            color: #737b89;
+
+            font-size: 12px;
+
+        }
+
+
+        .settings-option .form-check {
+
+            margin: 0;
+
+            padding: 0;
+
+        }
+
+
+        .settings-option .form-check-input {
+
+            width: 40px;
+
+            height: 21px;
+
+            margin: 0;
+
+            cursor: pointer;
+
+            background-color: #2b303a;
+
+            border-color: #3a404c;
+
+        }
+
+
+        .settings-option .form-check-input:checked {
+
+            background-color: #6c63ff;
+
+            border-color: #6c63ff;
+
+        }
+
+
+        /* =====================================================
+   MANUTENÇÃO
+===================================================== */
+
+        .maintenance-option {
+
+            padding: 0 22px;
+
+        }
+
+
+        .maintenance-warning {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 9px;
+
+            margin: 0 22px 20px;
+
+            padding: 12px 14px;
+
+            background: rgba(108, 99, 255, .07);
+
+            border: 1px solid rgba(108, 99, 255, .15);
+
+            border-radius: 8px;
+
+            color: #858c99;
+
+            font-size: 12px;
+
+        }
+
+
+        .maintenance-warning i {
+
+            color: #8d86ff;
+
+        }
+
+
+        /* =====================================================
+   ZONA DE PERIGO
+===================================================== */
+
+        .danger-section {
+
+            border-color: rgba(220, 53, 69, .25);
+
+        }
+
+
+        .danger-icon {
+
+            background: rgba(220, 53, 69, .10);
+
+            color: #ed6b76;
+
+        }
+
+
+        .danger-action {
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: space-between;
+
+            gap: 20px;
+
+            padding: 18px 22px;
+
+            border-bottom: 1px solid #242933;
+
+        }
+
+
+        .danger-action:last-child {
+
+            border-bottom: none;
+
+        }
+
+
+        .danger-action strong {
+
+            display: block;
+
+            color: #e8eaed;
+
+            font-size: 14px;
+
+            font-weight: 500;
+
+        }
+
+
+        .danger-action span {
+
+            display: block;
+
+            margin-top: 4px;
+
+            color: #737b89;
+
+            font-size: 12px;
+
+        }
+
+
+        /* =====================================================
+   SALVAR
+===================================================== */
+
+        .settings-save-bottom {
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: space-between;
+
+            gap: 20px;
+
+            padding: 16px 20px;
+
+            background: #11141b;
+
+            border: 1px solid #282d38;
+
+            border-radius: 12px;
+
+        }
+
+
+        .settings-save-bottom span {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 7px;
+
+            color: #737b89;
+
+            font-size: 12px;
+
+        }
+
+
+        .settings-save-bottom span i {
+
+            color: #8d86ff;
+
+        }
+
+
+        .settings-save-bottom .btn-primary,
+        .settings-header .btn-primary {
+
+            min-height: 40px;
+
+            background: #6c63ff;
+
+            border-color: #6c63ff;
+
+            border-radius: 8px;
+
+        }
+
+
+        .settings-save-bottom .btn-primary:hover,
+        .settings-header .btn-primary:hover {
+
+            background: #8179ff;
+
+            border-color: #8179ff;
+
+        }
+
+
+        /* =====================================================
+   RESPONSIVO
+===================================================== */
+
+        @media (max-width: 850px) {
+
+            .settings-layout {
+
+                grid-template-columns: 1fr;
+
+            }
+
+
+            .settings-sidebar {
+
+                position: static;
+
+                display: grid;
+
+                grid-template-columns:
+                    repeat(2, minmax(0, 1fr));
+
+            }
+
+
+            .settings-nav-item.danger {
+
+                margin-top: 0;
+
+            }
+
+        }
+
+
+        @media (max-width: 650px) {
+
+            .settings-page {
+
+                width: calc(100% - 24px);
+
+                padding-top: 25px;
+
+            }
+
+
+            .settings-header {
+
+                align-items: stretch;
+
+                flex-direction: column;
+
+            }
+
+
+            .settings-header .btn {
+
+                width: 100%;
+
+            }
+
+
+            .settings-sidebar {
+
+                display: flex;
+
+                overflow-x: auto;
+
+                flex-direction: row;
+
+            }
+
+
+            .settings-nav-item {
+
+                white-space: nowrap;
+
+            }
+
+
+            .settings-fields {
+
+                grid-template-columns: 1fr;
+
+            }
+
+
+            .settings-field.full {
+
+                grid-column: auto;
+
+            }
+
+
+            .settings-option,
+            .danger-action {
+
+                align-items: flex-start;
+
+                flex-direction: column;
+
+                padding: 18px 0;
+
+            }
+
+
+            .settings-save-bottom {
+
+                align-items: stretch;
+
+                flex-direction: column;
+
+            }
+
+
+            .settings-save-bottom .btn {
+
+                width: 100%;
+
+            }
+
+        }
+    </style>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/admin.css') }}">
+
+</head>
+
+
+<body>
+
+
+    <main class="settings-page">
+
+
+        <!-- ==========================================
+         HEADER
+    =========================================== -->
+
+        <header class="settings-header">
+
+            <div>
+
+                <a href="{{ url_for('admin_dashboard') }}" class="settings-back">
+
+                    <i class="bi bi-arrow-left"></i>
+
+                    Voltar para dashboard
+
+                </a>
+
+
+                <h1>
+                    Configurações
+                </h1>
+
+
+                <p>
+                    Gerencie as configurações gerais do Orienta.IA.
+                </p>
+
+            </div>
+
+
+            <button type="submit" form="settingsForm" class="btn btn-primary">
+
+                <i class="bi bi-check-lg"></i>
+
+                Salvar alterações
+
+            </button>
+
+        </header>
+
+
+
+        <!-- ==========================================
+         LAYOUT
+    =========================================== -->
+
+        <div class="settings-layout">
+
+
+            <!-- ======================================
+             MENU LATERAL
+        ======================================= -->
+
+            <aside class="settings-sidebar">
+
+
+                <a href="#geral" class="settings-nav-item active">
+
+                    <i class="bi bi-sliders"></i>
+
+                    Geral
+
+                </a>
+
+
+                <a href="#usuarios" class="settings-nav-item">
+
+                    <i class="bi bi-people"></i>
+
+                    Usuários
+
+                </a>
+
+
+                <a href="#projetos" class="settings-nav-item">
+
+                    <i class="bi bi-folder"></i>
+
+                    Projetos
+
+                </a>
+
+
+                <a href="#notificacoes" class="settings-nav-item">
+
+                    <i class="bi bi-bell"></i>
+
+                    Notificações
+
+                </a>
+
+
+                <a href="#seguranca" class="settings-nav-item">
+
+                    <i class="bi bi-shield-lock"></i>
+
+                    Segurança
+
+                </a>
+
+
+                <a href="#manutencao" class="settings-nav-item">
+
+                    <i class="bi bi-wrench-adjustable"></i>
+
+                    Manutenção
+
+                </a>
+
+
+                <a href="#perigo" class="settings-nav-item danger">
+
+                    <i class="bi bi-exclamation-triangle"></i>
+
+                    Zona de perigo
+
+                </a>
+
+
+            </aside>
+
+
+
+            <!-- ======================================
+             CONTEÚDO
+        ======================================= -->
+
+            <form id="settingsForm" method="POST" action="#" class="settings-content">
+
+
+                <!-- ==================================
+                 GERAL
+            =================================== -->
+
+                <section id="geral" class="settings-section">
+
+                    <div class="settings-section-header">
+
+                        <div class="settings-section-icon">
+
+                            <i class="bi bi-sliders"></i>
+
+                        </div>
+
+
+                        <div>
+
+                            <h2>
+                                Configurações gerais
+                            </h2>
+
+                            <p>
+                                Informações básicas da plataforma.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="settings-fields">
+
+
+                        <div class="settings-field">
+
+                            <label for="nome_plataforma">
+
+                                Nome da plataforma
+
+                            </label>
+
+                            <input type="text" id="nome_plataforma" name="nome_plataforma" class="form-control"
+                                value="{{ configuracoes.nome_plataforma }}">
+
+                            <small>
+                                Nome exibido no site e nas comunicações.
+                            </small>
+
+                        </div>
+
+
+                        <div class="settings-field">
+
+                            <label for="email_administrativo">
+
+                                E-mail administrativo
+
+                            </label>
+
+                            <input type="email" id="email_administrativo" name="email_administrativo"
+                                class="form-control" value="{{ configuracoes.email_administrativo }}">
+
+                            <small>
+                                E-mail utilizado para comunicações administrativas.
+                            </small>
+
+                        </div>
+
+
+                        <div class="settings-field full">
+
+                            <label for="descricao">
+
+                                Descrição
+
+                            </label>
+
+                            <textarea id="descricao" name="descricao" class="form-control"
+                                rows="4">{{ configuracoes.descricao }}</textarea>
+
+                            <small>
+                                Descrição geral do Orienta.IA.
+                            </small>
+
+                        </div>
+
+
+                    </div>
+
+                </section>
+
+
+
+                <!-- ==================================
+                 USUÁRIOS
+            =================================== -->
+
+                <section id="usuarios" class="settings-section">
+
+                    <div class="settings-section-header">
+
+                        <div class="settings-section-icon">
+
+                            <i class="bi bi-people"></i>
+
+                        </div>
+
+
+                        <div>
+
+                            <h2>
+                                Usuários
+                            </h2>
+
+                            <p>
+                                Controle o comportamento dos cadastros.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="settings-options">
+
+
+                        <div class="settings-option">
+
+                            <div>
+
+                                <strong>
+                                    Permitir novos cadastros
+                                </strong>
+
+                                <span>
+                                    Usuários poderão criar novas contas.
+                                </span>
+
+                            </div>
+
+
+                            <div class="form-check form-switch">
+
+                                <input class="form-check-input" type="checkbox" name="permitir_cadastro"
+                                    id="permitir_cadastro" {% if configuracoes.permitir_cadastro %} checked {% endif %}>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="settings-option">
+
+                            <div>
+
+                                <strong>
+                                    Aprovar novos usuários
+                                </strong>
+
+                                <span>
+                                    Novos cadastros precisam de aprovação administrativa.
+                                </span>
+
+                            </div>
+
+
+                            <div class="form-check form-switch">
+
+                                <input class="form-check-input" type="checkbox" name="aprovar_cadastro"
+                                    id="aprovar_cadastro" {% if configuracoes.aprovar_cadastro %} checked {% endif %}>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="settings-option">
+
+                            <div>
+
+                                <strong>
+                                    Integração com Telegram
+                                </strong>
+
+                                <span>
+                                    Permitir que usuários vinculem suas contas ao Telegram.
+                                </span>
+
+                            </div>
+
+
+                            <div class="form-check form-switch">
+
+                                <input class="form-check-input" type="checkbox" name="permitir_telegram"
+                                    id="permitir_telegram" {% if configuracoes.permitir_telegram %} checked {% endif %}>
+
+                            </div>
+
+                        </div>
+
+
+                    </div>
+
+                </section>
+
+
+
+                <!-- ==================================
+                 PROJETOS
+            =================================== -->
+
+                <section id="projetos" class="settings-section">
+
+                    <div class="settings-section-header">
+
+                        <div class="settings-section-icon">
+
+                            <i class="bi bi-folder"></i>
+
+                        </div>
+
+
+                        <div>
+
+                            <h2>
+                                Projetos
+                            </h2>
+
+                            <p>
+                                Controle o funcionamento dos projetos acadêmicos.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="settings-options">
+
+
+                        <div class="settings-option">
+
+                            <div>
+
+                                <strong>
+                                    Permitir criação de projetos
+                                </strong>
+
+                                <span>
+                                    Professores poderão cadastrar novos projetos.
+                                </span>
+
+                            </div>
+
+
+                            <div class="form-check form-switch">
+
+                                <input class="form-check-input" type="checkbox" name="permitir_projetos" {% if
+                                    configuracoes.permitir_projetos %} checked {% endif %}>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="settings-option">
+
+                            <div>
+
+                                <strong>
+                                    Permitir candidaturas
+                                </strong>
+
+                                <span>
+                                    Estudantes poderão se candidatar aos projetos.
+                                </span>
+
+                            </div>
+
+
+                            <div class="form-check form-switch">
+
+                                <input class="form-check-input" type="checkbox" name="permitir_candidaturas" {% if
+                                    configuracoes.permitir_candidaturas %} checked {% endif %}>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="settings-option">
+
+                            <div>
+
+                                <strong>
+                                    Permitir propostas
+                                </strong>
+
+                                <span>
+                                    Estudantes poderão enviar propostas de projetos.
+                                </span>
+
+                            </div>
+
+
+                            <div class="form-check form-switch">
+
+                                <input class="form-check-input" type="checkbox" name="permitir_propostas" {% if
+                                    configuracoes.permitir_propostas %} checked {% endif %}>
+
+                            </div>
+
+                        </div>
+
+
+                    </div>
+
+                </section>
+
+
+
+                <!-- ==================================
+                 NOTIFICAÇÕES
+            =================================== -->
+
+                <section id="notificacoes" class="settings-section">
+
+                    <div class="settings-section-header">
+
+                        <div class="settings-section-icon">
+
+                            <i class="bi bi-bell"></i>
+
+                        </div>
+
+
+                        <div>
+
+                            <h2>
+                                Notificações
+                            </h2>
+
+                            <p>
+                                Configure como os usuários serão notificados.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="settings-options">
+
+
+                        <div class="settings-option">
+
+                            <div>
+
+                                <strong>
+                                    Notificações por e-mail
+                                </strong>
+
+                                <span>
+                                    Enviar notificações importantes por e-mail.
+                                </span>
+
+                            </div>
+
+
+                            <div class="form-check form-switch">
+
+                                <input class="form-check-input" type="checkbox" name="notificacoes_email" {% if
+                                    configuracoes.notificacoes_email %} checked {% endif %}>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="settings-option">
+
+                            <div>
+
+                                <strong>
+                                    Notificações internas
+                                </strong>
+
+                                <span>
+                                    Exibir notificações dentro da plataforma.
+                                </span>
+
+                            </div>
+
+
+                            <div class="form-check form-switch">
+
+                                <input class="form-check-input" type="checkbox" name="notificacoes_sistema" {% if
+                                    configuracoes.notificacoes_sistema %} checked {% endif %}>
+
+                            </div>
+
+                        </div>
+
+
+                    </div>
+
+                </section>
+
+
+
+                <!-- ==================================
+                 SEGURANÇA
+            =================================== -->
+
+                <section id="seguranca" class="settings-section">
+
+                    <div class="settings-section-header">
+
+                        <div class="settings-section-icon">
+
+                            <i class="bi bi-shield-lock"></i>
+
+                        </div>
+
+
+                        <div>
+
+                            <h2>
+                                Segurança
+                            </h2>
+
+                            <p>
+                                Configurações relacionadas à autenticação.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="settings-fields">
+
+
+                        <div class="settings-field">
+
+                            <label for="tempo_sessao">
+
+                                Tempo da sessão
+
+                            </label>
+
+
+                            <div class="input-group">
+
+                                <input type="number" id="tempo_sessao" name="tempo_sessao" class="form-control" min="5"
+                                    max="1440" value="{{ configuracoes.tempo_sessao }}">
+
+                                <span class="input-group-text">
+                                    minutos
+                                </span>
+
+                            </div>
+
+
+                            <small>
+                                Tempo até a sessão expirar por inatividade.
+                            </small>
+
+                        </div>
+
+
+                        <div class="settings-field">
+
+                            <label for="tentativas_login">
+
+                                Tentativas de login
+
+                            </label>
+
+
+                            <input type="number" id="tentativas_login" name="tentativas_login" class="form-control"
+                                min="1" max="20" value="{{ configuracoes.tentativas_login }}">
+
+
+                            <small>
+                                Número máximo de tentativas antes do bloqueio.
+                            </small>
+
+                        </div>
+
+
+                    </div>
+
+                </section>
+
+
+
+                <!-- ==================================
+                 MANUTENÇÃO
+            =================================== -->
+
+                <section id="manutencao" class="settings-section">
+
+                    <div class="settings-section-header">
+
+                        <div class="settings-section-icon">
+
+                            <i class="bi bi-wrench-adjustable"></i>
+
+                        </div>
+
+
+                        <div>
+
+                            <h2>
+                                Manutenção
+                            </h2>
+
+                            <p>
+                                Controle a disponibilidade da plataforma.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="settings-option maintenance-option">
+
+
+                        <div>
+
+                            <strong>
+                                Modo de manutenção
+                            </strong>
+
+                            <span>
+                                Impede o acesso normal à plataforma para usuários.
+                            </span>
+
+                        </div>
+
+
+                        <div class="form-check form-switch">
+
+                            <input class="form-check-input" type="checkbox" name="modo_manutencao" id="modo_manutencao"
+                                {% if configuracoes.modo_manutencao %} checked {% endif %}>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="maintenance-warning">
+
+                        <i class="bi bi-info-circle"></i>
+
+                        <span>
+                            Administradores continuarão podendo acessar
+                            o painel administrativo.
+                        </span>
+
+                    </div>
+
+                </section>
+
+
+
+                <!-- ==================================
+                 ZONA DE PERIGO
+            =================================== -->
+
+                <section id="perigo" class="settings-section danger-section">
+
+                    <div class="settings-section-header">
+
+                        <div class="settings-section-icon danger-icon">
+
+                            <i class="bi bi-exclamation-triangle"></i>
+
+                        </div>
+
+
+                        <div>
+
+                            <h2>
+                                Zona de perigo
+                            </h2>
+
+                            <p>
+                                Ações administrativas potencialmente destrutivas.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="danger-action">
+
+
+                        <div>
+
+                            <strong>
+                                Limpar sessões
+                            </strong>
+
+                            <span>
+                                Encerra todas as sessões ativas de usuários.
+                            </span>
+
+                        </div>
+
+
+                        <button type="button" class="btn btn-outline-danger" data-bs-toggle="modal"
+                            data-bs-target="#modalLimparSessoes">
+
+                            Limpar sessões
+
+                        </button>
+
+                    </div>
+
+
+                    <div class="danger-action">
+
+
+                        <div>
+
+                            <strong>
+                                Restaurar configurações
+                            </strong>
+
+                            <span>
+                                Retorna as configurações da plataforma
+                                para os valores padrão.
+                            </span>
+
+                        </div>
+
+
+                        <button type="button" class="btn btn-outline-danger" data-bs-toggle="modal"
+                            data-bs-target="#modalRestaurar">
+
+                            Restaurar
+
+                        </button>
+
+                    </div>
+
+                </section>
+
+
+                <!-- ==================================
+                 BOTÃO FINAL
+            =================================== -->
+
+                <div class="settings-save-bottom">
+
+                    <span>
+
+                        <i class="bi bi-info-circle"></i>
+
+                        As alterações só serão aplicadas após salvar.
+
+                    </span>
+
+
+                    <button type="submit" class="btn btn-primary">
+
+                        <i class="bi bi-check-lg"></i>
+
+                        Salvar alterações
+
+                    </button>
+
+                </div>
+
+
+            </form>
+
+        </div>
+
+    </main>
+
+
+
+    <!-- ==========================================
+     MODAL LIMPAR SESSÕES
+=========================================== -->
+
+    <div class="modal fade" id="modalLimparSessoes" tabindex="-1">
+
+        <div class="modal-dialog modal-dialog-centered">
+
+            <div class="modal-content">
+
+
+                <div class="modal-header">
+
+                    <h5 class="modal-title">
+                        Limpar sessões
+                    </h5>
+
+
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+
+                </div>
+
+
+                <div class="modal-body">
+
+                    <p>
+                        Tem certeza que deseja encerrar todas as
+                        sessões ativas?
+                    </p>
+
+                    <p class="text-secondary mb-0">
+                        Todos os usuários precisarão fazer login novamente.
+                    </p>
+
+                </div>
+
+
+                <div class="modal-footer">
+
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        Cancelar
+                    </button>
+
+
+                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal">
+                        Encerrar sessões
+                    </button>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- ==========================================
+     MODAL RESTAURAR
+=========================================== -->
+
+    <div class="modal fade" id="modalRestaurar" tabindex="-1">
+
+        <div class="modal-dialog modal-dialog-centered">
+
+            <div class="modal-content">
+
+
+                <div class="modal-header">
+
+                    <h5 class="modal-title">
+                        Restaurar configurações
+                    </h5>
+
+
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+
+                </div>
+
+
+                <div class="modal-body">
+
+                    <p>
+                        Tem certeza que deseja restaurar todas as
+                        configurações?
+                    </p>
+
+                    <p class="text-danger mb-0">
+                        Essa ação substituirá as configurações atuais
+                        pelos valores padrão.
+                    </p>
+
+                </div>
+
+
+                <div class="modal-footer">
+
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        Cancelar
+                    </button>
+
+
+                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal">
+                        Restaurar configurações
+                    </button>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+
+    <script>
+
+        /*
+         * Navegação lateral
+         */
+
+        document
+            .querySelectorAll(".settings-nav-item")
+            .forEach(item => {
+
+                item.addEventListener(
+                    "click",
+                    function () {
+
+                        document
+                            .querySelectorAll(
+                                ".settings-nav-item"
+                            )
+                            .forEach(nav => {
+
+                                nav.classList.remove(
+                                    "active"
+                                );
+
+                            });
+
+
+                        this.classList.add(
+                            "active"
+                        );
+
+                    }
+                );
+
+            });
+
+
+        /*
+         * Aviso antes de ativar manutenção
+         */
+
+        const maintenance =
+            document.getElementById(
+                "modo_manutencao"
+            );
+
+
+        if (maintenance) {
+
+            maintenance.addEventListener(
+                "change",
+                function () {
+
+                    if (this.checked) {
+
+                        const confirmar =
+                            confirm(
+                                "Ativar o modo de manutenção? " +
+                                "Usuários comuns não poderão acessar a plataforma."
+                            );
+
+
+                        if (!confirmar) {
+
+                            this.checked = false;
+
+                        }
+
+                    }
+
+                }
+            );
+
+        }
+
+    </script>
+
+
+</body>
+
+</html>

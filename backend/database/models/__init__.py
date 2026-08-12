@@ -8,3 +8,4 @@ from .refresh_token import RefreshToken
 from .solicitacoes_vincular import SolicitacaoVincular
 from .cronogramas import Cronograma
 from .solicitacoes_projetos import SolicitacaoCancelamento
+from .solicitacoes_vincular import SolicitacaoVincular

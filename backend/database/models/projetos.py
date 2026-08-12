@@ -45,6 +45,5 @@ class Projetos(Base):
     estudante: Mapped[Optional["Estudante"]] = relationship("Estudante", back_populates="projetos")
     professor: Mapped[Optional["Professor"]] = relationship("Professor", back_populates="projetos")
     cronogramas: Mapped[list["Cronograma"]] = relationship("Cronograma", back_populates="projeto", cascade="all, delete-orphan")
-    solicitacao: Mapped["SolicitacaoVincular"] = relationship("SolicitacaoVincular", back_populates="projetos")
-    solicitacao_c: Mapped["SolicitacaoCancelamento"] = relationship("SolicitacaoCancelamento", back_populates="estudante")
-    solicitacao_p: Mapped["SolicitacaoProjeto"] = relationship("SolicitacaoProjeto", back_populates="estudante")
+    solicitacao_c: Mapped["SolicitacaoCancelamento"] = relationship("SolicitacaoCancelamento", back_populates="projeto")
+    solicitacao_p: Mapped["SolicitacaoProjeto"] = relationship("SolicitacaoProjeto", back_populates="projeto")

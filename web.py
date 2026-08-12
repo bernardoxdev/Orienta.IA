@@ -1,7 +1,12 @@
 import os
 
-from flask import Flask, render_template, request, redirect
+from pydantic import BaseModel
+from types import SimpleNamespace
+
+from flask import Flask, render_template, request, redirect, url_for
 from flask_session import Session
+
+from backend.services.site_services import get_dashboard_admin_data, get_admin_users, get_admin_projetos, get_admin_candidaturas, get_admin_propostas
 
 app = Flask(__name__, template_folder="./frontend/templates")
 
@@ -70,895 +75,768 @@ PAGINAS ADMIN
 """
 @app.route("/admin")
 def admin_dashboard():
-    return render_template("dashboard_admin.html", total_usuarios=0, total_estudantes=0, total_professores=0, total_projetos=0, total_candidaturas=0, candidaturas_pendentes=0, propostas_pendentes=0, mensagens_pendentes=0, notificacoes_nao_lidas=0, usuarios_recentes=[], atividades=[], notificacoes=[])
+    dashboard_data: BaseModel = get_dashboard_admin_data()
+    
+    return render_template("dashboard_admin.html", **dashboard_data.model_dump())
     
 @app.route("/admin/usuarios")
 def admin_usuarios():
-    usuarios = [
+    usuarios: list = get_admin_users()
+    dashboard_data: BaseModel = get_dashboard_admin_data()
 
-        {
-            "id": 1,
-            "nome": "Bernardo de Castro",
-            "username": "bernardocastro",
-            "email": "bernardo@ufsj.edu.br",
-            "telegram_id": "123456789",
-            "role": "user",
-            "tipo": "estudante",
-            "universidade": "Universidade Federal de São João del-Rei",
-            "universidade_sigla": "UFSJ",
-            "ativo": True
-        },
-
-        {
-            "id": 2,
-            "nome": "Ana Carolina Silva",
-            "username": "anacarolina",
-            "email": "ana.silva@ufsj.edu.br",
-            "telegram_id": "987654321",
-            "role": "user",
-            "tipo": "professor",
-            "universidade": "Universidade Federal de São João del-Rei",
-            "universidade_sigla": "UFSJ",
-            "ativo": True
-        },
-
-        {
-            "id": 3,
-            "nome": "Lucas Oliveira",
-            "username": "lucasoliveira",
-            "email": "lucas.oliveira@ufsj.edu.br",
-            "telegram_id": None,
-            "role": "user",
-            "tipo": "estudante",
-            "universidade": "Universidade Federal de São João del-Rei",
-            "universidade_sigla": "UFSJ",
-            "ativo": True
-        },
-
-        {
-            "id": 4,
-            "nome": "Mariana Souza",
-            "username": "marianasouza",
-            "email": "mariana@ufmg.br",
-            "telegram_id": "456789123",
-            "role": "user",
-            "tipo": "professor",
-            "universidade": "Universidade Federal de Minas Gerais",
-            "universidade_sigla": "UFMG",
-            "ativo": True
-        },
-
-        {
-            "id": 5,
-            "nome": "Gabriel Santos",
-            "username": "gabrielsantos",
-            "email": "gabriel@ufsj.edu.br",
-            "telegram_id": None,
-            "role": "user",
-            "tipo": "estudante",
-            "universidade": "Universidade Federal de São João del-Rei",
-            "universidade_sigla": "UFSJ",
-            "ativo": False
-        },
-
-        {
-            "id": 6,
-            "nome": "Juliana Mendes",
-            "username": "julianamendes",
-            "email": "juliana@ufsj.edu.br",
-            "telegram_id": "321654987",
-            "role": "user",
-            "tipo": "estudante",
-            "universidade": "Universidade Federal de São João del-Rei",
-            "universidade_sigla": "UFSJ",
-            "ativo": True
-        },
-
-        {
-            "id": 7,
-            "nome": "Carlos Eduardo Lima",
-            "username": "carloseduardo",
-            "email": "carlos@ufop.edu.br",
-            "telegram_id": "741852963",
-            "role": "user",
-            "tipo": "professor",
-            "universidade": "Universidade Federal de Ouro Preto",
-            "universidade_sigla": "UFOP",
-            "ativo": True
-        },
-
-        {
-            "id": 8,
-            "nome": "Rafael Almeida",
-            "username": "rafaelalmeida",
-            "email": "rafael@ufsj.edu.br",
-            "telegram_id": None,
-            "role": "user",
-            "tipo": "estudante",
-            "universidade": "Universidade Federal de São João del-Rei",
-            "universidade_sigla": "UFSJ",
-            "ativo": True
-        },
-
-        {
-            "id": 9,
-            "nome": "Fernanda Costa",
-            "username": "fernandacosta",
-            "email": "fernanda@ufmg.br",
-            "telegram_id": "159357486",
-            "role": "user",
-            "tipo": "estudante",
-            "universidade": "Universidade Federal de Minas Gerais",
-            "universidade_sigla": "UFMG",
-            "ativo": True
-        },
-
-        {
-            "id": 10,
-            "nome": "Administrador",
-            "username": "admin",
-            "email": "admin@orienta.ia",
-            "telegram_id": None,
-            "role": "admin",
-            "tipo": "administrador",
-            "universidade": None,
-            "universidade_sigla": None,
-            "ativo": True
-        }
-
-    ]
-
-    return render_template("admin/usuarios.html", usuarios=usuarios)
+    return render_template("admin/usuarios.html", usuarios=usuarios, **dashboard_data.model_dump())
     
 @app.route("/admin/usuarios/novo", methods=["GET", "POST"])
 def admin_novo_usuario():
-    pass
+    if request.method == "POST":
+        nome = request.form.get("nome", "").strip()
+        username = request.form.get("username", "").strip()
+        email = request.form.get("email", "").strip()
+        telegram_id = request.form.get("telegram_id", "").strip()
+        senha = request.form.get("senha", "")
+        role = request.form.get("role", "user")
+        tipo = request.form.get("tipo")
 
-@app.route(
-    "/admin/usuarios/<int:usuario_id>/excluir",
-    methods=["POST"]
-)
+        universidade_id = request.form.get("universidade_id")
+
+        # ==============================
+        # DADOS DO ESTUDANTE
+        # ==============================
+
+        matricula = request.form.get("matricula", "").strip()
+        curso = request.form.get("curso", "").strip()
+        periodo = request.form.get("periodo")
+        lattes = request.form.get("lattes", "").strip()
+        previsao_conclusao = request.form.get(
+            "previsao_conclusao",
+            ""
+        ).strip()
+
+        # ==============================
+        # DADOS DO PROFESSOR
+        # ==============================
+
+        departamento = request.form.get(
+            "departamento",
+            ""
+        ).strip()
+
+        area_pesquisa = request.form.get(
+            "area_pesquisa",
+            ""
+        ).strip()
+
+        sala = request.form.get(
+            "sala",
+            ""
+        ).strip()
+
+        ativo = request.form.get("ativo") == "on"
+
+        # =================================
+        # CRIAÇÃO DO USUÁRIO
+        # =================================
+
+        # TODO:
+        # validar dados
+        # verificar email duplicado
+        # verificar username duplicado
+        # hash da senha
+        # criar User
+        # criar Estudante ou Professor
+        # commit
+
+        return redirect(url_for("admin_usuarios"))
+    
+    universidades = []
+
+    return render_template("admin/novo_usuario.html", universidades=universidades)
+
+@app.route("/admin/usuarios/<int:usuario_id>/excluir", methods=["POST"])
 def admin_excluir_usuario(usuario_id):
     pass
 
-@app.route("/admin/usuarios/<int:usuario_id>/editar", methods=["GET", "POST"])
+@app.route(
+    "/admin/usuarios/<int:usuario_id>/editar",
+    methods=["GET", "POST"]
+)
 def admin_editar_usuario(usuario_id):
-    pass
+
+    # ==========================================
+    # MOCK DO USUÁRIO
+    # ==========================================
+
+    usuario = SimpleNamespace(
+
+        id=1,
+
+        nome="Bernardo de Castro",
+
+        username="bernardocastro",
+
+        email="bernardo@ufsj.edu.br",
+
+        telegram_id="123456789",
+
+        role="user",
+
+        ativo=True
+
+    )
+
+
+    # ==========================================
+    # MOCK DA UNIVERSIDADE
+    # ==========================================
+
+    universidade = SimpleNamespace(
+
+        id=1,
+
+        nome="Universidade Federal de São João del-Rei",
+
+        sigla="UFSJ",
+
+        cidade="São João del-Rei",
+
+        estado="MG"
+
+    )
+
+
+    universidade_2 = SimpleNamespace(
+
+        id=2,
+
+        nome="Universidade Federal de Minas Gerais",
+
+        sigla="UFMG",
+
+        cidade="Belo Horizonte",
+
+        estado="MG"
+
+    )
+
+
+    universidade_3 = SimpleNamespace(
+
+        id=3,
+
+        nome="Universidade Federal de Viçosa",
+
+        sigla="UFV",
+
+        cidade="Viçosa",
+
+        estado="MG"
+
+    )
+
+
+    # ==========================================
+    # MOCK DO ESTUDANTE
+    # ==========================================
+
+    estudante = SimpleNamespace(
+
+        id=1,
+
+        user_id=1,
+
+        universidade_id=1,
+
+        matricula="2023001234",
+
+        curso="Ciência da Computação",
+
+        periodo=6,
+
+        lattes="https://lattes.cnpq.br/0000000000000000",
+
+        previsao_conclusao="2027/2",
+
+        universidade=universidade
+
+    )
+
+
+    # ==========================================
+    # UNIVERSIDADES
+    # ==========================================
+
+    universidades = [
+
+        universidade,
+
+        universidade_2,
+
+        universidade_3
+
+    ]
+
+
+    # ==========================================
+    # TIPO
+    # ==========================================
+
+    tipo = "estudante"
+
+
+    # ==========================================
+    # RENDER
+    # ==========================================
+
+    return render_template(
+
+        "admin/editar_usuario.html",
+
+        usuario=usuario,
+
+        estudante=estudante,
+
+        professor=None,
+
+        tipo=tipo,
+
+        universidades=universidades
+
+    )
 
 @app.route("/admin/usuarios/<int:usuario_id>/visualizar")
 def admin_visualizar_usuario(usuario_id):
-    pass
+
+    usuario = SimpleNamespace(
+        id=1,
+        nome="Bernardo de Castro",
+        username="bernardocastro",
+        email="bernardo@ufsj.edu.br",
+        telegram_id="123456789",
+        role="user",
+        ativo=True
+    )
+
+    universidade = SimpleNamespace(
+        id=1,
+        nome="Universidade Federal de São João del-Rei",
+        sigla="UFSJ",
+        cidade="São João del-Rei",
+        estado="MG"
+    )
+
+    estudante = SimpleNamespace(
+        id=1,
+        user_id=1,
+        universidade_id=1,
+        matricula="2023001234",
+        curso="Ciência da Computação",
+        periodo=6,
+        lattes="https://lattes.cnpq.br/0000000000000000",
+        previsao_conclusao="2027/2",
+        universidade=universidade
+    )
+
+    projetos = [
+
+        SimpleNamespace(
+            id=1,
+            titulo="Orienta.IA",
+            descricao=(
+                "Plataforma para gerenciamento de projetos de "
+                "orientação acadêmica, aproximando estudantes e professores."
+            ),
+            status=SimpleNamespace(
+                value="Em andamento"
+            )
+        ),
+
+        SimpleNamespace(
+            id=2,
+            titulo="Sistema de recomendação acadêmica",
+            descricao=(
+                "Desenvolvimento de um sistema capaz de recomendar "
+                "projetos de iniciação científica aos estudantes."
+            ),
+            status=SimpleNamespace(
+                value="Em andamento"
+            )
+        ),
+
+        SimpleNamespace(
+            id=3,
+            titulo="Análise de dados educacionais",
+            descricao=(
+                "Projeto voltado à análise de dados acadêmicos "
+                "para identificação de padrões de desempenho."
+            ),
+            status=SimpleNamespace(
+                value="Concluído"
+            )
+        )
+
+    ]
+
+    return render_template(
+        "admin/visualizar_usuario.html",
+
+        usuario=usuario,
+
+        estudante=estudante,
+
+        professor=None,
+
+        universidade=universidade,
+
+        projetos=projetos,
+
+        tipo="estudante"
+    )
 
 @app.route("/admin/projetos")
 def admin_projetos():
-    projetos = [
-
-        {
-            "id": 1,
-            "titulo": "Inteligência Artificial aplicada à Educação",
-            "descricao": "Desenvolvimento de uma plataforma baseada em IA para auxiliar estudantes no processo de aprendizagem.",
-            "status": "Em andamento",
-            "contexto": "IC",
-            "data_inicio": "10/03/2026",
-            "data_fim": "10/12/2026",
-
-            "professor": {
-                "id": 2,
-                "nome": "Ana Carolina Silva",
-                "username": "anacarolina"
-            },
-
-            "estudante": {
-                "id": 1,
-                "nome": "Bernardo de Castro",
-                "username": "bernardocastro"
-            },
-
-            "universidade": {
-                "nome": "Universidade Federal de São João del-Rei",
-                "sigla": "UFSJ"
-            },
-
-            "palavras_chave": [
-                "Inteligência Artificial",
-                "Educação",
-                "Python",
-                "LLM"
-            ],
-
-            "cronogramas_total": 6,
-            "cronogramas_concluidos": 3
-        },
-
-
-        {
-            "id": 2,
-            "titulo": "Sistema de gerenciamento acadêmico",
-            "descricao": "Desenvolvimento de uma aplicação web para gerenciamento de atividades acadêmicas e projetos de pesquisa.",
-            "status": "Não iniciado",
-            "contexto": "TCC",
-            "data_inicio": "01/09/2026",
-            "data_fim": "30/06/2027",
-
-            "professor": {
-                "id": 3,
-                "nome": "Carlos Eduardo Lima",
-                "username": "carloseduardo"
-            },
-
-            "estudante": {
-                "id": 8,
-                "nome": "Rafael Almeida",
-                "username": "rafaelalmeida"
-            },
-
-            "universidade": {
-                "nome": "Universidade Federal de Ouro Preto",
-                "sigla": "UFOP"
-            },
-
-            "palavras_chave": [
-                "Web",
-                "Sistemas",
-                "Banco de Dados"
-            ],
-
-            "cronogramas_total": 8,
-            "cronogramas_concluidos": 0
-        },
-
-
-        {
-            "id": 3,
-            "titulo": "Análise de dados educacionais",
-            "descricao": "Análise de dados acadêmicos para identificação de padrões de desempenho dos estudantes.",
-            "status": "Concluído",
-            "contexto": "MESTRADO",
-            "data_inicio": "15/02/2025",
-            "data_fim": "20/07/2026",
-
-            "professor": {
-                "id": 4,
-                "nome": "Mariana Souza",
-                "username": "marianasouza"
-            },
-
-            "estudante": {
-                "id": 9,
-                "nome": "Fernanda Costa",
-                "username": "fernandacosta"
-            },
-
-            "universidade": {
-                "nome": "Universidade Federal de Minas Gerais",
-                "sigla": "UFMG"
-            },
-
-            "palavras_chave": [
-                "Data Science",
-                "Educação",
-                "Estatística"
-            ],
-
-            "cronogramas_total": 10,
-            "cronogramas_concluidos": 10
-        },
-
-
-        {
-            "id": 4,
-            "titulo": "Middleware para dispositivos RFID",
-            "descricao": "Desenvolvimento de middleware para integração e gerenciamento de leitores RFID.",
-            "status": "Em andamento",
-            "contexto": "IC",
-            "data_inicio": "05/04/2026",
-            "data_fim": "20/12/2026",
-
-            "professor": {
-                "id": 2,
-                "nome": "Ana Carolina Silva",
-                "username": "anacarolina"
-            },
-
-            "estudante": {
-                "id": 6,
-                "nome": "Juliana Mendes",
-                "username": "julianamendes"
-            },
-
-            "universidade": {
-                "nome": "Universidade Federal de São João del-Rei",
-                "sigla": "UFSJ"
-            },
-
-            "palavras_chave": [
-                "RFID",
-                "Java",
-                "IoT",
-                "Middleware"
-            ],
-
-            "cronogramas_total": 7,
-            "cronogramas_concluidos": 2
-        },
-
-
-        {
-            "id": 5,
-            "titulo": "Assistente virtual para orientação acadêmica",
-            "descricao": "Criação de um assistente virtual utilizando modelos de linguagem para auxiliar estudantes.",
-            "status": "Em andamento",
-            "contexto": "TCC",
-            "data_inicio": "20/01/2026",
-            "data_fim": "15/11/2026",
-
-            "professor": {
-                "id": 3,
-                "nome": "Carlos Eduardo Lima",
-                "username": "carloseduardo"
-            },
-
-            "estudante": {
-                "id": 3,
-                "nome": "Lucas Oliveira",
-                "username": "lucasoliveira"
-            },
-
-            "universidade": {
-                "nome": "Universidade Federal de Ouro Preto",
-                "sigla": "UFOP"
-            },
-
-            "palavras_chave": [
-                "LLM",
-                "Python",
-                "Telegram",
-                "IA"
-            ],
-
-            "cronogramas_total": 9,
-            "cronogramas_concluidos": 4
-        },
-
-
-        {
-            "id": 6,
-            "titulo": "Sistema de recomendação de projetos",
-            "descricao": "Sistema para recomendar projetos acadêmicos aos estudantes com base em seus interesses.",
-            "status": "Não iniciado",
-            "contexto": "OUTRO",
-            "data_inicio": "01/10/2026",
-            "data_fim": "01/05/2027",
-
-            "professor": {
-                "id": 4,
-                "nome": "Mariana Souza",
-                "username": "marianasouza"
-            },
-
-            "estudante": None,
-
-            "universidade": {
-                "nome": "Universidade Federal de Minas Gerais",
-                "sigla": "UFMG"
-            },
-
-            "palavras_chave": [
-                "Recomendação",
-                "Machine Learning",
-                "IA"
-            ],
-
-            "cronogramas_total": 5,
-            "cronogramas_concluidos": 0
-        },
-
-
-        {
-            "id": 7,
-            "titulo": "Aplicação de visão computacional",
-            "descricao": "Estudo da utilização de visão computacional para identificação automática de objetos.",
-            "status": "Cancelado",
-            "contexto": "IC",
-            "data_inicio": "10/02/2026",
-            "data_fim": "10/08/2026",
-
-            "professor": {
-                "id": 2,
-                "nome": "Ana Carolina Silva",
-                "username": "anacarolina"
-            },
-
-            "estudante": {
-                "id": 8,
-                "nome": "Rafael Almeida",
-                "username": "rafaelalmeida"
-            },
-
-            "universidade": {
-                "nome": "Universidade Federal de São João del-Rei",
-                "sigla": "UFSJ"
-            },
-
-            "palavras_chave": [
-                "Visão Computacional",
-                "Python",
-                "OpenCV"
-            ],
-
-            "cronogramas_total": 4,
-            "cronogramas_concluidos": 1
-        }
-
-    ]
-
-    return render_template("admin/projetos.html", projetos=projetos)
+    projetos = get_admin_projetos()
+    dashboard_data: BaseModel = get_dashboard_admin_data()
+    
+    return render_template("admin/projetos.html", projetos=projetos, **dashboard_data.model_dump())
 
 @app.route("/admin/candidaturas")
 def admin_candidaturas():
-    candidaturas = [
+    candidaturas: list = get_admin_candidaturas()
+    dashboard_data: BaseModel = get_dashboard_admin_data()
 
-        {
-            "id": 1,
-            "tipo": "candidatura",
-            "status": "Pendente",
-
-            "estudante": {
-                "id": 1,
-                "nome": "Bernardo de Castro",
-                "username": "bernardocastro",
-                "matricula": "2023001234"
-            },
-
-            "projeto": {
-                "id": 1,
-                "titulo": "Inteligência Artificial aplicada à Educação",
-                "contexto": "IC"
-            },
-
-            "professor": {
-                "id": 2,
-                "nome": "Ana Carolina Silva"
-            },
-
-            "universidade": {
-                "sigla": "UFSJ",
-                "nome": "Universidade Federal de São João del-Rei"
-            },
-
-            "data": "11/08/2026",
-            "mensagem": "Tenho interesse no projeto devido à minha experiência com Python e Inteligência Artificial."
-        },
-
-
-        {
-            "id": 2,
-            "tipo": "candidatura",
-            "status": "Pendente",
-
-            "estudante": {
-                "id": 3,
-                "nome": "Lucas Oliveira",
-                "username": "lucasoliveira",
-                "matricula": "2022004567"
-            },
-
-            "projeto": {
-                "id": 5,
-                "titulo": "Assistente virtual para orientação acadêmica",
-                "contexto": "TCC"
-            },
-
-            "professor": {
-                "id": 3,
-                "nome": "Carlos Eduardo Lima"
-            },
-
-            "universidade": {
-                "sigla": "UFOP",
-                "nome": "Universidade Federal de Ouro Preto"
-            },
-
-            "data": "10/08/2026",
-            "mensagem": "Gostaria de participar do desenvolvimento do assistente virtual."
-        },
-
-
-        {
-            "id": 3,
-            "tipo": "candidatura",
-            "status": "Aprovada",
-
-            "estudante": {
-                "id": 6,
-                "nome": "Juliana Mendes",
-                "username": "julianamendes",
-                "matricula": "2024007890"
-            },
-
-            "projeto": {
-                "id": 4,
-                "titulo": "Middleware para dispositivos RFID",
-                "contexto": "IC"
-            },
-
-            "professor": {
-                "id": 2,
-                "nome": "Ana Carolina Silva"
-            },
-
-            "universidade": {
-                "sigla": "UFSJ",
-                "nome": "Universidade Federal de São João del-Rei"
-            },
-
-            "data": "08/08/2026",
-            "mensagem": "Tenho interesse em sistemas embarcados, IoT e RFID."
-        },
-
-
-        {
-            "id": 4,
-            "tipo": "candidatura",
-            "status": "Recusada",
-
-            "estudante": {
-                "id": 8,
-                "nome": "Rafael Almeida",
-                "username": "rafaelalmeida",
-                "matricula": "2021006543"
-            },
-
-            "projeto": {
-                "id": 2,
-                "titulo": "Sistema de gerenciamento acadêmico",
-                "contexto": "TCC"
-            },
-
-            "professor": {
-                "id": 3,
-                "nome": "Carlos Eduardo Lima"
-            },
-
-            "universidade": {
-                "sigla": "UFOP",
-                "nome": "Universidade Federal de Ouro Preto"
-            },
-
-            "data": "05/08/2026",
-            "mensagem": "Tenho experiência no desenvolvimento de aplicações web."
-        },
-
-
-        {
-            "id": 5,
-            "tipo": "cancelamento",
-            "status": "Pendente",
-
-            "estudante": {
-                "id": 9,
-                "nome": "Fernanda Costa",
-                "username": "fernandacosta",
-                "matricula": "2020003210"
-            },
-
-            "projeto": {
-                "id": 3,
-                "titulo": "Análise de dados educacionais",
-                "contexto": "MESTRADO"
-            },
-
-            "professor": {
-                "id": 4,
-                "nome": "Mariana Souza"
-            },
-
-            "universidade": {
-                "sigla": "UFMG",
-                "nome": "Universidade Federal de Minas Gerais"
-            },
-
-            "data": "09/08/2026",
-
-            "origem": "Estudante",
-
-            "mensagem": "Solicito o cancelamento do projeto devido à impossibilidade de continuar participando."
-        },
-
-
-        {
-            "id": 6,
-            "tipo": "cancelamento",
-            "status": "Pendente",
-
-            "estudante": {
-                "id": 3,
-                "nome": "Lucas Oliveira",
-                "username": "lucasoliveira",
-                "matricula": "2022004567"
-            },
-
-            "projeto": {
-                "id": 5,
-                "titulo": "Assistente virtual para orientação acadêmica",
-                "contexto": "TCC"
-            },
-
-            "professor": {
-                "id": 3,
-                "nome": "Carlos Eduardo Lima"
-            },
-
-            "universidade": {
-                "sigla": "UFOP",
-                "nome": "Universidade Federal de Ouro Preto"
-            },
-
-            "data": "07/08/2026",
-
-            "origem": "Professor",
-
-            "mensagem": "Solicito o cancelamento devido à alteração no planejamento do projeto."
-        }
-
-    ]
-
-    return render_template("admin/candidaturas.html", candidaturas=candidaturas)
+    return render_template("admin/candidaturas.html", candidaturas=candidaturas, **dashboard_data.model_dump())
 
 @app.route("/admin/propostas")
 def admin_propostas():
-    propostas = [
+    propostas = get_admin_propostas()
+    dashboard_data: BaseModel = get_dashboard_admin_data()
 
-        {
-            "id": 1,
-
-            "titulo": "Sistema de recomendação de projetos acadêmicos",
-
-            "descricao": (
-                "Desenvolvimento de um sistema capaz de recomendar "
-                "projetos de pesquisa aos estudantes utilizando técnicas "
-                "de inteligência artificial e análise de interesses."
-            ),
-
-            "estudante": {
-                "id": 1,
-                "nome": "Bernardo de Castro",
-                "username": "bernardocastro",
-                "matricula": "2023001234"
-            },
-
-            "universidade": {
-                "id": 1,
-                "nome": "Universidade Federal de São João del-Rei",
-                "sigla": "UFSJ"
-            },
-
-            "contexto": "IC",
-
-            "area": "Inteligência Artificial",
-
-            "palavras_chave": [
-                "IA",
-                "Machine Learning",
-                "Recomendação",
-                "Python"
-            ],
-
-            "status": "Pendente",
-
-            "data": "11/08/2026",
-
-            "observacao": (
-                "Gostaria de desenvolver o projeto utilizando "
-                "modelos de recomendação e LLMs."
-            )
-        },
-
-
-        {
-            "id": 2,
-
-            "titulo": "Plataforma de gerenciamento de laboratórios",
-
-            "descricao": (
-                "Criação de uma plataforma web para gerenciamento "
-                "de equipamentos, reservas e usuários dos laboratórios "
-                "da universidade."
-            ),
-
-            "estudante": {
-                "id": 3,
-                "nome": "Lucas Oliveira",
-                "username": "lucasoliveira",
-                "matricula": "2022004567"
-            },
-
-            "universidade": {
-                "id": 1,
-                "nome": "Universidade Federal de São João del-Rei",
-                "sigla": "UFSJ"
-            },
-
-            "contexto": "TCC",
-
-            "area": "Engenharia de Software",
-
-            "palavras_chave": [
-                "Web",
-                "Python",
-                "PostgreSQL",
-                "React"
-            ],
-
-            "status": "Pendente",
-
-            "data": "10/08/2026",
-
-            "observacao": (
-                "A proposta busca solucionar problemas encontrados "
-                "no gerenciamento dos laboratórios."
-            )
-        },
-
-
-        {
-            "id": 3,
-
-            "titulo": "Análise de desempenho acadêmico",
-
-            "descricao": (
-                "Estudo de técnicas de análise de dados para identificar "
-                "padrões de desempenho acadêmico e fatores relacionados "
-                "ao rendimento dos estudantes."
-            ),
-
-            "estudante": {
-                "id": 9,
-                "nome": "Fernanda Costa",
-                "username": "fernandacosta",
-                "matricula": "2020003210"
-            },
-
-            "universidade": {
-                "id": 2,
-                "nome": "Universidade Federal de Minas Gerais",
-                "sigla": "UFMG"
-            },
-
-            "contexto": "MESTRADO",
-
-            "area": "Ciência de Dados",
-
-            "palavras_chave": [
-                "Data Science",
-                "Estatística",
-                "Educação"
-            ],
-
-            "status": "Em análise",
-
-            "data": "08/08/2026",
-
-            "observacao": (
-                "Pretendo utilizar dados históricos para identificar "
-                "padrões de desempenho."
-            )
-        },
-
-
-        {
-            "id": 4,
-
-            "titulo": "Middleware para integração de dispositivos RFID",
-
-            "descricao": (
-                "Desenvolvimento de uma camada de middleware capaz "
-                "de integrar diferentes leitores RFID e disponibilizar "
-                "uma API padronizada."
-            ),
-
-            "estudante": {
-                "id": 6,
-                "nome": "Juliana Mendes",
-                "username": "julianamendes",
-                "matricula": "2024007890"
-            },
-
-            "universidade": {
-                "id": 1,
-                "nome": "Universidade Federal de São João del-Rei",
-                "sigla": "UFSJ"
-            },
-
-            "contexto": "IC",
-
-            "area": "Internet das Coisas",
-
-            "palavras_chave": [
-                "RFID",
-                "Java",
-                "IoT",
-                "API"
-            ],
-
-            "status": "Aprovada",
-
-            "data": "02/08/2026",
-
-            "observacao": (
-                "Projeto voltado para integração de leitores "
-                "RFID de diferentes fabricantes."
-            )
-        },
-
-
-        {
-            "id": 5,
-
-            "titulo": "Aplicação de visão computacional para laboratórios",
-
-            "descricao": (
-                "Desenvolvimento de uma aplicação utilizando visão "
-                "computacional para identificação automática de objetos."
-            ),
-
-            "estudante": {
-                "id": 8,
-                "nome": "Rafael Almeida",
-                "username": "rafaelalmeida",
-                "matricula": "2021006543"
-            },
-
-            "universidade": {
-                "id": 1,
-                "nome": "Universidade Federal de São João del-Rei",
-                "sigla": "UFSJ"
-            },
-
-            "contexto": "IC",
-
-            "area": "Visão Computacional",
-
-            "palavras_chave": [
-                "OpenCV",
-                "Python",
-                "IA"
-            ],
-
-            "status": "Recusada",
-
-            "data": "28/07/2026",
-
-            "observacao": (
-                "A proposta foi considerada fora da área dos "
-                "professores disponíveis atualmente."
-            )
-        }
-
-    ]
-
-    return render_template("admin/propostas.html", propostas=propostas)
+    return render_template("admin/propostas.html", propostas=propostas, **dashboard_data.model_dump())
 
 @app.route("/admin/universidades")
 def admin_universidades():
+    universidades = [
+        SimpleNamespace(
+            id=1,
+            nome="Universidade Federal de São João del-Rei",
+            sigla="UFSJ",
+            cidade="São João del-Rei",
+            estado="MG"
+        )
+    ]
+    estados = ["MG", "SP", "RJ", "ES", "BA", "PE", "RS", "SC"]
+    dashboard_data: BaseModel = get_dashboard_admin_data()
+    
+    return render_template("admin/universidades.html", universidades=universidades, estados=estados, **dashboard_data.model_dump())
+
+@app.route("/admin/universidades/novo", methods=["GET", "POST"])
+def admin_nova_universidade():
+    pass
+
+@app.route("/admin/universidades/<int:universidade_id>/excluir", methods=["POST"])
+def admin_excluir_universidade(universidade_id):
     pass
 
 @app.route("/admin/configuracoes")
 def admin_configuracoes():
-    pass
 
+    configuracoes = {
+        "nome_plataforma": "Orienta.IA",
+
+        "descricao": (
+            "Plataforma para conectar estudantes, "
+            "professores e oportunidades acadêmicas."
+        ),
+
+        "email_administrativo": "admin@orientaia.com.br",
+
+        # Usuários
+        "permitir_cadastro": True,
+        "aprovar_cadastro": False,
+        "permitir_telegram": True,
+
+        # Projetos
+        "permitir_projetos": True,
+        "permitir_candidaturas": True,
+        "permitir_propostas": True,
+
+        # Notificações
+        "notificacoes_email": True,
+        "notificacoes_sistema": True,
+
+        # Segurança
+        "tempo_sessao": 60,
+        "tentativas_login": 5,
+
+        # Manutenção
+        "modo_manutencao": False,
+    }
+
+    return render_template(
+        "admin/configuracoes.html",
+        configuracoes=configuracoes
+    )
+    
 @app.route("/admin/dados")
 def admin_dados():
-    pass
+
+    dados = {
+        "total_registros": 287,
+        "usuarios": 42,
+        "estudantes": 28,
+        "professores": 8,
+        "universidades": 3,
+        "projetos": 31,
+        "cronogramas": 96,
+        "solicitacoes_projeto": 18,
+        "solicitacoes_cancelamento": 4,
+        "solicitacoes_vincular": 7,
+
+        "ultima_verificacao": "12/08/2026 às 13:32",
+        "status_banco": "online",
+    }
+
+    modelos = [
+        {
+            "nome": "Usuários",
+            "tabela": "users",
+            "descricao": "Contas e informações básicas dos usuários.",
+            "registros": 42,
+            "icone": "bi-people",
+            "url": "admin_usuarios",
+        },
+        {
+            "nome": "Estudantes",
+            "tabela": "estudante",
+            "descricao": "Dados acadêmicos dos estudantes.",
+            "registros": 28,
+            "icone": "bi-mortarboard",
+            "url": None,
+        },
+        {
+            "nome": "Professores",
+            "tabela": "professor",
+            "descricao": "Dados acadêmicos e profissionais dos professores.",
+            "registros": 8,
+            "icone": "bi-person-workspace",
+            "url": None,
+        },
+        {
+            "nome": "Universidades",
+            "tabela": "universidade",
+            "descricao": "Instituições cadastradas na plataforma.",
+            "registros": 3,
+            "icone": "bi-building",
+            "url": "admin_universidades",
+        },
+        {
+            "nome": "Projetos",
+            "tabela": "projetos",
+            "descricao": "Projetos de iniciação científica, TCC e orientação.",
+            "registros": 31,
+            "icone": "bi-folder",
+            "url": "admin_projetos",
+        },
+        {
+            "nome": "Cronogramas",
+            "tabela": "cronograma",
+            "descricao": "Etapas e cronogramas dos projetos.",
+            "registros": 96,
+            "icone": "bi-calendar3",
+            "url": None,
+        },
+        {
+            "nome": "Solicitações de projeto",
+            "tabela": "solicitacao_projeto",
+            "descricao": "Solicitações de estudantes para projetos.",
+            "registros": 18,
+            "icone": "bi-file-earmark-plus",
+            "url": "admin_propostas",
+        },
+        {
+            "nome": "Cancelamentos",
+            "tabela": "projeto_cancelamento",
+            "descricao": "Solicitações de cancelamento de projetos.",
+            "registros": 4,
+            "icone": "bi-x-circle",
+            "url": None,
+        },
+        {
+            "nome": "Vinculações",
+            "tabela": "solicitacoes_vincular",
+            "descricao": "Solicitações de vínculo com universidades.",
+            "registros": 7,
+            "icone": "bi-link-45deg",
+            "url": None,
+        },
+    ]
+
+    return render_template(
+        "admin/dados.html",
+        dados=dados,
+        modelos=modelos
+    )
 
 @app.route("/admin/notificoes")
 def admin_notificacoes():
-    pass
+
+    notificacoes = [
+        {
+            "id": 1,
+            "titulo": "Nova proposta de projeto",
+            "mensagem": (
+                "Uma nova proposta foi enviada para o projeto "
+                "de Inteligência Artificial."
+            ),
+            "tipo": "projeto",
+            "destinatario": "Professores",
+            "destinatarios": 8,
+            "data": "12/08/2026 13:21",
+            "lida": False,
+            "status": "enviada",
+            "icone": "bi-folder-plus"
+        },
+        {
+            "id": 2,
+            "titulo": "Novo usuário cadastrado",
+            "mensagem": (
+                "Um novo estudante acabou de criar uma conta "
+                "no Orienta.IA."
+            ),
+            "tipo": "usuario",
+            "destinatario": "Administradores",
+            "destinatarios": 2,
+            "data": "12/08/2026 12:48",
+            "lida": True,
+            "status": "enviada",
+            "icone": "bi-person-plus"
+        },
+        {
+            "id": 3,
+            "titulo": "Solicitação de cancelamento",
+            "mensagem": (
+                "Foi solicitada a interrupção de um projeto "
+                "de iniciação científica."
+            ),
+            "tipo": "solicitacao",
+            "destinatario": "Professores",
+            "destinatarios": 8,
+            "data": "12/08/2026 11:32",
+            "lida": False,
+            "status": "enviada",
+            "icone": "bi-exclamation-circle"
+        },
+        {
+            "id": 4,
+            "titulo": "Manutenção programada",
+            "mensagem": (
+                "O sistema passará por manutenção programada "
+                "nesta noite."
+            ),
+            "tipo": "sistema",
+            "destinatario": "Todos os usuários",
+            "destinatarios": 42,
+            "data": "11/08/2026 18:00",
+            "lida": True,
+            "status": "enviada",
+            "icone": "bi-wrench"
+        },
+        {
+            "id": 5,
+            "titulo": "Bem-vindo ao Orienta.IA",
+            "mensagem": (
+                "Sua conta foi criada com sucesso."
+            ),
+            "tipo": "usuario",
+            "destinatario": "Bernardo de Castro",
+            "destinatarios": 1,
+            "data": "10/08/2026 09:12",
+            "lida": True,
+            "status": "enviada",
+            "icone": "bi-hand-thumbs-up"
+        }
+    ]
+
+    estatisticas = {
+        "total": 128,
+        "nao_lidas": 17,
+        "enviadas": 112,
+        "pendentes": 4
+    }
+
+    return render_template(
+        "admin/notificacoes.html",
+        notificacoes=notificacoes,
+        estatisticas=estatisticas
+    )
 
 @app.route("/admin/mensagens")
 def admin_mensagens():
-    pass
 
+    conversas = [
+        {
+            "id": 1,
+            "usuario_id": 12,
+            "nome": "Ana Carolina Silva",
+            "username": "anacarolina",
+            "tipo": "Professor",
+            "iniciais": "AC",
+            "assunto": "Dúvida sobre proposta de projeto",
+            "ultima_mensagem": (
+                "Gostaria de saber se posso alterar "
+                "a descrição do projeto."
+            ),
+            "data": "12/08/2026 13:18",
+            "nao_lidas": 2,
+            "online": True
+        },
+        {
+            "id": 2,
+            "usuario_id": 18,
+            "nome": "Lucas Almeida",
+            "username": "lucasalmeida",
+            "tipo": "Estudante",
+            "iniciais": "LA",
+            "assunto": "Solicitação de vínculo",
+            "ultima_mensagem": (
+                "Enviei minha solicitação de vínculo "
+                "com a universidade."
+            ),
+            "data": "12/08/2026 11:42",
+            "nao_lidas": 1,
+            "online": False
+        },
+        {
+            "id": 3,
+            "usuario_id": 21,
+            "nome": "Mariana Oliveira",
+            "username": "marianaoliveira",
+            "tipo": "Estudante",
+            "iniciais": "MO",
+            "assunto": "Projeto de iniciação científica",
+            "ultima_mensagem": (
+                "Obrigado pelo retorno!"
+            ),
+            "data": "11/08/2026 18:23",
+            "nao_lidas": 0,
+            "online": True
+        },
+        {
+            "id": 4,
+            "usuario_id": 7,
+            "nome": "Carlos Henrique",
+            "username": "carloshenrique",
+            "tipo": "Professor",
+            "iniciais": "CH",
+            "assunto": "Cronograma do projeto",
+            "ultima_mensagem": (
+                "O cronograma foi atualizado."
+            ),
+            "data": "11/08/2026 15:10",
+            "nao_lidas": 0,
+            "online": False
+        },
+        {
+            "id": 5,
+            "usuario_id": 31,
+            "nome": "Juliana Mendes",
+            "username": "julianamendes",
+            "tipo": "Estudante",
+            "iniciais": "JM",
+            "assunto": "Dúvida sobre candidatura",
+            "ultima_mensagem": (
+                "Ainda posso me candidatar ao projeto?"
+            ),
+            "data": "10/08/2026 09:32",
+            "nao_lidas": 0,
+            "online": False
+        }
+    ]
+
+
+    mensagens = {
+        1: [
+            {
+                "id": 1,
+                "remetente": "Ana Carolina Silva",
+                "iniciais": "AC",
+                "mensagem": (
+                    "Olá, administrador! Gostaria de saber "
+                    "se posso alterar a descrição do meu projeto."
+                ),
+                "data": "12/08/2026 13:12",
+                "propria": False
+            },
+            {
+                "id": 2,
+                "remetente": "Administrador",
+                "iniciais": "AD",
+                "mensagem": (
+                    "Olá, Ana! Sim. Você pode solicitar "
+                    "a alteração pelo gerenciamento do projeto."
+                ),
+                "data": "12/08/2026 13:15",
+                "propria": True
+            },
+            {
+                "id": 3,
+                "remetente": "Ana Carolina Silva",
+                "iniciais": "AC",
+                "mensagem": (
+                    "Perfeito. Vou realizar a alteração. "
+                    "Obrigado!"
+                ),
+                "data": "12/08/2026 13:18",
+                "propria": False
+            }
+        ]
+    }
+
+
+    estatisticas = {
+        "total": 36,
+        "nao_lidas": 7,
+        "enviadas": 24,
+        "recebidas": 12
+    }
+
+
+    usuarios = [
+        {
+            "id": 1,
+            "nome": "Bernardo de Castro",
+            "email": "bernardo@ufsj.edu.br",
+            "tipo": "Estudante"
+        },
+        {
+            "id": 2,
+            "nome": "Ana Carolina Silva",
+            "email": "ana.silva@ufsj.edu.br",
+            "tipo": "Professor"
+        },
+        {
+            "id": 3,
+            "nome": "Lucas Almeida",
+            "email": "lucas.almeida@ufsj.edu.br",
+            "tipo": "Estudante"
+        },
+        {
+            "id": 4,
+            "nome": "Mariana Oliveira",
+            "email": "mariana.oliveira@ufsj.edu.br",
+            "tipo": "Estudante"
+        }
+    ]
+
+
+    return render_template(
+        "admin/mensagens.html",
+        conversas=conversas,
+        mensagens=mensagens,
+        estatisticas=estatisticas,
+        usuarios=usuarios
+    )
+    
 # Run
 if __name__ == '__main__':
     app.run(debug=True)

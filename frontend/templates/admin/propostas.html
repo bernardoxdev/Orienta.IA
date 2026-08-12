@@ -799,7 +799,7 @@
      SIDEBAR
 ===================================================== -->
 
-    <aside class="admin-sidebar">
+    <aside class="admin-sidebar" id="adminSidebar">
 
         <div class="admin-brand">
 
@@ -815,6 +815,8 @@
 
         </div>
 
+
+        <!-- ADMIN -->
 
         <div class="admin-profile">
 
@@ -837,15 +839,16 @@
         </div>
 
 
-        <nav class="admin-menu">
+        <!-- MENU -->
 
+        <nav class="admin-menu">
 
             <div class="admin-menu-title">
                 VISÃO GERAL
             </div>
 
 
-            <a href="{{ url_for('admin_dashboard') }}" class="admin-menu-item">
+            <a href="{{ url_for('admin_dashboard') }}" class="admin-menu-item active">
 
                 <i class="bi bi-grid-1x2-fill"></i>
 
@@ -868,23 +871,13 @@
             </a>
 
 
-            <a href="#" class="admin-menu-item">
+            <a href="{{ url_for('admin_universidades') }}" class="admin-menu-item">
 
                 <i class="bi bi-mortarboard"></i>
 
-                Estudantes
+                Universidades
 
             </a>
-
-
-            <a href="#" class="admin-menu-item">
-
-                <i class="bi bi-person-workspace"></i>
-
-                Professores
-
-            </a>
-
 
             <div class="admin-menu-title">
                 CONTEÚDO
@@ -906,14 +899,30 @@
 
                 Candidaturas
 
+                {% if candidaturas_pendentes > 0 %}
+
+                <span class="admin-counter">
+                    {{ candidaturas_pendentes }}
+                </span>
+
+                {% endif %}
+
             </a>
 
 
-            <a href="{{ url_for('admin_propostas') }}" class="admin-menu-item active">
+            <a href="{{ url_for('admin_propostas') }}" class="admin-menu-item">
 
                 <i class="bi bi-lightbulb"></i>
 
                 Propostas
+
+                {% if propostas_pendentes > 0 %}
+
+                <span class="admin-counter">
+                    {{ propostas_pendentes }}
+                </span>
+
+                {% endif %}
 
             </a>
 
@@ -923,20 +932,59 @@
             </div>
 
 
-            <a href="#" class="admin-menu-item">
+            <a href="{{ url_for('admin_mensagens') }}" class="admin-menu-item">
 
                 <i class="bi bi-envelope"></i>
 
                 Mensagens
 
+                {% if mensagens_pendentes > 0 %}
+
+                <span class="admin-counter">
+                    {{ mensagens_pendentes }}
+                </span>
+
+                {% endif %}
+
             </a>
 
 
-            <a href="#" class="admin-menu-item">
+            <a href="{{ url_for('admin_notificacoes') }}" class="admin-menu-item">
 
                 <i class="bi bi-bell"></i>
 
                 Notificações
+
+                {% if notificacoes_nao_lidas > 0 %}
+
+                <span class="admin-counter">
+                    {{ notificacoes_nao_lidas }}
+                </span>
+
+                {% endif %}
+
+            </a>
+
+
+            <div class="admin-menu-title">
+                SISTEMA
+            </div>
+
+
+            <a href="{{ url_for('admin_dados') }}" class="admin-menu-item">
+
+                <i class="bi bi-database"></i>
+
+                Dados
+
+            </a>
+
+
+            <a href="{{ url_for('admin_configuracoes') }}" class="admin-menu-item">
+
+                <i class="bi bi-gear"></i>
+
+                Configurações
 
             </a>
 
@@ -996,13 +1044,145 @@
 
             <div class="admin-topbar-actions">
 
-                <button class="admin-icon-button">
+                <div class="notification-wrapper">
 
-                    <i class="bi bi-bell"></i>
+                    <button class="admin-icon-button notification-button" id="notificationButton" type="button"
+                        aria-label="Notificações" aria-expanded="false">
 
-                    <span class="notification-dot"></span>
+                        <i class="bi bi-bell"></i>
 
-                </button>
+                        {% if notificacoes_nao_lidas > 0 %}
+
+                        <span class="notification-dot"></span>
+
+                        {% endif %}
+
+                    </button>
+
+
+                    <div class="notification-dropdown" id="notificationDropdown">
+
+                        <div class="notification-header">
+
+                            <div>
+
+                                <strong>
+                                    Notificações
+                                </strong>
+
+                                <span>
+                                    {% if notificacoes_nao_lidas > 0 %}
+                                    {{ notificacoes_nao_lidas }} não lidas
+                                    {% else %}
+                                    Nenhuma nova
+                                    {% endif %}
+                                </span>
+
+                            </div>
+
+
+                            <button type="button" id="markNotificationsRead">
+                                Marcar todas
+                            </button>
+
+                        </div>
+
+
+                        <div class="notification-list" id="notificationList">
+
+                            {% for notificacao in notificacoes %}
+
+                            <div class="notification-item {% if not notificacao.lida %}unread{% endif %}"
+                                data-notification-id="{{ notificacao.id }}">
+
+                                <div class="notification-icon {{ notificacao.tipo }}">
+
+                                    {% if notificacao.tipo == "candidatura" %}
+
+                                    <i class="bi bi-send"></i>
+
+                                    {% elif notificacao.tipo == "proposta" %}
+
+                                    <i class="bi bi-lightbulb"></i>
+
+                                    {% elif notificacao.tipo == "projeto" %}
+
+                                    <i class="bi bi-folder"></i>
+
+                                    {% elif notificacao.tipo == "usuario" %}
+
+                                    <i class="bi bi-person"></i>
+
+                                    {% else %}
+
+                                    <i class="bi bi-info-circle"></i>
+
+                                    {% endif %}
+
+                                </div>
+
+
+                                <div class="notification-content">
+
+                                    <strong>
+                                        {{ notificacao.titulo }}
+                                    </strong>
+
+                                    <p>
+                                        {{ notificacao.mensagem }}
+                                    </p>
+
+                                    <time>
+                                        {{ notificacao.data }}
+                                    </time>
+
+                                </div>
+
+
+                                {% if not notificacao.lida %}
+
+                                <span class="notification-unread"></span>
+
+                                {% endif %}
+
+                            </div>
+
+                            {% else %}
+
+                            <div class="notification-empty">
+
+                                <i class="bi bi-bell-slash"></i>
+
+                                <strong>
+                                    Tudo em dia
+                                </strong>
+
+                                <span>
+                                    Você não possui novas notificações.
+                                </span>
+
+                            </div>
+
+                            {% endfor %}
+
+                        </div>
+
+
+                        <div class="notification-footer">
+
+                            <a href="{{ url_for('admin_notificacoes') }}">
+
+                                Ver todas as notificações
+
+                                <i class="bi bi-arrow-right"></i>
+
+                            </a>
+
+                        </div>
+
+                    </div>
+
+                </div>
 
 
                 <div class="admin-topbar-user">
