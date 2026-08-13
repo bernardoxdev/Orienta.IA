@@ -3,6 +3,8 @@ from fastapi.security import OAuth2PasswordBearer
 from jose import jwt, JWTError
 from sqlalchemy.orm import Session
 
+from passlib.context import CryptContext
+
 from backend.core.jwt import SECRET_KEY, ALGORITHM
 from backend.database.connection import get_db
 from backend.database.models.user import User
@@ -11,6 +13,8 @@ oauth2_scheme = OAuth2PasswordBearer(
     tokenUrl="/auth/login",
     scopes={}
 )
+
+pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 def get_current_user(
     token: str = Depends(oauth2_scheme),
@@ -46,3 +50,12 @@ def require_role(*roles: str):
         return user
 
     return checker
+
+def hash_password(password: str) -> str:
+    return pwd_context.hash(password)
+
+def verify_password(password: str, password_hash: str) -> bool:
+    return pwd_context.verify(password, password_hash)
+
+if __name__ == '__main__':
+    pass

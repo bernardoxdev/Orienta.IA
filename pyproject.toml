@@ -5,14 +5,14 @@ description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.11"
 dependencies = [
-    "bcrypt>=5.0.0",
+    "passlib[bcrypt]==1.7.4",
+    "bcrypt==3.2.2",
     "brutils>=2.4.0",
     "fastapi>=0.136.1",
     "httpx>=0.28.1",
     "limits>=5.8.0",
     "numpy>=2.4.4",
     "argon2-cffi>=25.1.0",
-    "passlib>=1.7.4",
     "psycopg2-binary>=2.9.12",
     "pyrogram>=2.0.106",
     "python-dotenv>=1.2.2",

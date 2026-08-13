@@ -3,10 +3,14 @@ import os
 from pydantic import BaseModel
 from types import SimpleNamespace
 
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect, url_for, flash
 from flask_session import Session
 
-from backend.services.site_services import get_dashboard_admin_data, get_admin_users, get_admin_projetos, get_admin_candidaturas, get_admin_propostas
+from backend.database.models.return_schemas import UserVerification, StatusResponse
+
+from backend.utils.user_utils import validar_criar__user
+
+from backend.services.site_services import get_dashboard_admin_data, get_admin_users, get_admin_projetos, get_admin_candidaturas, get_admin_propostas, get_universidades, get_admin_user_data, get_universidades_detalhado
 
 app = Flask(__name__, template_folder="./frontend/templates")
 
@@ -26,6 +30,9 @@ app.config.update(
 
 Session(app)
 
+"""
+GERAL
+"""
 @app.route('/')
 def index():
     return render_template('index.html')
@@ -98,57 +105,45 @@ def admin_novo_usuario():
         tipo = request.form.get("tipo")
 
         universidade_id = request.form.get("universidade_id")
-
-        # ==============================
-        # DADOS DO ESTUDANTE
-        # ==============================
+        ativo = request.form.get("ativo") == "on"
 
         matricula = request.form.get("matricula", "").strip()
         curso = request.form.get("curso", "").strip()
         periodo = request.form.get("periodo")
         lattes = request.form.get("lattes", "").strip()
-        previsao_conclusao = request.form.get(
-            "previsao_conclusao",
-            ""
-        ).strip()
+        previsao_conclusao = request.form.get("previsao_conclusao", "").strip()
 
-        # ==============================
-        # DADOS DO PROFESSOR
-        # ==============================
+        departamento = request.form.get("departamento", "").strip()
+        area_pesquisa = request.form.get("area_pesquisa", "").strip()
+        sala = request.form.get("sala", "").strip()
 
-        departamento = request.form.get(
-            "departamento",
-            ""
-        ).strip()
-
-        area_pesquisa = request.form.get(
-            "area_pesquisa",
-            ""
-        ).strip()
-
-        sala = request.form.get(
-            "sala",
-            ""
-        ).strip()
-
-        ativo = request.form.get("ativo") == "on"
-
-        # =================================
-        # CRIAÇÃO DO USUÁRIO
-        # =================================
-
-        # TODO:
-        # validar dados
-        # verificar email duplicado
-        # verificar username duplicado
-        # hash da senha
-        # criar User
-        # criar Estudante ou Professor
-        # commit
-
-        return redirect(url_for("admin_usuarios"))
+        data_user: BaseModel = UserVerification(
+            nome=nome,
+            username=username,
+            email=email,
+            telegram_id=telegram_id,
+            senha=senha,
+            role=role,
+            tipo=tipo,
+            universidade_id=universidade_id,
+            ativo=ativo,
+            matricula=matricula,
+            curso=curso,
+            periodo=periodo,
+            lattes=lattes,
+            previsao_conclusao=previsao_conclusao,
+            departamento=departamento,
+            area_pesquisa=area_pesquisa,
+            sala=sala
+        )
+        
+        valido: StatusResponse = validar_criar__user(data_user)
+        if valido.success:
+            return redirect(url_for("admin_usuarios"))
+        else:
+            flash(valido.status)
     
-    universidades = []
+    universidades = get_universidades()
 
     return render_template("admin/novo_usuario.html", universidades=universidades)
 
@@ -156,241 +151,63 @@ def admin_novo_usuario():
 def admin_excluir_usuario(usuario_id):
     pass
 
-@app.route(
-    "/admin/usuarios/<int:usuario_id>/editar",
-    methods=["GET", "POST"]
-)
+@app.route("/admin/usuarios/<int:usuario_id>/editar", methods=["GET", "POST"])
 def admin_editar_usuario(usuario_id):
-
-    # ==========================================
-    # MOCK DO USUÁRIO
-    # ==========================================
-
-    usuario = SimpleNamespace(
-
-        id=1,
-
-        nome="Bernardo de Castro",
-
-        username="bernardocastro",
-
-        email="bernardo@ufsj.edu.br",
-
-        telegram_id="123456789",
-
-        role="user",
-
-        ativo=True
-
-    )
-
-
-    # ==========================================
-    # MOCK DA UNIVERSIDADE
-    # ==========================================
-
-    universidade = SimpleNamespace(
-
-        id=1,
-
-        nome="Universidade Federal de São João del-Rei",
-
-        sigla="UFSJ",
-
-        cidade="São João del-Rei",
-
-        estado="MG"
-
-    )
-
-
-    universidade_2 = SimpleNamespace(
-
-        id=2,
-
-        nome="Universidade Federal de Minas Gerais",
-
-        sigla="UFMG",
-
-        cidade="Belo Horizonte",
-
-        estado="MG"
-
-    )
-
-
-    universidade_3 = SimpleNamespace(
-
-        id=3,
-
-        nome="Universidade Federal de Viçosa",
-
-        sigla="UFV",
-
-        cidade="Viçosa",
-
-        estado="MG"
-
-    )
-
-
-    # ==========================================
-    # MOCK DO ESTUDANTE
-    # ==========================================
-
-    estudante = SimpleNamespace(
-
-        id=1,
-
-        user_id=1,
-
-        universidade_id=1,
-
-        matricula="2023001234",
-
-        curso="Ciência da Computação",
-
-        periodo=6,
-
-        lattes="https://lattes.cnpq.br/0000000000000000",
-
-        previsao_conclusao="2027/2",
-
-        universidade=universidade
-
-    )
-
-
-    # ==========================================
-    # UNIVERSIDADES
-    # ==========================================
-
-    universidades = [
-
-        universidade,
-
-        universidade_2,
-
-        universidade_3
-
-    ]
-
-
-    # ==========================================
-    # TIPO
-    # ==========================================
-
-    tipo = "estudante"
-
-
-    # ==========================================
-    # RENDER
-    # ==========================================
-
-    return render_template(
-
-        "admin/editar_usuario.html",
-
-        usuario=usuario,
-
-        estudante=estudante,
-
-        professor=None,
-
-        tipo=tipo,
-
-        universidades=universidades
-
-    )
+    if request.method == 'POST':
+        nome = request.form.get("nome", "").strip()
+        username = request.form.get("username", "").strip()
+        email = request.form.get("email", "").strip()
+        telegram_id = request.form.get("telegram_id", "").strip()
+        senha = request.form.get("senha", "")
+        role = request.form.get("role", "user")
+        tipo = request.form.get("tipo")
+
+        universidade_id = request.form.get("universidade_id")
+        ativo = request.form.get("ativo") == "on"
+
+        matricula = request.form.get("matricula", "").strip()
+        curso = request.form.get("curso", "").strip()
+        periodo = request.form.get("periodo")
+        lattes = request.form.get("lattes", "").strip()
+        previsao_conclusao = request.form.get("previsao_conclusao", "").strip()
+
+        departamento = request.form.get("departamento", "").strip()
+        area_pesquisa = request.form.get("area_pesquisa", "").strip()
+        sala = request.form.get("sala", "").strip()
+
+        data_user: BaseModel = UserVerification(
+            nome=nome,
+            username=username,
+            email=email,
+            telegram_id=telegram_id,
+            senha=senha,
+            role=role,
+            tipo=tipo,
+            universidade_id=universidade_id,
+            ativo=ativo,
+            matricula=matricula,
+            curso=curso,
+            periodo=periodo,
+            lattes=lattes,
+            previsao_conclusao=previsao_conclusao,
+            departamento=departamento,
+            area_pesquisa=area_pesquisa,
+            sala=sala
+        )
+        
+        # TODO: Método de atualização
+    
+    universidades = get_universidades()
+    data: BaseModel = get_admin_user_data(usuario_id)
+
+    return render_template("admin/editar_usuario.html", universidades=universidades, **data.model_dump())
 
 @app.route("/admin/usuarios/<int:usuario_id>/visualizar")
 def admin_visualizar_usuario(usuario_id):
+    data_user: BaseModel = get_admin_user_data(usuario_id)
+    projetos = get_admin_projetos(user_id=usuario_id)
 
-    usuario = SimpleNamespace(
-        id=1,
-        nome="Bernardo de Castro",
-        username="bernardocastro",
-        email="bernardo@ufsj.edu.br",
-        telegram_id="123456789",
-        role="user",
-        ativo=True
-    )
-
-    universidade = SimpleNamespace(
-        id=1,
-        nome="Universidade Federal de São João del-Rei",
-        sigla="UFSJ",
-        cidade="São João del-Rei",
-        estado="MG"
-    )
-
-    estudante = SimpleNamespace(
-        id=1,
-        user_id=1,
-        universidade_id=1,
-        matricula="2023001234",
-        curso="Ciência da Computação",
-        periodo=6,
-        lattes="https://lattes.cnpq.br/0000000000000000",
-        previsao_conclusao="2027/2",
-        universidade=universidade
-    )
-
-    projetos = [
-
-        SimpleNamespace(
-            id=1,
-            titulo="Orienta.IA",
-            descricao=(
-                "Plataforma para gerenciamento de projetos de "
-                "orientação acadêmica, aproximando estudantes e professores."
-            ),
-            status=SimpleNamespace(
-                value="Em andamento"
-            )
-        ),
-
-        SimpleNamespace(
-            id=2,
-            titulo="Sistema de recomendação acadêmica",
-            descricao=(
-                "Desenvolvimento de um sistema capaz de recomendar "
-                "projetos de iniciação científica aos estudantes."
-            ),
-            status=SimpleNamespace(
-                value="Em andamento"
-            )
-        ),
-
-        SimpleNamespace(
-            id=3,
-            titulo="Análise de dados educacionais",
-            descricao=(
-                "Projeto voltado à análise de dados acadêmicos "
-                "para identificação de padrões de desempenho."
-            ),
-            status=SimpleNamespace(
-                value="Concluído"
-            )
-        )
-
-    ]
-
-    return render_template(
-        "admin/visualizar_usuario.html",
-
-        usuario=usuario,
-
-        estudante=estudante,
-
-        professor=None,
-
-        universidade=universidade,
-
-        projetos=projetos,
-
-        tipo="estudante"
-    )
+    return render_template("admin/visualizar_usuario.html", projetos=projetos, **data_user.model_dump())
 
 @app.route("/admin/projetos")
 def admin_projetos():
@@ -415,16 +232,8 @@ def admin_propostas():
 
 @app.route("/admin/universidades")
 def admin_universidades():
-    universidades = [
-        SimpleNamespace(
-            id=1,
-            nome="Universidade Federal de São João del-Rei",
-            sigla="UFSJ",
-            cidade="São João del-Rei",
-            estado="MG"
-        )
-    ]
-    estados = ["MG", "SP", "RJ", "ES", "BA", "PE", "RS", "SC"]
+    universidades = get_universidades_detalhado()
+    estados = [u.estado for u in universidades]
     dashboard_data: BaseModel = get_dashboard_admin_data()
     
     return render_template("admin/universidades.html", universidades=universidades, estados=estados, **dashboard_data.model_dump())
@@ -439,7 +248,6 @@ def admin_excluir_universidade(universidade_id):
 
 @app.route("/admin/configuracoes")
 def admin_configuracoes():
-
     configuracoes = {
         "nome_plataforma": "Orienta.IA",
 
@@ -472,10 +280,7 @@ def admin_configuracoes():
         "modo_manutencao": False,
     }
 
-    return render_template(
-        "admin/configuracoes.html",
-        configuracoes=configuracoes
-    )
+    return render_template("admin/configuracoes.html", configuracoes=configuracoes)
     
 @app.route("/admin/dados")
 def admin_dados():
@@ -571,11 +376,7 @@ def admin_dados():
         },
     ]
 
-    return render_template(
-        "admin/dados.html",
-        dados=dados,
-        modelos=modelos
-    )
+    return render_template("admin/dados.html", dados=dados, modelos=modelos)
 
 @app.route("/admin/notificoes")
 def admin_notificacoes():
@@ -664,11 +465,7 @@ def admin_notificacoes():
         "pendentes": 4
     }
 
-    return render_template(
-        "admin/notificacoes.html",
-        notificacoes=notificacoes,
-        estatisticas=estatisticas
-    )
+    return render_template("admin/notificacoes.html", notificacoes=notificacoes, estatisticas=estatisticas)
 
 @app.route("/admin/mensagens")
 def admin_mensagens():
@@ -829,13 +626,7 @@ def admin_mensagens():
     ]
 
 
-    return render_template(
-        "admin/mensagens.html",
-        conversas=conversas,
-        mensagens=mensagens,
-        estatisticas=estatisticas,
-        usuarios=usuarios
-    )
+    return render_template("admin/mensagens.html", conversas=conversas, mensagens=mensagens, estatisticas=estatisticas, usuarios=usuarios)
     
 # Run
 if __name__ == '__main__':

@@ -14,6 +14,8 @@ EXPOSE 5000
 COPY web.py .
 COPY backend/database ./backend/database
 COPY backend/services  ./backend/services
+COPY backend/utils ./backend/utils
+COPY backend/core ./backend/core
 COPY frontend/ ./frontend/
 
 CMD ["gunicorn", "-b", "0.0.0.0:5000", "web:app"]

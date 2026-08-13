@@ -1,0 +1,613 @@
+.users-page {
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 20px;
+
+}
+
+.users-toolbar {
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    gap: 15px;
+
+    padding: 18px;
+
+    background: var(--surface);
+
+    border: 1px solid var(--border);
+
+    border-radius: 12px;
+
+}
+
+.users-filters {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 10px;
+
+    flex: 1;
+
+}
+
+.user-search {
+
+    width: 320px;
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 10px;
+
+    padding: 9px 12px;
+
+    background: var(--surface-light);
+
+    border: 1px solid var(--border);
+
+    border-radius: 8px;
+
+}
+
+.user-search i {
+
+    color: var(--text-muted);
+
+}
+
+.user-search input {
+
+    width: 100%;
+
+    border: none;
+
+    outline: none;
+
+    background: transparent;
+
+    color: var(--text);
+
+    font-size: .75rem;
+
+}
+
+.user-filter {
+
+    padding: 9px 12px;
+
+    background: var(--surface-light);
+
+    color: var(--text-secondary);
+
+    border: 1px solid var(--border);
+
+    border-radius: 8px;
+
+    font-size: .72rem;
+
+    outline: none;
+
+}
+
+.user-filter option {
+
+    background: var(--surface);
+
+    color: var(--text);
+
+}
+
+.users-count {
+
+    color: var(--text-muted);
+
+    font-size: .68rem;
+
+    white-space: nowrap;
+
+}
+
+/* =====================================
+
+USER TABLE
+
+===================================== */
+
+.users-table-wrapper {
+
+    overflow-x: auto;
+
+}
+
+.users-table {
+
+    width: 100%;
+
+    min-width: 1050px;
+
+    border-collapse: collapse;
+
+}
+
+.users-table th {
+
+    padding: 13px 15px;
+
+    color: var(--text-muted);
+
+    background: rgba(255, 255, 255, .015);
+
+    border-bottom: 1px solid var(--border);
+
+    font-size: .61rem;
+
+    font-weight: 700;
+
+    text-align: left;
+
+    text-transform: uppercase;
+
+    letter-spacing: .4px;
+
+}
+
+.users-table td {
+
+    padding: 14px 15px;
+
+    border-bottom: 1px solid var(--border);
+
+    color: var(--text-secondary);
+
+    font-size: .68rem;
+
+    vertical-align: middle;
+
+}
+
+.users-table tbody tr {
+
+    transition: background .15s;
+
+}
+
+.users-table tbody tr:hover {
+
+    background: rgba(255, 255, 255, .02);
+
+}
+
+/* =====================================
+
+USER
+
+===================================== */
+
+.user-cell {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 10px;
+
+    min-width: 190px;
+
+}
+
+.user-avatar {
+
+    width: 36px;
+
+    height: 36px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    flex-shrink: 0;
+
+    border-radius: 50%;
+
+    background:
+
+        rgba(139, 124, 255, .11);
+
+    color: var(--primary);
+
+    font-size: .63rem;
+
+    font-weight: 800;
+
+}
+
+.user-info strong {
+
+    display: block;
+
+    color: var(--text);
+
+    font-size: .71rem;
+
+    font-weight: 600;
+
+}
+
+.user-info span {
+
+    display: block;
+
+    margin-top: 3px;
+
+    color: var(--text-muted);
+
+    font-size: .59rem;
+
+}
+
+/* =====================================
+
+TYPE
+
+===================================== */
+
+.profile-badge {
+
+    display: inline-flex;
+
+    align-items: center;
+
+    gap: 5px;
+
+    padding: 5px 8px;
+
+    border-radius: 6px;
+
+    font-size: .57rem;
+
+    font-weight: 700;
+
+}
+
+.profile-badge.student {
+
+    background: rgba(59, 130, 246, .10);
+
+    color: #60a5fa;
+
+}
+
+.profile-badge.teacher {
+
+    background: rgba(139, 124, 255, .10);
+
+    color: var(--primary);
+
+}
+
+.profile-badge.admin {
+
+    background: rgba(249, 115, 22, .10);
+
+    color: #fb923c;
+
+}
+
+/* =====================================
+
+ROLE
+
+===================================== */
+
+.role-text {
+
+    color: var(--text-muted);
+
+    font-size: .61rem;
+
+}
+
+/* =====================================
+
+UNIVERSITY
+
+===================================== */
+
+.university-cell strong {
+
+    display: block;
+
+    color: var(--text-secondary);
+
+    font-size: .66rem;
+
+    font-weight: 500;
+
+}
+
+.university-cell span {
+
+    color: var(--text-muted);
+
+    font-size: .58rem;
+
+}
+
+/* =====================================
+
+TELEGRAM
+
+===================================== */
+
+.telegram-connected {
+
+    display: inline-flex;
+
+    align-items: center;
+
+    gap: 5px;
+
+    color: #38bdf8;
+
+    font-size: .62rem;
+
+}
+
+.telegram-not-connected {
+
+    color: var(--text-muted);
+
+    font-size: .62rem;
+
+}
+
+/* =====================================
+
+STATUS
+
+===================================== */
+
+.user-status {
+
+    display: inline-flex;
+
+    align-items: center;
+
+    gap: 6px;
+
+    padding: 5px 8px;
+
+    border-radius: 6px;
+
+    font-size: .57rem;
+
+    font-weight: 700;
+
+}
+
+.user-status.active {
+
+    background: rgba(34, 197, 94, .09);
+
+    color: #4ade80;
+
+}
+
+.user-status.inactive {
+
+    background: rgba(239, 68, 68, .09);
+
+    color: #f87171;
+
+}
+
+.status-dot {
+
+    width: 5px;
+
+    height: 5px;
+
+    border-radius: 50%;
+
+    background: currentColor;
+
+}
+
+/* =====================================
+
+ACTIONS
+
+===================================== */
+
+.user-actions {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 5px;
+
+}
+
+.user-action {
+
+    width: 30px;
+
+    height: 30px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    border: 1px solid var(--border);
+
+    border-radius: 6px;
+
+    background: transparent;
+
+    color: var(--text-muted);
+
+    cursor: pointer;
+
+    transition: .15s;
+
+}
+
+.user-action:hover {
+
+    color: var(--primary);
+
+    border-color:
+
+        rgba(139, 124, 255, .3);
+
+}
+
+.user-action.danger:hover {
+
+    color: #f87171;
+
+    border-color:
+
+        rgba(239, 68, 68, .3);
+
+}
+
+/* =====================================
+
+EMPTY
+
+===================================== */
+
+.users-empty {
+
+    padding: 60px 20px;
+
+    text-align: center;
+
+    color: var(--text-muted);
+
+}
+
+.users-empty i {
+
+    display: block;
+
+    margin-bottom: 12px;
+
+    font-size: 2rem;
+
+}
+
+/* =====================================
+
+PAGINATION
+
+===================================== */
+
+.users-pagination {
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    padding-top: 5px;
+
+}
+
+.pagination-info {
+
+    color: var(--text-muted);
+
+    font-size: .65rem;
+
+}
+
+.pagination-buttons {
+
+    display: flex;
+
+    gap: 5px;
+
+}
+
+.pagination-button {
+
+    min-width: 30px;
+
+    height: 30px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    padding: 0 8px;
+
+    border: 1px solid var(--border);
+
+    border-radius: 6px;
+
+    background: var(--surface);
+
+    color: var(--text-muted);
+
+    font-size: .65rem;
+
+    cursor: pointer;
+
+}
+
+.pagination-button.active {
+
+    background: var(--primary);
+
+    border-color: var(--primary);
+
+    color: white;
+
+}
+
+@media (max-width: 700px) {
+
+    .users-toolbar {
+
+        align-items: stretch;
+
+        flex-direction: column;
+
+    }
+
+    .users-filters {
+
+        flex-direction: column;
+
+        align-items: stretch;
+
+    }
+
+    .user-search {
+
+        width: 100%;
+
+    }
+
+}

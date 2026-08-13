@@ -13,7 +13,7 @@ if TYPE_CHECKING:
 class User(Base):
     __tablename__ = "users"
 
-    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True, index=True)
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True, index=True, unique=True)
     telegram_id: Mapped[str] = mapped_column(String, unique=True, index=True, nullable=True)
     nome: Mapped[str] = mapped_column(String, nullable=False)
     username: Mapped[str] = mapped_column(String, unique=True, nullable=False, index=True)
@@ -22,6 +22,6 @@ class User(Base):
     role: Mapped[str] = mapped_column(String, nullable=False, default="user")
     ativo: Mapped[bool] = mapped_column(Boolean, nullable=False, default=True)
 
-    estudantes: Mapped["Estudante"] = relationship("Estudante", back_populates="user")
-    professores: Mapped["Professor"] = relationship("Professor", back_populates="user")
+    estudantes: Mapped["Estudante | None"] = relationship("Estudante", back_populates="user")
+    professores: Mapped["Professor | None"] = relationship("Professor", back_populates="user")
     solicitacao: Mapped["SolicitacaoVincular"] = relationship("SolicitacaoVincular", back_populates="user")

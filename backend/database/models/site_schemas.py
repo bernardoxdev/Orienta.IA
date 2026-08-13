@@ -2,6 +2,8 @@ from pydantic import BaseModel, Field
 
 from typing import Optional
 
+from backend.database.models.projetos import StatusProjeto, ContextoOrientacao
+
 class DashboardAdmin(BaseModel):
     total_usuarios: int = 0
     total_estudantes: int = 0
@@ -34,33 +36,54 @@ class DashboardAdminSideModel(BaseModel):
     mensagens_pendentes: int = 0
     notificacoes_nao_lidas: int = 0
 
+    
+class UniversidadeModel(BaseModel):
+    id: int
+    nome: str
+    sigla: str
+    cidade: str
+    estado: str
+
+class UniversidadeDetalhadoModel(BaseModel):
+    id: int
+    nome: str
+    sigla: str
+    cidade: str
+    estado: str
+    total_usuarios: int = 0
+
 class ProfessorModel(BaseModel):
     id: int
     nome: str
     username: str
+    departamento: str
+    area_pesquisa: str
+    sala: str
+    universidade: UniversidadeModel
+    lattes: Optional[str]
     
 class EstudanteModel(BaseModel):
     id: int
     nome: str
     username: str
     matricula: str
-
-class UniversidadeModel(BaseModel):
-    id: int
-    nome: str
-    sigla: str
+    curso: str
+    periodo: int
+    lattes: Optional[str]
+    previsao_conclusao: str
+    universidade: UniversidadeModel
 
 class ProjetoModel(BaseModel):
     id: int
     titulo: str
     descricao: str
-    status: str
-    contexto: str
-    data_inicio: str
-    data_fim: str
-    cronogramas_total: int
-    cronogramas_concluidos: int
+    status: StatusProjeto
+    contexto: ContextoOrientacao
+    data_inicio: Optional[str]
+    data_fim: Optional[str]
     palavras_chave: list
+    cronogramas_total: Optional[int]
+    cronogramas_concluidos: Optional[int]
     estudante: EstudanteModel
     professor: ProfessorModel
     universidade: UniversidadeModel
@@ -88,6 +111,13 @@ class PropostasModel(BaseModel):
     status: str
     data: str
     observacoes: Optional[str]
+
+class AtualizarUserModel(BaseModel):
+    usuario: UsuarioModel
+    estudante: EstudanteModel | None = None
+    professor: ProfessorModel | None = None
+    tipo: str
+    universidade: UniversidadeModel | None = None
 
 if __name__ == '__main__':
     pass
