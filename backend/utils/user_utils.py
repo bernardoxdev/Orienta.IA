@@ -1,4 +1,8 @@
+import traceback
+
 from sqlalchemy.orm import Session
+
+from typing import Optional
 
 from brutils import is_valid_email
 
@@ -239,15 +243,104 @@ def validar_criar__user(user_verification: UserVerification) -> StatusResponse:
     except Exception as e:
         db.rollback()
 
-        print(f"Erro ao criar usuário: {e}")
+        traceback.print_exc()
 
         return StatusResponse(
             success=False,
-            status="Erro ao criar usuário."
+            status=f"Erro ao criar usuário: {e}"
         )
 
     finally:
         db.close()
         
+def desativar_user_by_id(usuario_id: int) -> StatusResponse:
+    db: Session = SessionLocal()
+    
+    try:
+        user = db.query(User).filter(User.id == usuario_id).first()
+        
+        if not user:
+            return StatusResponse(
+                success=False,
+                status="Usuário não encontrado"
+            )
+
+        user.ativo = False
+        
+        db.commit()
+        db.refresh(user)
+        
+        return StatusResponse(
+            success=True,
+            status=f"Usuário desativado com sucesso: {usuario_id}"
+        )
+        
+    except Exception as e:
+        db.rollback()
+        return StatusResponse(
+            success=False,
+           status=f"Erro ao desativar user: {usuario_id}" 
+        )
+    
+    finally:
+        db.close()
+
+def atualizar_user(user_verification: UserVerification) -> Optional[UserVerification]:
+    db: Session = SessionLocal()
+
+    try:
+        user = db.query(User).filter(User.id == user_verification.id).first()
+        
+        if not user:
+            return None
+
+        user.nome = user_verification.nome
+        user.username = user_verification.username
+        user.email = user_verification.email
+        user.telegram_id = user_verification.telegram_id
+        user.role = user_verification.role
+        user.ativo = user_verification.ativo
+
+        if user_verification.senha:
+            user.senha = hash_password(user_verification.senha)
+
+        user.tipo = user_verification.tipo
+        
+        if user_verification.tipo == "estudante":
+            estudante = db.query(Estudante).filter(Estudante.user_id == user.id).first()
+        
+            if user_verification.universidade_id:
+                estudante.universidade_id = user_verification.universidade_id
+            estudante.matricula = user_verification.matricula
+            estudante.curso = user_verification.curso
+            estudante.periodo = user_verification.periodo
+            estudante.lattes = user_verification.lattes
+            estudante.previsao_conclusao = user_verification.previsao_conclusao
+            
+            db.flush()
+
+        elif user_verification.tipo == "professor":
+            professor = db.query(Professor).filter(Professor.user_id == user.id).first()
+            
+            if user_verification.universidade_id:
+                professor.universidade_id = user_verification.universidade_id
+            professor.departamento = user_verification.departamento
+            professor.area_pesquisa = user_verification.area_pesquisa
+            professor.sala = user_verification.sala
+            
+            db.flush()
+
+        db.commit()
+        db.refresh(user)
+
+        return UserVerification
+
+    except Exception:
+        db.rollback()
+        raise
+
+    finally:
+        db.close()
+
 if __name__ == '__main__':
     pass

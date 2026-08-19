@@ -50,6 +50,35 @@
 
         </header>
 
+        <!-- ============================= -->
+        <!-- MENSAGENS FLASH -->
+        <!-- ============================= -->
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        <div class="flash-messages">
+            {% for category, message in messages %}
+            <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+
+                {% if category == "success" %}
+                <i class="bi bi-check-circle"></i>
+                {% elif category == "danger" %}
+                <i class="bi bi-exclamation-circle"></i>
+                {% elif category == "warning" %}
+                <i class="bi bi-exclamation-triangle"></i>
+                {% elif category == "info" %}
+                <i class="bi bi-info-circle"></i>
+                {% endif %}
+
+                {{ message }}
+
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fechar">
+                </button>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+        {% endwith %}
 
         <!-- ============================= -->
         <!-- FORMULÁRIO -->
@@ -525,7 +554,7 @@
 
                         </label>
 
-                        <input type="url" id="lattes_professor" name="lattes_professor" class="form-control"
+                        <input type="url" id="lattes_professor" name="lattes" class="form-control"
                             placeholder="https://lattes.cnpq.br/...">
 
                     </div>

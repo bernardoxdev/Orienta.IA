@@ -1,6 +1,6 @@
 from typing import Optional
 
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 
 class Status(BaseModel):
     status: str
@@ -19,6 +19,7 @@ class Refresh(BaseModel):
     token_type: str
 
 class UserVerification(BaseModel):
+    id: Optional[int] = None
     nome: str
     username: str
     email: str
@@ -26,6 +27,7 @@ class UserVerification(BaseModel):
     senha: str
     role: str
     tipo: Optional[str]
+    ativo: Optional[bool]
     universidade_id: Optional[int]
     
     matricula: Optional[str]
@@ -37,3 +39,5 @@ class UserVerification(BaseModel):
     departamento: Optional[str]
     area_pesquisa: Optional[str]
     sala: Optional[str]
+    
+    model_config = ConfigDict(from_attributes=True)

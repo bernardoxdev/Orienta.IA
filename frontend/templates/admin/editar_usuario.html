@@ -782,16 +782,13 @@
 
                             {% for universidade in universidades %}
 
-                            <option value="{{ universidade.id }}" {% if estudante and
-                                estudante.universidade_id==universidade.id %} selected {% endif %} {% if professor and
-                                professor.universidade_id==universidade.id %} selected {% endif %}>
+                            <option value="{{ universidade.id }}" {% if estudante and estudante.universidade_id==universidade.id %} selected {% endif %} {% if professor and professor.universidade_id==universidade.id %} selected {% endif %}>
 
                                 {{ universidade.nome }}
 
                                 {% if universidade.sigla %}
                                 ({{ universidade.sigla }})
                                 {% endif %}
-
                             </option>
 
                             {% endfor %}

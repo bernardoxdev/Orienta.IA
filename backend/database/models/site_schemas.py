@@ -1,6 +1,6 @@
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, ConfigDict
 
-from typing import Optional
+from typing import Optional, List
 
 from backend.database.models.projetos import StatusProjeto, ContextoOrientacao
 
@@ -38,11 +38,13 @@ class DashboardAdminSideModel(BaseModel):
 
     
 class UniversidadeModel(BaseModel):
-    id: int
+    id: Optional[int] = None
     nome: str
     sigla: str
     cidade: str
     estado: str
+    
+    model_config = ConfigDict(from_attributes=True)
 
 class UniversidadeDetalhadoModel(BaseModel):
     id: int
@@ -118,6 +120,81 @@ class AtualizarUserModel(BaseModel):
     professor: ProfessorModel | None = None
     tipo: str
     universidade: UniversidadeModel | None = None
+
+class ConfiguracoesModel(BaseModel):
+    nome_plataforma: str = "Orienta.IA"
+    descricao: str = "Plataforma para conectar estudantes, professores e oportunidades acadêmicas"
+    email_administrativo: str = "bernardocmfgomes@gmail.com"
+    permitir_cadastro: bool = True
+    aprovar_cadastro: bool = False
+    permitir_telegram: bool = True
+    permitir_projetos: bool = True
+    permitir_candidaturas: bool = True
+    permitir_propostas: bool = True
+    notificacoes_email: bool = True
+    notificacoes_sistema: bool = True
+    tempo_sessao: int = 60
+    tentativas_login: int = 5
+    modo_manutencao: bool = False
+    
+    model_config = ConfigDict(from_attributes=True)
+
+class DadosAdminModel(BaseModel):
+    total_registros: int
+    usuarios: int
+    estudantes: int
+    professores: int
+    universidades: int
+    projetos: int
+    cronogramas: int
+    solicitacoes_projeto: int
+    solicitacoes_cancelamento: int
+    solicitacoes_vincular: int
+    ultima_verificacao: str
+    status_banco: str
+    
+    model_config = ConfigDict(from_attributes=True)
+
+class NotificacoesAdminModel(BaseModel):
+    id: int
+    titulo: str
+    mensagem: str
+    tipo: str
+    destinatario: str
+    destinatarios: int
+    data: str
+    lida: bool
+    status: str
+    icone: str
+    
+    model_config = ConfigDict(from_attributes=True)
+
+class EstatisticasNotificacoesAdminModel(BaseModel):
+    total: int
+    nao_lidas: int
+    enviadas: int
+    pendentes: int
+    
+class ConversasIconsModel(BaseModel):
+    id: int
+    usuario_id: int
+    nome: str
+    username: str
+    tipo: str
+    iniciais: str
+    assunto: str
+    ultima_mensagem: str
+    data: str
+    nao_lidas: int
+    online: bool
+
+class MensagemModel(BaseModel):
+    id: int
+    remetente: str
+    iniciais: str
+    mensagem: str
+    data: str
+    propria: bool
 
 if __name__ == '__main__':
     pass

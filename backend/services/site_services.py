@@ -151,79 +151,55 @@ def get_admin_projetos(limit: int | None = None, user_id: int | None = None) -> 
     db: Session = SessionLocal()
     
     try:
-        estudante = db.query(Estudante).filter(Estudante.user_id==user_id).first()
-        professor = db.query(Professor).filter(Professor.user_id==user_id).first()
-        
-        estudante_id = None
-        professor_id = None
-        universidade = None
-        
-        if estudante:
-            estudante_id = estudante.id
-            universidade = estudante.universidade
-        
-        if professor:
-            professor_id = professor.id
-            universidade = professor.universidade
-            
-        projetos = db.query(Projetos).filter(Projetos.estudante_id==estudante_id, Projetos.professor_id==professor_id).limit(limit).all()
-        
-        universidade=UniversidadeModel(
-            id=universidade.id,
-            nome=universidade.nome,
-            sigla=universidade.sigla,
-            cidade=universidade.cidade,
-            estado=universidade.estado
-        )
-        
-        
-        if estudante:
-            estudante=get_estudante_by_id(estudante_id)
-            
-            return [ProjetoModel(
-                id=projeto.id,
-                titulo=projeto.titulo,
-                descricao=projeto.descricao,
-                status=projeto.status,
-                contexto=projeto.contexto,
-                data_inicio=projeto.data_inicio,
-                data_fim=projeto.data_fim,
-                palavras_chave=projeto.palavras_chave,
-                universidade=universidade,
-                estudante=estudante,
-                professor=get_professor_by_id(projeto.professor_id)
-                ) for projeto in projetos]
-        elif professor:
-            professor=get_professor_by_id(professor_id)
-                        
-            return [ProjetoModel(
-                id=projeto.id,
-                titulo=projeto.titulo,
-                descricao=projeto.descricao,
-                status=projeto.status,
-                contexto=projeto.contexto,
-                data_inicio=projeto.data_inicio,
-                data_fim=projeto.data_fim,
-                palavras_chave=projeto.palavras_chave,
-                universidade=universidade,
-                professor=professor,
-                estudante=get_estudante_by_id(projeto.estudante_id)
-                ) for projeto in projetos]
-        
-        return [ProjetoModel(
-            id=projeto.id,
-            titulo=projeto.titulo,
-            descricao=projeto.descricao,
-            status=projeto.status,
-            contexto=projeto.contexto,
-            data_inicio=projeto.data_inicio,
-            data_fim=projeto.data_fim,
-            palavras_chave=projeto.palavras_chave,
-            universidade=universidade,
-            professor=get_professor_by_id(projeto.professor_id),
-            estudante=get_estudante_by_id(projeto.estudante_id)
-            ) for projeto in projetos]
-    
+        query = db.query(Projetos)
+
+        if limit is not None:
+            query = query.limit(limit)
+
+        projetos = query.all()
+
+        resultado = []
+
+        for projeto in projetos:
+            estudante = get_estudante_by_id(projeto.estudante_id)
+            professor = get_professor_by_id(projeto.professor_id)
+
+            universidade = None
+
+            if estudante:
+                universidade = estudante.universidade
+            elif professor:
+                universidade = professor.universidade
+
+            universidade_model = None
+
+            if universidade:
+                universidade_model = UniversidadeModel(
+                    id=universidade.id,
+                    nome=universidade.nome,
+                    sigla=universidade.sigla,
+                    cidade=universidade.cidade,
+                    estado=universidade.estado
+                )
+
+            resultado.append(
+                ProjetoModel(
+                    id=projeto.id,
+                    titulo=projeto.titulo,
+                    descricao=projeto.descricao,
+                    status=projeto.status,
+                    contexto=projeto.contexto,
+                    data_inicio=projeto.data_inicio,
+                    data_fim=projeto.data_fim,
+                    palavras_chave=projeto.palavras_chave,
+                    universidade=universidade_model,
+                    estudante=estudante,
+                    professor=professor
+                )
+            )
+
+        return resultado
+
     finally:
         db.close()
 

@@ -1,14 +1,15 @@
 import os
 
 from pydantic import BaseModel
-from types import SimpleNamespace
 
 from flask import Flask, render_template, request, redirect, url_for, flash
 from flask_session import Session
 
+from backend.database.models.site_schemas import UniversidadeModel
 from backend.database.models.return_schemas import UserVerification, StatusResponse
 
-from backend.utils.user_utils import validar_criar__user
+from backend.utils.user_utils import validar_criar__user, desativar_user_by_id, atualizar_user
+from backend.utils.universidade_utils import deletar_universidade_by_id, criar_universidade, atualizar_dados_universidade
 
 from backend.services.site_services import get_dashboard_admin_data, get_admin_users, get_admin_projetos, get_admin_candidaturas, get_admin_propostas, get_universidades, get_admin_user_data, get_universidades_detalhado
 
@@ -99,7 +100,7 @@ def admin_novo_usuario():
         nome = request.form.get("nome", "").strip()
         username = request.form.get("username", "").strip()
         email = request.form.get("email", "").strip()
-        telegram_id = request.form.get("telegram_id", "").strip()
+        telegram_id = request.form.get("telegram_id", "").strip() or None
         senha = request.form.get("senha", "")
         role = request.form.get("role", "user")
         tipo = request.form.get("tipo")
@@ -110,12 +111,12 @@ def admin_novo_usuario():
         matricula = request.form.get("matricula", "").strip()
         curso = request.form.get("curso", "").strip()
         periodo = request.form.get("periodo")
-        lattes = request.form.get("lattes", "").strip()
-        previsao_conclusao = request.form.get("previsao_conclusao", "").strip()
+        lattes = request.form.get("lattes", "").strip() or None
+        previsao_conclusao = request.form.get("previsao_conclusao", "").strip() 
 
         departamento = request.form.get("departamento", "").strip()
         area_pesquisa = request.form.get("area_pesquisa", "").strip()
-        sala = request.form.get("sala", "").strip()
+        sala = request.form.get("sala", "").strip() or None
 
         data_user: BaseModel = UserVerification(
             nome=nome,
@@ -139,9 +140,10 @@ def admin_novo_usuario():
         
         valido: StatusResponse = validar_criar__user(data_user)
         if valido.success:
+            flash(valido.status, "success")
             return redirect(url_for("admin_usuarios"))
         else:
-            flash(valido.status)
+            flash(valido.status, "danger")
     
     universidades = get_universidades()
 
@@ -149,7 +151,11 @@ def admin_novo_usuario():
 
 @app.route("/admin/usuarios/<int:usuario_id>/excluir", methods=["POST"])
 def admin_excluir_usuario(usuario_id):
-    pass
+    resposta = desativar_user_by_id(usuario_id)
+
+    flash(resposta.status, "success" if resposta.success else "danger")
+
+    return redirect(url_for("admin_usuarios"))
 
 @app.route("/admin/usuarios/<int:usuario_id>/editar", methods=["GET", "POST"])
 def admin_editar_usuario(usuario_id):
@@ -176,6 +182,7 @@ def admin_editar_usuario(usuario_id):
         sala = request.form.get("sala", "").strip()
 
         data_user: BaseModel = UserVerification(
+            id=usuario_id,
             nome=nome,
             username=username,
             email=email,
@@ -195,7 +202,12 @@ def admin_editar_usuario(usuario_id):
             sala=sala
         )
         
-        # TODO: Método de atualização
+        user_atualizado = atualizar_user(data_user)
+        
+        if not user_atualizado:
+            flash("User não encontrado", "danger")
+        else:
+            flash("User atualizado com sucesso", "success")
     
     universidades = get_universidades()
     data: BaseModel = get_admin_user_data(usuario_id)
@@ -238,13 +250,55 @@ def admin_universidades():
     
     return render_template("admin/universidades.html", universidades=universidades, estados=estados, **dashboard_data.model_dump())
 
-@app.route("/admin/universidades/novo", methods=["GET", "POST"])
+@app.route("/admin/universidades/novo", methods=["POST"])
 def admin_nova_universidade():
-    pass
+    try:
+        universidade = UniversidadeModel(
+            nome=request.form.get("nome", "").strip(),
+            sigla=request.form.get("sigla", "").strip().upper(),
+            cidade=request.form.get("cidade", "").strip(),
+            estado=request.form.get("estado", "").strip().upper()
+        )
+
+        criar_universidade(universidade)
+
+        flash("Universidade criada com sucesso.", "success")
+
+    except Exception as e:
+        flash(f"Erro ao criar universidade: {str(e)}", "danger")
+
+    return redirect(url_for("admin_universidades"))
+
+@app.route("/admin/universidades/<int:universidade_id>/editar", methods=["POST"])
+def admin_atualizar_universidade(universidade_id):
+    try:
+        universidade = UniversidadeModel(
+            id=universidade_id,
+            nome=request.form.get("nome", "").strip(),
+            sigla=request.form.get("sigla", "").strip().upper(),
+            cidade=request.form.get("cidade", "").strip(),
+            estado=request.form.get("estado", "").strip().upper()
+        )
+
+        universidade_atualizada = atualizar_dados_universidade(universidade)
+
+        if not universidade_atualizada:
+            flash("Universidade não encontrada.", "danger")
+        else:
+            flash("Universidade atualizada com sucesso.", "success")
+
+    except Exception as e:
+        flash(f"Erro ao atualizar universidade: {str(e)}", "danger")
+
+    return redirect(url_for("admin_universidades"))
 
 @app.route("/admin/universidades/<int:universidade_id>/excluir", methods=["POST"])
 def admin_excluir_universidade(universidade_id):
-    pass
+    resposta = deletar_universidade_by_id(universidade_id)
+
+    flash(resposta.status, "success" if resposta.success else "danger")
+
+    return redirect(url_for("admin_universidades"))
 
 @app.route("/admin/configuracoes")
 def admin_configuracoes():

@@ -505,3 +505,23 @@ RESPONSIVO
     }
 
 }
+
+.flash-messages {
+    margin-bottom: 24px;
+}
+
+.flash-messages .alert {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+    border-radius: 10px;
+}
+
+.flash-messages .alert i {
+    font-size: 1.1rem;
+}
+
+.flash-messages .btn-close {
+    margin-left: auto;
+}
